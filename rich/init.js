@@ -26,6 +26,8 @@ define(function (require, exports, module) {
     };
 
     // shortcuts
+    
+    
     exports.View = view.FamousView;
     exports.ItemView = itemview.FamousItemView;
     exports.LayoutView = layouts.FamousLayoutView;
