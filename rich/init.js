@@ -26,7 +26,6 @@ define(function (require, exports, module) {
     };
 
     // shortcuts
-    // BAR
     exports.View = view.FamousView;
     exports.ItemView = itemview.FamousItemView;
     exports.LayoutView = layouts.FamousLayoutView;
