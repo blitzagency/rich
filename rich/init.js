@@ -26,6 +26,7 @@ define(function (require, exports, module) {
     };
 
     // shortcuts
+    // qux
     exports.View = view.FamousView;
     exports.ItemView = itemview.FamousItemView;
     exports.LayoutView = layouts.FamousLayoutView;
