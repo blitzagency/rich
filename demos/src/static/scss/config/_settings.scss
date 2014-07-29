@@ -1,0 +1,24 @@
+/* settings
+    i. colors
+
+*/
+
+// i. COLORS
+
+/* colors dict
+    notes:
+        - use the get() function to access values (helpers/_functions.scss)
+
+    see:
+        - http://chir.ag/projects/name-that-color/#6195ED
+        - for color names
+
+*/
+
+$colors:
+    white #fff,
+    black #000;
+
+// ii. Typography
+
+$default-font-size: 16; // px

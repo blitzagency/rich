@@ -1,0 +1,137 @@
+/* functions:
+    i.   utils
+    ii.  units
+    iii. photoshop helpers
+*/
+
+// i. UTILS
+
+@function get($dict, $key, $default: false) {
+    /* a python-style "get" function to emulate dictionary access in scss
+        param: $dict the dict you'd like to 'get' from
+        param: $key the 'key' to access
+        param: $default a default value to return should the 'get' fail
+
+        see:
+            - http://bit.ly/1cPvYXx
+            - http://stackoverflow.com/a/11041421
+
+        example:
+            // define a scss 'dictionary'
+            // note: 'key values' are seperated by a space ONLY
+            // note: 'key value' paris are separated by a comma
+            $colors :
+              white #fff,
+              black #000,
+              red #ff0000;
+
+            .foo {
+                color: get($colors, white);
+            }
+            .bar {
+                color: get($colors, missing-color, $default: #00ff00);
+            }
+    */
+
+    @each $item in $dict {
+
+        $index: index($item, $key);
+
+        @if $index {
+            $return: if($index == 1, 2, $index);
+            @return nth($item, $return);
+        }
+    }
+
+    @return $default;
+}
+
+// ii. UNITS
+
+@function em($px, $base-font-size: 16) {
+    /* convert px (based) value to em
+        param: $px (int) a unitless pixel value that represtents the target size
+        param: $base-font-size (int) a unitless pixel value that represents the html base font-size, default 16 (px)
+
+        tood:
+            - remove this function if using bourbon (compass only)
+
+    */
+
+   @return ($px / $base-font-size) + 0em;
+}
+
+@function rem($px, $base-font-size: 16) {
+    /* convert an int (px) to rem
+        param: $px (int) a unitless pixel value that represents the target size
+        param: $base-font-size (int) a unitless pixel value that represents the html base font-size, default: 16 (px)
+        returns: a rem value
+
+        note:
+            - this function can be used for font-size, width, height, padding, etc.
+
+        examples:
+            - font-size: rem(12);
+            - width: rem(50);
+    */
+    @return $px/$base-font-size + 0rem;
+}
+
+@function px($int){
+    /* convert a unitless value to a pixel value
+        param: $int the unitless value you'd wish to convert
+        returns: a pixel value
+    */
+    @return $int + 0px;
+}
+
+@function percent($int){
+    /* convert a unitless value to a percent value
+        param: $int the unitless value you'd wish to convert
+        returns: a percent value
+    */
+    @return $int * 100%;
+}
+
+// iii. PHOTOSHOP HELPERS
+
+@function ps-letter-spacing($ps-tracking-value) {
+    /* convert a photoshop tracking value into css letter-spacing
+        param: $ps-tracking-value the tracking value from the psd
+        returns: a (unitless) letter-spacing value
+
+        .. note:
+            - it's recommended you combine the return value with the rem() or em() mixins.
+
+        .. example:
+            // scss
+            .foo {
+                letter-spacing: rem(ps-letter-spacing(40))
+            }
+
+            // output
+            .foo {
+                letter-spacing: 0.0025rem
+            }
+
+        .. see:
+            - http://graphicdesign.stackexchange.com/a/7121
+    */
+    @return $ps-tracking-value/1000;
+}
+
+@function ps-line-height($font-size, $ps-leading-value) {
+    /* convert a photoshop leading value into css line-height
+        param: $ps-leading-value the leading value from the psd
+        param: $base-font-size the base font-size for your project, default 16
+        returns: a (unitless) css line-height value
+
+        ..note
+            - unitless line-heights are the preferred best practice for responsive layouts.
+
+        ..see
+            - http://www.cssleading.com/
+    */
+
+    @return $ps-leading-value/$font-size;
+}

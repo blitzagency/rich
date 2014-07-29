@@ -1,0 +1,35 @@
+/* resets:
+    - import *after* _normalize.scss
+    - helpful, but limited, resets
+
+    note:
+        - use restraint
+        - this set of styles should be vers small
+        - this file is global!
+        - use common sense when adding settings to this file
+*/
+
+* {
+    @include box-sizing(border-box);
+    z-index: 1;
+}
+
+h1, h2, h3, h4, h5, h6,
+blockquote {
+    padding: 0;
+    margin: 0;
+    line-height: 1.8;
+}
+
+a {
+    text-decoration: none;
+}
+
+input::-ms-clear {
+    display: none;
+}
+
+html {
+    font-size: em($default-font-size);
+    line-height: 1.2;
+}

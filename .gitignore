@@ -1,0 +1,8 @@
+build
+dist
+.DS_Store
+.project
+.settings
+.coverage
+node_modules/
+.sass-cache
