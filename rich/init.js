@@ -32,7 +32,7 @@ define(function (require, exports, module) {
     exports.CollectionView = collectionview.FamousCollectionView;
     exports.Region = regions.FamousRegion;
 
-    // fully qualified - 
+    // fully qualified
     exports.utils = utils;
     exports.views  = views;
 });
