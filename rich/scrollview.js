@@ -101,6 +101,7 @@ define(function (require, exports, module) {
         },
 
         onElement: function(){
+
             this.$el.css({
                 overflow:'hidden'
             });
@@ -116,19 +117,44 @@ define(function (require, exports, module) {
             return [this._positionX.get(), this._positionY.get()];
         },
 
+        _cleanScrollPosition: function(x, y){
+
+            var contentSize = this.getContentSize();
+            var containerSize = this.getSize();
+            var xLimit = - Math.max(contentSize[0] - containerSize[0], 0);
+            var yLimit = - Math.max(contentSize[1] - containerSize[1], 0);
+            x = Math.max(x, xLimit);
+            x = Math.min(x, 0);
+
+            y = Math.max(y, yLimit);
+            y = Math.min(y, 0);
+            return [x, y];
+        },
+
         setScrollPosition: function(x, y, transition){
-            this._positionX.set(x);
-            this._positionY.set(y);
+            var pos = this._cleanScrollPosition(x, y);
+            xLimited = pos[0];
+            yLimited = pos[1];
+
+            // don't let the scroll position be anything crazy
+            this._positionX.set(xLimited);
+            this._positionY.set(yLimited);
             this._particle.setPosition([x, y]);
             this._scrollableView.invalidate();
         },
 
         addSubview: function(view){
             this._scrollableView.addSubview(view);
+            this.listenTo(view, events.INVALIDATE, this.update);
         },
 
         removeSubview: function(v){
             this._scrollableView.removeSubview(view);
+            this.update();
+        },
+
+        update: function(){
+            this.setScrollPosition(this._positionX.get(), this._positionY.get());
         },
 
         _onFamousRender: function(){
@@ -233,6 +259,19 @@ define(function (require, exports, module) {
             this.trigger('scroll:update', this.getScrollPosition());
         },
 
+        _shouldScroll: function(contentSize, containerSize){
+
+            if(this.direction == DIRECTION_X){
+                if(contentSize[0] > containerSize[0])return true;
+            }else if (this.direction == DIRECTION_Y){
+                if(contentSize[1] > containerSize[1])return true;
+            }else{
+                // need more testing around this
+                return true;
+            }
+            return false;
+        },
+
         _onScrollUpdate: function(data){
             var delta = data.delta;
             this._setScrollDirection(delta);
@@ -268,6 +307,9 @@ define(function (require, exports, module) {
 
             var xSpringPos = gotoPosX;
             var ySpringPos = gotoPosY;
+
+            var shouldScroll =  this._shouldScroll(contentSize, containerSize);
+            if(!shouldScroll)return;
 
             if(isOutOfBoundsX && this.direction != DIRECTION_Y){
                 xSpringPos = isPastRight ? -scrollableDistanceX : 0;
