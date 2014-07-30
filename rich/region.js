@@ -31,7 +31,6 @@ var FamousRegion = marionette.Region.extend({
         if(typeof this.el == 'string'){
             this.el = $(this.el);
         }
-
         if(!this.context && !this.el){
             var message = 'An \'el\' or \'context\' must be specified for a region.';
             var error = new Error(message);
@@ -190,7 +189,7 @@ var FamousRegion = marionette.Region.extend({
                 superview: this.view
             });
 
-            view.__init__();
+            view.__init__(this.context);
 
         }
 

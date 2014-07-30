@@ -16,12 +16,12 @@ define(function (require, exports, module) {
             options = options || {};
             this._firstRender = true;
 
-            this.__init__ = function(){
-
+            this.__init__ = function(context){
                 _.each(this.regions, function(each, key){
                     if(_.isFunction(each)){
                         this.regions[key] = each.extend({
-                            superview: this
+                            superview: this,
+                            context: context
                         });
                     }
                 }, this);
