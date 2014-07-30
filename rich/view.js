@@ -79,7 +79,7 @@ var FamousView = marionette.View.extend({
         _.extend(this, _.pick(options, viewOptions.concat(styleOptions, richOptions)));
         _.extend(this.properties, _.pick(options, propertyOptions));
 
-        this.properties.size = this.properties.size || this.size;
+        this.properties.size = _.result(this.properties, 'size') || _.result(this, 'size');
         this.properties.properties.zIndex = this.zIndex;
 
         this.initialize.apply(this, arguments);
