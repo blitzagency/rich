@@ -2,14 +2,22 @@ define(function (require, exports, module) {
 
 var marionette = require('marionette');
 var Engine = require('famous/core/Engine');
-var View = require('famous/core/View');
-var Surface = require('famous/core/Surface');
 var RenderNode = require('famous/core/RenderNode');
 var FamousLayoutView = require('./layoutviews').FamousLayoutView;
 var FamousView = require('./view').FamousView;
 var utils = require('./utils');
 var events = require('./events');
 
+var regionClassWithConfig = function(config){
+    var modifier = utils.modifierWithAlign(config, modifier);
+
+    utils.modifierWithOpacity(config, modifier);
+    utils.modifierWithOrigin(config, modifier);
+    utils.modifierWithSize(config, modifier);
+    utils.modifierWithTransform(config, modifier);
+
+    return FamousRegion.extend({modifier: modifier});
+};
 
 var FamousRegion = marionette.Region.extend({
     root: null,
@@ -217,4 +225,6 @@ var FamousRegion = marionette.Region.extend({
 });
 
 exports.FamousRegion = FamousRegion;
+exports.regionClassWithConfig = regionClassWithConfig;
+
 });
