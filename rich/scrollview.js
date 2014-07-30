@@ -104,6 +104,7 @@ define(function (require, exports, module) {
 
             this.$el.css({
                 overflow:'hidden'
+                // border: '1px solid red'
             });
 
             // we have to map the events into an event handler so it conforms
@@ -131,14 +132,19 @@ define(function (require, exports, module) {
             return [x, y];
         },
 
-        setScrollPosition: function(x, y, transition){
-            var pos = this._cleanScrollPosition(x, y);
-            xLimited = pos[0];
-            yLimited = pos[1];
+        setScrollPosition: function(x, y, limit, transition){
+            limit = _.isUndefined(limit) ? true : limit;
+            if(limit){
+                var pos = this._cleanScrollPosition(x, y);
+                xLimited = pos[0];
+                yLimited = pos[1];
+                x = xLimited;
+                y = yLimited;
+            }
 
             // don't let the scroll position be anything crazy
-            this._positionX.set(xLimited);
-            this._positionY.set(yLimited);
+            this._positionX.set(x);
+            this._positionY.set(y);
             this._particle.setPosition([x, y]);
             this._scrollableView.invalidate();
         },
@@ -154,7 +160,7 @@ define(function (require, exports, module) {
         },
 
         update: function(){
-            this.setScrollPosition(this._positionX.get(), this._positionY.get());
+            this.setScrollPosition(this._positionX.get(), this._positionY.get(), true);
         },
 
         _onFamousRender: function(){
@@ -327,7 +333,7 @@ define(function (require, exports, module) {
                 return;
             }
 
-            this.setScrollPosition(gotoPosX, gotoPosY);
+            this.setScrollPosition(gotoPosX, gotoPosY, false);
             this._updateSpring(addSpring, xSpringPos, ySpringPos, springAnchor);
             this.trigger('scroll:update', this.getScrollPosition());
         },

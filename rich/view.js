@@ -408,6 +408,7 @@ var FamousView = marionette.View.extend({
         // this.$el.remove();
         this.children = null;
         this.root = null;
+        this.undelegateEvents();
         this.stopListening();
         return this;
     },
