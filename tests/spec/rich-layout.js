@@ -2,16 +2,24 @@ define(function(require, exports, module) {
 
 // Imports
 
+var _ = require('underscore');
+var $ = require('jquery');
 var rich = require('rich');
-var _        = require('underscore');
 var Modifier = require('famous/core/Modifier');
 
 describe('Layout:', function() {
+    var region;
+    var $el;
 
-    var region = new rich.Region({
-        el:'body'
+    beforeEach(function() {
+        loadFixtures('famous.html');
+
+        region = new rich.Region({
+            el: '#famous-context'
+        });
+
+        $el = region.el;
     });
-
 
     it('builds a constraint', function(done){
         var layout = new rich.LayoutView();
@@ -29,6 +37,7 @@ describe('Layout:', function() {
             layout._buildModifierForConstraint(new Modifier(), constraint);
             done();
         }, 100);
+
     });
 
 }); // eof describe
