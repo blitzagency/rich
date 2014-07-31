@@ -2,42 +2,47 @@ require.config({
   baseUrl: './',
 
   paths : {
-    'marionette': 'lib/vendor/backbone/marionette',
+    'marionette': 'demos/src/static/js/vendor/backbone/marionette',
   },
 
    packages: [
 
         {
-            location: '../rich',
+            location: 'rich',
             name: 'rich',
             main: 'init'
         },
 
         {
-            location: 'lib/vendor/famous',
+            location: 'demos/src/static/js/app',
+            name: 'app',
+        },
+
+        {
+            location: 'demos/src/static/js/vendor/famous',
             name: 'famous',
         },
 
         {
-            location: 'lib/vendor/jquery',
+            location: 'demos/src/static/js/vendor/jquery',
             name: 'jquery',
             main:'jquery'
         },
 
         {
-            location: 'lib/vendor/animation/greensock',
+            location: 'demos/src/static/js/vendor/animation/greensock',
             name: 'greensock',
             main:'greensock'
         },
 
         {
-            location: 'lib/vendor/backbone',
+            location: 'demos/src/static/js/vendor/backbone',
             name: 'backbone',
             main:'backbone'
         },
 
         {
-            location: 'lib/vendor/require/hbs',
+            location: 'demos/src/static/js/vendor/require/hbs',
             name: 'hbs',
             main:'hbs'
         }
@@ -45,7 +50,7 @@ require.config({
 
     map: {
         '*': {
-            'underscore': 'lib/vendor/underscore/lodash',
+            'underscore': 'demos/src/static/js/vendor/underscore/lodash',
             'handlebars': 'hbs/handlebars'
         }
     },
