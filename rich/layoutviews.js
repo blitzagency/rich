@@ -75,7 +75,6 @@ define(function (require, exports, module) {
             return root;
         },
 
-<<<<<<< HEAD
         invalidateLayout: function(){
             FamousItemView.prototype.invalidateLayout.call(this);
 
@@ -84,7 +83,6 @@ define(function (require, exports, module) {
             }, this);
         },
 
-=======
         _buildConstraints: function(){
             this._constraints = {};
             _.each(this.constraints, function(constraint){
@@ -131,7 +129,6 @@ define(function (require, exports, module) {
             // console.log(toValue)
         },
 
->>>>>>> feature-flexregion
         destroy: function(){
             marionette.LayoutView.prototype.destroy.call(this);
             View.prototype.destroy.call(this);
