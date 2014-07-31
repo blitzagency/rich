@@ -34,7 +34,7 @@ define(function (require, exports, module) {
             this._views.push(view);
 
             if(this.root){
-                this.invalidate();
+                this.invalidateView();
             }
         },
 
@@ -43,7 +43,7 @@ define(function (require, exports, module) {
                 this._isPop = true;
 
                 if(this.root){
-                    this.invalidate();
+                    this.invalidateView();
                 }
             }
         },
@@ -122,7 +122,7 @@ define(function (require, exports, module) {
             this._isPush = false;
             this._isPop = false;
 
-            this.invalidate();
+            this.invalidateView();
         },
 
         _getViews: function(){

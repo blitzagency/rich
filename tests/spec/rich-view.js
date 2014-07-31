@@ -29,7 +29,8 @@ describe('View:', function() {
     });
 
 
-    it('invalidates subviews', function(){
+    it('invalidates subview layouts', function(){
+        // top to bottom
         var view1 = new rich.View();
         var view2 = new rich.View();
         var view3a = new rich.View();
@@ -53,6 +54,31 @@ describe('View:', function() {
         expect(view3a.invalidateLayout.calls.count()).toBe(1);
         expect(view3b.invalidateLayout.calls.count()).toBe(1);
         expect(view4.invalidateLayout.calls.count()).toBe(1);
+    });
+
+    it('invalidates subview', function(){
+        // bottom to top
+        var view1 = new rich.View();
+        var view2 = new rich.View();
+        var view3 = new rich.View();
+        var view4 = new rich.View();
+
+        // need to add the spies here, once a subview is added
+        // the event listener will be bound.
+        spyOn(view1, 'subviewDidChange').and.callThrough();
+        spyOn(view2, 'subviewDidChange').and.callThrough();
+        spyOn(view3, 'subviewDidChange').and.callThrough();
+
+        view1.addSubview(view2);
+        view2.addSubview(view3);
+        view3.addSubview(view4);
+
+        region.show(view1);
+        view4.invalidateView();
+
+        expect(view1.subviewDidChange.calls.count()).toBe(1);
+        expect(view2.subviewDidChange.calls.count()).toBe(1);
+        expect(view3.subviewDidChange.calls.count()).toBe(1);
     });
 
 }); // eof describe

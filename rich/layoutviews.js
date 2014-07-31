@@ -46,7 +46,7 @@ define(function (require, exports, module) {
             //
             // TODO: just replace the section of the _spec
             // with the new region spec
-            this.invalidate();
+            this.invalidateView();
         },
 
         createRenderNode: function(){

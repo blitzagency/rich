@@ -161,10 +161,15 @@ var FamousView = marionette.View.extend({
         });
     },
 
-    invalidate: function(){
+    invalidateView: function(){
         this._render();
         this.triggerRichInvalidate();
     },
+
+    // invalidate: function(){
+    //     this._render();
+    //     this.triggerRichInvalidate();
+    // },
 
     _render: function(){
         var spec;
@@ -285,7 +290,7 @@ var FamousView = marionette.View.extend({
         this.children.add(view);
 
         if(this.root){
-            this.invalidate();
+            this.invalidateView();
         }
     },
 
@@ -348,7 +353,7 @@ var FamousView = marionette.View.extend({
         this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
 
         if(this.root){
-            this.invalidate();
+            this.invalidateView();
         }
     },
 
@@ -360,7 +365,7 @@ var FamousView = marionette.View.extend({
         this.properties.size = value;
 
         if(this.root){
-            this.invalidate();
+            this.invalidateView();
         }
     },
 
