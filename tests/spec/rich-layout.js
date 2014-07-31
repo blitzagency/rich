@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
 var rich = require('rich');
 var _        = require('underscore');
+var Modifier = require('famous/core/Modifier');
 
 describe('Layout:', function() {
 
@@ -11,41 +12,22 @@ describe('Layout:', function() {
         el:'body'
     });
 
-    function newLayout(){
 
-        var ConstraintLayout = rich.LayoutView.extend({
-            constraints: [{
-                target: 'navigation',
-                attribute: 'width',
-                to: 'superview',
-                toAttribute: 'width',
-                value: '50%'
-            },
-            {
-                target: 'demo',
-                attribute: 'top',
-                to: 'superview',
-                toAttribute: 'top',
-                value: '0'
-            },
-            {
-                target: 'demo',
-                attribute: 'width',
-                to: 'superview',
-                toAttribute: 'width',
-                value: '50%'
-            }],
-        });
-        return new ConstraintLayout();
-    }
-
-    it('does this action', function(done){
-        var layout = newLayout();
+    it('builds a constraint', function(done){
+        var layout = new rich.LayoutView();
         region.show(layout);
+        var constraint = {
+            target: 'demo',
+            attribute: 'width',
+            to: 'superview',
+            toAttribute: 'width',
+            value: '50'
+        };
 
-        // have to wait 1 render cycle
+        // need to wait a render cycle
         setTimeout(function(){
-            console.log(layout._constraints);
+            console.log($('body').height())
+            layout._buildModifierForConstraint(new Modifier(), constraint);
             done();
         }, 100);
     });
