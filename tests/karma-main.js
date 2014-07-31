@@ -3,7 +3,7 @@ var tests = [
     // Load mocks and vendor init
     //'tests/mocks/init',
 
-    //'tests/spec/rich-layout',
+    'tests/spec/rich-layout',
     'tests/spec/rich-utils',
 
 ];
