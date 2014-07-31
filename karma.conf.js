@@ -10,6 +10,7 @@ module.exports = function(config) {
         {pattern: 'tests/lib/**/*.js', included: false},
         {pattern: 'rich/**/*.js', included: false},
         {pattern: 'demos/src/static/js/**/*.js', included: false},
+        {pattern: 'demos/src/static/js/**/*.html', included: false},
         {pattern: 'demos/src/static/css/styles.css', included: true},
 
         'tests/karma-main.js'
