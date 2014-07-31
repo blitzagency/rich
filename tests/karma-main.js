@@ -1,7 +1,10 @@
 var tests = [
     'tests/lib/jasmine/jasmine-jquery',
+    // Load mocks and vendor init
+    //'tests/mocks/init',
 
     'tests/spec/rich-layout',
+    'tests/spec/rich-utils',
 
 ];
 
