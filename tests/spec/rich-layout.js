@@ -21,6 +21,11 @@ describe('Layout:', function() {
         $el = region.el;
     });
 
+    afterEach(function() {
+        region = null;
+    });
+
+
     it('builds a constraint', function(done){
         var layout = new rich.LayoutView();
         region.show(layout);
