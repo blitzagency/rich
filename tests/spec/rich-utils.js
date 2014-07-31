@@ -51,7 +51,6 @@ describe('Utils:', function() {
             opacity: 1
         });
 
-
         expect(modifier).not.toBe(undefined);
         expect(modifier instanceof Modifier).toBe(true);
 

@@ -41,7 +41,7 @@ describe('Layout:', function() {
         setTimeout(function(){
             expect(region.invalidateLayout.calls.count()).toBe(1);
             done();
-        }, 100);
+        }, 10);
     });
 
 }); // eof describe
