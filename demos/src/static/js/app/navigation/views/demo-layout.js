@@ -29,27 +29,27 @@ var DemoLayout = rich.LayoutView.extend({
         demo: app.Region.extend({modifier: contextModifier})
     },
 
-    // constraints: [{
-    //     target: 'navigation',
-    //     attribute: 'width',
-    //     to: 'superview',
-    //     toAttribute: 'width',
-    //     value: '50%'
-    // },
-    // {
-    //     target: 'demo',
-    //     attribute: 'top',
-    //     to: 'superview',
-    //     toAttribute: 'top',
-    //     value: '0'
-    // },
-    // {
-    //     target: 'demo',
-    //     attribute: 'width',
-    //     to: 'superview',
-    //     toAttribute: 'width',
-    //     value: '50%'
-    // }],
+    constraints: [{
+        target: 'navigation',
+        attribute: 'width',
+        to: 'superview',
+        toAttribute: 'width',
+        value: '50%'
+    },
+    {
+        target: 'demo',
+        attribute: 'top',
+        to: 'superview',
+        toAttribute: 'top',
+        value: '0'
+    },
+    {
+        target: 'demo',
+        attribute: 'width',
+        to: 'superview',
+        toAttribute: 'width',
+        value: '50%'
+    }],
 
 
 
@@ -90,7 +90,7 @@ var DemoLayout = rich.LayoutView.extend({
                 break;
         }
 
-        this.demo.show(next);
+        // this.demo.show(next);
 
 
     }

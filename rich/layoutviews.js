@@ -126,7 +126,7 @@ define(function (require, exports, module) {
                 }
             }
 
-            // console.log(toValue)
+            console.log(toValue)
         },
 
         destroy: function(){
