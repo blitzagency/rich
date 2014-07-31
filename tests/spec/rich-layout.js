@@ -19,6 +19,7 @@ describe('Layout:', function() {
         });
 
         $el = region.el;
+        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
