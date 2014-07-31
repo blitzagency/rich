@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jasmine Spec Runner</title>
+
+<link rel="shortcut icon" type="image/png" href="lib/jasmine/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="lib/jasmine/jasmine.css">
+<script type="text/javascript" src="lib/vendor/require.js"></script>
+
+<script>
+require.config({
+
+'baseUrl': '../',
+'urlArgs': 'cb=' + Math.random(),
+
+'paths' : {
+    'lib': 'tests/lib',
+    'vendor': 'tests/lib/vendor',
+    'jasmine': 'tests/lib/jasmine',
+    'spec': 'tests/spec',
+    'built': 'built',
+
+    // Only jquery is allowed to do this as it's a named module
+    // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
+    'jquery': 'tests/lib/vendor/jquery',
+},
+
+// the paths config is only for setting up root paths for module IDs,
+// not for mapping one module ID to another one.
+// http://requirejs.org/docs/api.html#config-map
+
+'map': {
+    '*': {
+        'underscore': 'vendor/lodash',
+        'backbone'  : 'vendor/backbone',
+        'marionette': 'vendor/marionette',
+        'stickit'   : 'vendor/stickit',
+        'handlebars': 'vendor/handlebars'
+    }
+},
+
+'shim': {
+
+    // Jasmine shims
+
+    'jasmine/jasmine': {
+        'deps': [],
+        // 'exports': 'jasmine'
+    },
+
+    'jasmine/boot': {
+        'deps': ['jasmine/jasmine',
+                 'jasmine/jasmine-html'],
+        'exports': 'jasmine'
+    },
+
+    'jasmine/jasmine-html': {
+        'deps': ['jasmine/jasmine']
+    },
+
+    'jasmine/jasmine-jquery': {
+        'deps': ['jasmine/jasmine', 'jasmine/boot']
+    },
+
+    'jasmine/console': {
+        'deps': ['jasmine/jasmine']
+    },
+
+    // Vendor shims
+
+    'vendor/backbone': {
+        'deps': ['jquery', 'underscore'],
+        'exports': 'Backbone'
+    },
+    'vendor/marionette': {
+        'deps': ['jquery', 'underscore', 'backbone'],
+        'exports': 'Marionette'
+    },
+    'vendor/stickit': {
+        'deps' : ['backbone'],
+        'exports' : 'Stickit'
+    }
+}
+
+}); // eof require.config
+
+require(['spec/main']);
+</script>
+
+</head>
+<body>
+<!-- Jasmine will render HTMLReport here. -->
+</body>
+</html>

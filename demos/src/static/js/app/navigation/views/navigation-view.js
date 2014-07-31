@@ -23,7 +23,6 @@ var NavigationView = rich.CollectionView.extend({
         ];
 
         this.collection = new backbone.Collection(models);
-
     },
 
     sizeForViewAtIndex: function(view, index){

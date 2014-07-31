@@ -1,6 +1,8 @@
 define(function (require, exports, module) {
     var _ = require('underscore');
     var RenderNode = require('famous/core/RenderNode');
+    var Modifier = require('famous/core/Modifier');
+    var Transform = require('famous/core/Transform');
     var marionette = require('marionette');
     var FamousItemView = require('./itemview').FamousItemView;
     var View = require('./view').FamousView;
@@ -54,12 +56,69 @@ define(function (require, exports, module) {
                 relative = this.container;
             }
 
-            _.each(this.getRegions(), function(region){
+            if(this.constraints && !this._constraints){
+                this._buildConstraints();
+            }
+            _.each(this.getRegions(), function(region, name){
+
                 var node = new RenderNode(region);
-                relative.add(node);
+
+                if(this._constraints){
+                    var constraint = this._constraints[name];
+                    relative.add(constraint).add(node);
+                }else{
+                    relative.add(node);
+                }
+
             }, this);
 
             return root;
+        },
+
+        _buildConstraints: function(){
+            this._constraints = {};
+            _.each(this.constraints, function(constraint){
+                this._constraints[constraint.target] = this._constraints[constraint.target] || new Modifier();
+                var modifier = this._constraints[constraint.target];
+                this._buildModifierForConstraint(modifier, constraint);
+            }, this);
+        },
+
+        _buildModifierForConstraint: function(modifier, constraint){
+            // target: 'demo',
+            // attribute: 'width',
+            // to: 'superview',
+            // toAttribute: 'width',
+            // value: '50%'
+            var toStr = constraint['to'];
+            var to = this[toStr];
+            var toSize = to.getSize();
+            var toAttribute = constraint['toAttribute'];
+            var toValue;
+            if(toAttribute == 'width'){
+                toValue = toSize[0];
+            }
+            if(toAttribute == 'height'){
+                toValue = toSize[1];
+            }
+            if(toAttribute == 'top'){
+                if(toStr == 'superview'){
+                    toValue = 0;
+                }
+            }
+            if(toAttribute == 'right'){
+
+            }
+            if(toAttribute == 'bottom'){
+
+            }
+            if(toAttribute == 'left'){
+                if(toStr == 'superview'){
+                    toValue = 0;
+                }
+            }
+
+            // console.log(toValue)
         },
 
         destroy: function(){

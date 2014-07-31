@@ -1,0 +1,32 @@
+{
+  "name": "rich",
+  "version": "0.0.0",
+  "description": "Rich N' Famous",
+  "main": "karma.conf.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "karma-coverage": "~0.1.2",
+    "istanbul": "~0.1.44"
+  },
+  "devDependencies": {
+    "karma-cli": "0.0.4",
+    "karma": "~0.12.16",
+    "karma-chrome-launcher": "~0.1.4",
+    "karma-jasmine": "~0.2.2",
+    "requirejs": "~2.1.14",
+    "karma-requirejs": "~0.2.2",
+    "istanbul": "~0.1.46",
+    "karma-coverage": "~0.1.5",
+    "jsdoc-rst-template": "0.0.17",
+    "jsdoc": "~3.3.0-alpha8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:blitzagency/rich.git"
+  },
+  "bugs": {
+    "url": "https://github.com/blitzagency/rich/issues"
+  }
+}
