@@ -1,6 +1,6 @@
-[Famo.us]: https://github.com/famous/famous        "Famo.us"
-[Marionette.js 2.1.0+]: https://github.com/marionettejs/backbone.marionette        "Marionette.js"
-
+[Famo.us]: https://github.com/famous/famous "Famo.us"
+[Marionette.js 2.1.0+]: https://github.com/marionettejs/backbone.marionette "Marionette.js"
+[Demos]: https://github.com/blitzagency/rich/tree/develop/demos/src/static/js/app/demos "Demos"
 
 Rich
 =======
@@ -16,4 +16,4 @@ We are currently in very active development and things WILL change on a daily/we
 The intent behind Rich is to keep the marionette *view intact while backing that view by the famous engine.  We have kept nearly all marionette logic and are currently built ontop of the latest marionette code.
 
 ## Getting Started
-Download this repo, [Famo.us][], and [Marionette.js 2.1.0+][], and off you go.  Demo's can be viewed by running `$ make serve` from inside of the demos directory.
+Download this repo, [Famo.us][], and [Marionette.js 2.1.0+][], and off you go.  [Demos][] can be viewed by running `$ make serve` from inside of the demos directory.
