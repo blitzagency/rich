@@ -34,7 +34,7 @@ var FamousView = marionette.View.extend({
     constructor: function(options){
         options || (options = {});
 
-        this.children = this.subviews = new backbone.ChildViewContainer();
+        this.children = new backbone.ChildViewContainer();
 
         /* >>> BEGIN marionette.View() override */
          _.bindAll(this, 'render');
@@ -156,7 +156,7 @@ var FamousView = marionette.View.extend({
         var superviewSize = this.superview.getSize();
         // TODO need to recalculate the constraints.
 
-        _.each(this.children, function(subview){
+        this.children.each(function(subview){
             subview.invalidateLayout();
         });
     },
@@ -261,7 +261,6 @@ var FamousView = marionette.View.extend({
 
         this.children.each(function(view){
             view.context = context;
-            view.superview = this;
             relative.add(view);
         }, this);
 
@@ -269,6 +268,7 @@ var FamousView = marionette.View.extend({
     },
 
     addSubview: function(view, zIndex){
+        view.superview = this;
 
         function setZIndex(value){
             view.zIndex = value;
@@ -341,6 +341,9 @@ var FamousView = marionette.View.extend({
     },
 
     removeSubview: function(view){
+        view.superview = null;
+        view.context = null;
+
         this.children.remove(view);
         this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
 
