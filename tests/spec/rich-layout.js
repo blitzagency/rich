@@ -51,6 +51,26 @@ describe('Layout:', function() {
 
     });
 
+    it('creates modifier for constraint with width width %', function(done){
+        var layout = new rich.LayoutView();
+        region.show(layout);
+        var constraint = {
+            target: 'demo',
+            attribute: 'width',
+            to: 'superview',
+            toAttribute: 'width',
+            value: '50%'
+        };
+        var modifier = layout._newModifier();
+        // need to wait a render cycle
+        setTimeout(function(){
+            layout._buildModifierForConstraint(modifier, constraint);
+            // console.log(modifier.getTransform());
+            done();
+        }, 100);
+
+    });
+
     xit('sets a constraint to a width', function(done){
         var layout = new rich.LayoutView();
         region.show(layout);

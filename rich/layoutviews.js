@@ -84,21 +84,32 @@ define(function (require, exports, module) {
             }, this);
         },
 
+        _newModifier: function(){
+            return {
+                transform: [0, 0, 0],
+                origin: [0, 0],
+                size: [undefined, undefined],
+                opacity: [1]
+            }
+        },
+
         _buildConstraints: function(){
             this._constraints = {};
             _.each(this.constraints, function(constraint){
-                this._constraints[constraint.target] = this._constraints[constraint.target] || new Modifier();
-                var modifier = this._constraints[constraint.target];
-                this._buildModifierForConstraint(modifier, constraint);
+                this._constraints[constraint.target] = this._constraints[constraint.target] || this._newModifier();
+
+                var modifierObj = this._constraints[constraint.target];
+                this._buildModifierForConstraint(modifierObj, constraint);
             }, this);
         },
 
-        _buildModifierForConstraint: function(modifier, constraint){
-            // target: 'navigation',
+        _buildModifierForConstraint: function(modifierObj, constraint){
+            // target: 'demo',
             // attribute: 'width',
             // to: 'superview',
             // toAttribute: 'width',
             // value: '50%'
+
 
             var toStr = constraint['to'];
             var to = this[toStr];
@@ -106,6 +117,7 @@ define(function (require, exports, module) {
             var toAttribute = constraint['toAttribute'];
             var toIsSize = toAttribute == 'width' || toAttribute == 'height';
 
+            var target = this[constraint['target']];
             var attribute = constraint['attribute'];
             var destIsSize = attribute == 'width' || attribute == 'height';
 
@@ -117,14 +129,15 @@ define(function (require, exports, module) {
             value = value.replace('%', '').replace('px', '');
 
 
+            // kick for back constraints
             if(unit == 'px' && toIsSize){
                 throwError('Bad Constraint Combination');
             }
 
-            // if(unit == '%' & )
 
 
 
+            // width and height logic
             if(toAttribute == 'width'){
                 toValue = toSize[0];
             }
@@ -132,6 +145,9 @@ define(function (require, exports, module) {
                 toValue = toSize[1];
             }
 
+            if(toIsSize && unit == '%'){
+                toValue = toValue * value * .01;
+            }
 
             if(toAttribute == 'top'){
                 if(toStr == 'superview'){
@@ -148,6 +164,18 @@ define(function (require, exports, module) {
                 if(toStr == 'superview'){
                     toValue = 0;
                 }
+            }
+
+            // {
+            //     transform: [],
+            //     origin: [],
+            //     size: [],
+            //     opacity: []
+            // }
+            // set value on modifier
+            if(attribute == 'width'){
+                // DINO YOU ARE WORKING HERE!
+                modifierObj['size'][0] = toValue;
             }
 
             // console.log(toValue)
