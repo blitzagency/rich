@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var FamousItemView = require('./itemview').FamousItemView;
     var View = require('./view').FamousView;
     var events = require('./events');
+    var throwError = require('./helpers').throwError;
 
     var obj = {};
     _.extend(obj, marionette.LayoutView.prototype, FamousItemView.prototype);
@@ -117,7 +118,7 @@ define(function (require, exports, module) {
 
 
             if(unit == 'px' && toIsSize){
-                // throw error?
+                throwError('Bad Constraint Combination');
             }
 
             // if(unit == '%' & )
