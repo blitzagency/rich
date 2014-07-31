@@ -19,7 +19,7 @@ var FamousView = marionette.View.extend({
 
     //size: null,
     nestedSubviews: false,
-    shouldInitializeRenderable: false,
+    template: false,
     modifier: null,
     zIndex: 1,
     superview: null,
@@ -242,7 +242,7 @@ var FamousView = marionette.View.extend({
             relative = this.container;
         }
 
-        if(!this.renderable && _.result(this, 'shouldInitializeRenderable')){
+        if(!this.renderable && this.getTemplate()){
             this.renderable = this.initializeRenderable();
         }
 

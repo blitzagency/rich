@@ -29,7 +29,7 @@ var FamousRegion = marionette.Region.extend({
 
         var richOptions = ['context', 'modifier'];
         var propertyOptions = ['size'];
-        _.extend(this, _.pick(options, richOptions.concat(propertyOptions)));
+        _.extend(this, _.pick(this.options, richOptions.concat(propertyOptions)));
 
         this.el = Marionette.getOption(this, 'el');
 
@@ -66,12 +66,13 @@ var FamousRegion = marionette.Region.extend({
         this.view.context = this.context;
         this.view.superview = this;
 
+        // we are at the top of our view heirarchy.
+        // this *should* hold true.
         if(target == this.context){
             target.add(this);
         }
 
         this.listenTo(this.view, events.INVALIDATE, this._viewDidChange);
-
     },
 
     getSize: function(){

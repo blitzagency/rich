@@ -43,25 +43,26 @@ define(function (require, exports, module) {
                 context = this.container.context;
             }
 
-            this._ensureElement(this.renderable, context);
-
-            if(this.template){
-
-                this.delegateEvents();
-
-                this.isClosed = false;
-
+            if(!this.renderable){
                 this.triggerMethod("before:render", this);
-                this.triggerMethod("item:before:render", this);
-
-                var html = this.renderHTML();
-
-                this.$el.html(html);
-                this.bindUIElements();
-
                 this.triggerMethod("render", this);
-                this.triggerMethod("item:rendered", this);
+                return;
             }
+
+            this._ensureElement(this.renderable, context);
+            this.delegateEvents();
+
+            this.isClosed = false;
+
+            this.triggerMethod("before:render", this);
+
+            var html = this.renderHTML();
+
+            this.$el.html(html);
+            this.bindUIElements();
+
+            this.triggerMethod("render", this);
+
         }
 
     });
