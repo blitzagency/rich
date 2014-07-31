@@ -27,26 +27,23 @@ describe('Layout:', function() {
     });
 
 
-    it('builds a constraint', function(){
-        console.log($el.width(), $el.height());
-        //console.log($('body').height());
-        // var layout = new rich.LayoutView();
-        // region.show(layout);
+    it('builds a constraint', function(done){
+        var layout = new rich.LayoutView();
+        region.show(layout);
+        var constraint = {
+            target: 'demo',
+            attribute: 'width',
+            to: 'superview',
+            toAttribute: 'width',
+            value: '50px'
+        };
 
-        // var constraint = {
-        //     target: 'demo',
-        //     attribute: 'width',
-        //     to: 'superview',
-        //     toAttribute: 'width',
-        //     value: '50'
-        // };
+        // need to wait a render cycle
+        setTimeout(function(){
+            layout._buildModifierForConstraint(new Modifier(), constraint);
+            done();
+        }, 100);
 
-        // // need to wait a render cycle
-        // setTimeout(function(){
-        //     console.log($('body').height())
-        //     //layout._buildModifierForConstraint(new Modifier(), constraint);
-        //     //done();
-        // }, 100);
     });
 
 }); // eof describe
