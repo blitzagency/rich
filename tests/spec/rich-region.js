@@ -29,7 +29,7 @@ describe('Layout:', function() {
     });
 
 
-    it('invalidates on resize', function(done){
+    it('invalidates layout on resize', function(done){
 
         var view = new rich.View();
 
@@ -42,6 +42,16 @@ describe('Layout:', function() {
             expect(region.invalidateLayout.calls.count()).toBe(1);
             done();
         }, 10);
+    });
+
+    it('throws on invalid initialization', function(){
+
+        function action(){
+            // no el, no context should explode.
+            new rich.Region();
+        }
+
+        expect(action).toThrow();
     });
 
 }); // eof describe
