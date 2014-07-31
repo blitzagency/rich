@@ -6,3 +6,4 @@ dist
 .coverage
 node_modules/
 .sass-cache
+src/
