@@ -7,3 +7,5 @@ dist
 node_modules/
 .sass-cache
 src/
+.css
+.scss
