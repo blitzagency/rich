@@ -93,22 +93,38 @@ define(function (require, exports, module) {
         },
 
         _buildModifierForConstraint: function(modifier, constraint){
-            // target: 'demo',
+            // target: 'navigation',
             // attribute: 'width',
             // to: 'superview',
             // toAttribute: 'width',
             // value: '50%'
+
             var toStr = constraint['to'];
             var to = this[toStr];
             var toSize = to.getSize();
             var toAttribute = constraint['toAttribute'];
+            var isSize = toAttribute == 'width' || toAttribute == 'height';
             var toValue;
+
+            var value = constraint['value'];
+            var unit = value.indexOf('%') > -1 ? '%' : 'px';
+            value = value.replace('%', '').replace('px', '');
+
+
+            if(value == 'px' && !isSize){
+
+            }
+
+
+
             if(toAttribute == 'width'){
                 toValue = toSize[0];
             }
             if(toAttribute == 'height'){
                 toValue = toSize[1];
             }
+
+
             if(toAttribute == 'top'){
                 if(toStr == 'superview'){
                     toValue = 0;

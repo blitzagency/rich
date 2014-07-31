@@ -3,8 +3,8 @@ define(function(require, exports, module) {
 // Imports
 
 var rich = require('rich');
-
-//var _   = require('underscore');
+var _        = require('underscore');
+var Modifier = require('famous/core/Modifier');
 
 describe('Layout:', function() {
 
@@ -12,18 +12,24 @@ describe('Layout:', function() {
         console.log(22);
     });
 
-    function newLayout(){
-        var ConstraintLayout = rich.LayoutView.extend({
 
-        });
-        return new ConstraintLayout();
-    }
+    it('builds a constraint', function(done){
+        var layout = new rich.LayoutView();
+        region.show(layout);
+        var constraint = {
+            target: 'demo',
+            attribute: 'width',
+            to: 'superview',
+            toAttribute: 'width',
+            value: '50'
+        };
 
-
-
-    it('does this action', function(){
-        var layout = newLayout();
-        console.log(layout);
+        // need to wait a render cycle
+        setTimeout(function(){
+            console.log($('body').height())
+            layout._buildModifierForConstraint(new Modifier(), constraint);
+            done();
+        }, 100);
     });
 
 }); // eof describe
