@@ -62,6 +62,14 @@ define(function (require, exports, module) {
             return root;
         },
 
+        invalidateLayout: function(){
+            FamousItemView.prototype.invalidateLayout.call(this);
+
+            _.each(this.getRegions(), function(region){
+                region.invalidateLayout();
+            }, this);
+        },
+
         destroy: function(){
             marionette.LayoutView.prototype.destroy.call(this);
             View.prototype.destroy.call(this);

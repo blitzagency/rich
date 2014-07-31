@@ -152,6 +152,15 @@ var FamousView = marionette.View.extend({
         return this._spec;
     },
 
+    invalidateLayout: function(){
+        var superviewSize = this.superview.getSize();
+        // TODO need to recalculate the constraints.
+
+        _.each(this.children, function(subview){
+            subview.invalidateLayout();
+        });
+    },
+
     invalidate: function(){
         this._render();
         this.triggerRichInvalidate();
