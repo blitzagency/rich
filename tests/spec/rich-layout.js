@@ -21,6 +21,10 @@ describe('Layout:', function() {
         $el = region.el;
     });
 
+    afterEach(function() {
+        region = null;
+    });
+
 
     it('builds a constraint', function(){
         console.log($el.width(), $el.height());
