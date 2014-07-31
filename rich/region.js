@@ -55,7 +55,12 @@ var FamousRegion = marionette.Region.extend({
 
         // TODO: Detect resize + invalidate
         var target = this.superview || this.context;
-        var size = _.result(this, 'size') || target.getSize();
+        if(!this.size){
+            this.size = function(){
+                return target.getSize();
+            };
+        }
+        var size = _.result(this, 'size');
 
         this.view = new FamousView({size: size});
         this.view.context = this.context;
@@ -70,7 +75,7 @@ var FamousRegion = marionette.Region.extend({
     },
 
     getSize: function(){
-        return this.size;
+        return _.result(this, 'size');
     },
 
     render: function(){

@@ -10,7 +10,9 @@ var SubviewDemo = require('app/demos/subviews/views/demo').SubviewDemo;
 var ScrollviewDemo = rich.LayoutView.extend({
 
     regions:{
-        scrollContainer: app.Region,
+        scrollContainer: app.Region.extend({
+            size: [400, 400]
+        }),
     },
 
     shouldInitializeRenderable: function(){
@@ -20,7 +22,6 @@ var ScrollviewDemo = rich.LayoutView.extend({
     onShow: function(){
         var scrollView = new scroll.ScrollView({
             contentSize: [2000, 2200],
-            size: [400, 400],
             direction: scroll.DIRECTION_Y
         });
 
