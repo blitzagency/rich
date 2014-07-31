@@ -7,8 +7,9 @@ module.exports = function(config) {
         {pattern: 'tests/common.js', included: true},
         {pattern: 'tests/fixtures/*.html', included: false},
         {pattern: 'tests/spec/rich*.js', included: false},
-        {pattern: 'tests/lib/**/*.js', included: false},
+        //{pattern: 'tests/lib/**/*.js', included: false},
         {pattern: 'rich/**/*.js', included: false},
+        {pattern: 'demos/src/static/js/**/*.js', included: false},
         {pattern: 'demos/src/static/css/styles.css', included: true},
 
         'tests/karma-main.js'

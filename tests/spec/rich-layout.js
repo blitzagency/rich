@@ -3,7 +3,7 @@ define(function(require, exports, module) {
 // Imports
 
 var rich = require('rich');
-var _        = require('underscore');
+var _   = require('underscore');
 
 describe('Layout:', function() {
 

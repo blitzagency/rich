@@ -8,7 +8,7 @@ var tests = [
 ];
 
 requirejs.config({
-    baseUrl: '/base/tests',
+    baseUrl: '/base',
 
     shim: {
         'lib/jasmine/jasmine-jquery': {
