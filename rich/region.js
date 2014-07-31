@@ -1,5 +1,6 @@
 define(function (require, exports, module) {
 
+var _ = require('underscore');
 var marionette = require('marionette');
 var Engine = require('famous/core/Engine');
 var RenderNode = require('famous/core/RenderNode');
@@ -26,19 +27,16 @@ var FamousRegion = marionette.Region.extend({
 
         this.options = options || {};
 
-        if(options.context){
-            this.context = options.context;
-        }
-
-        if(options.modifier){
-            this.modifier = options.modifier;
-        }
+        var richOptions = ['context', 'modifier'];
+        var propertyOptions = ['size'];
+        _.extend(this, _.pick(options, richOptions.concat(propertyOptions)));
 
         this.el = Marionette.getOption(this, 'el');
 
         if(typeof this.el == 'string'){
             this.el = $(this.el);
         }
+
         if(!this.context && !this.el){
             var message = 'An \'el\' or \'context\' must be specified for a region.';
             var error = new Error(message);
@@ -55,9 +53,11 @@ var FamousRegion = marionette.Region.extend({
             this.initialize.apply(this, args);
         }
 
+        // TODO: Detect resize + invalidate
         var target = this.superview || this.context;
+        var size = _.result(this, 'size') || target.getSize();
 
-        this.view = new FamousView();
+        this.view = new FamousView({size: size});
         this.view.context = this.context;
         this.view.superview = this;
 
@@ -67,6 +67,10 @@ var FamousRegion = marionette.Region.extend({
 
         this.listenTo(this.view, events.INVALIDATE, this._viewDidChange);
 
+    },
+
+    getSize: function(){
+        return this.size;
     },
 
     render: function(){
@@ -202,6 +206,7 @@ var FamousRegion = marionette.Region.extend({
         }
 
         // view.context = this.context;
+        view.setSize(this.getSize());
         this.view.addSubview(view);
     },
 
