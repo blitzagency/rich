@@ -8,7 +8,7 @@ require.config({
    packages: [
 
         {
-            location: '../rich',
+            location: 'rich',
             name: 'rich',
             main: 'init'
         },
@@ -17,7 +17,6 @@ require.config({
             location: 'demos/src/static/js/app',
             name: 'app',
         },
-
 
         {
             location: 'demos/src/static/js/vendor/famous',
