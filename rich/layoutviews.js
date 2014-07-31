@@ -103,17 +103,24 @@ define(function (require, exports, module) {
             var to = this[toStr];
             var toSize = to.getSize();
             var toAttribute = constraint['toAttribute'];
-            var isSize = toAttribute == 'width' || toAttribute == 'height';
-            var toValue;
+            var toIsSize = toAttribute == 'width' || toAttribute == 'height';
 
+            var attribute = constraint['attribute'];
+            var destIsSize = attribute == 'width' || attribute == 'height';
+
+
+            var toValue;
+            // console.log(destIsSize)
             var value = constraint['value'];
             var unit = value.indexOf('%') > -1 ? '%' : 'px';
             value = value.replace('%', '').replace('px', '');
 
 
-            if(value == 'px' && !isSize){
-
+            if(unit == 'px' && toIsSize){
+                // throw error?
             }
+
+            // if(unit == '%' & )
 
 
 

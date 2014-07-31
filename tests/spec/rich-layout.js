@@ -21,12 +21,11 @@ describe('Layout:', function() {
             attribute: 'width',
             to: 'superview',
             toAttribute: 'width',
-            value: '50'
+            value: '50px'
         };
 
         // need to wait a render cycle
         setTimeout(function(){
-            console.log($('body').height())
             layout._buildModifierForConstraint(new Modifier(), constraint);
             done();
         }, 100);
