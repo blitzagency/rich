@@ -206,7 +206,10 @@ var FamousRegion = marionette.Region.extend({
         }
 
         // view.context = this.context;
-        view.setSize(this.getSize());
+        var size = this.getSize();
+        if(size){
+            view.setSize(size);
+        }
         this.view.addSubview(view);
     },
 
