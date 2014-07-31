@@ -3,7 +3,7 @@ var tests = [
     // Load mocks and vendor init
     //'tests/mocks/init',
 
-    'tests/spec/rich-layout',
+    //'tests/spec/rich-layout',
     'tests/spec/rich-utils',
 
 ];
@@ -12,7 +12,7 @@ requirejs.config({
     baseUrl: '/base',
 
     shim: {
-        'lib/jasmine/jasmine-jquery': {
+        'tests/lib/jasmine/jasmine-jquery': {
             'deps': ['jquery']
         },
     },
