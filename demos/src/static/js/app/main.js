@@ -7,7 +7,9 @@ function main(options){
     var app = this;
 
     app.addRegions({
-        window: famous.Region,
+        window: famous.Region.extend({
+            el: 'body'
+        }),
     });
 
     new ApplicationDelegate({app: app});
