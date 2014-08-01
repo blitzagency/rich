@@ -6,7 +6,10 @@ var tests = [
     'tests/spec/rich-layout',
     'tests/spec/rich-region',
     'tests/spec/rich-utils',
-    'tests/spec/rich-view',
+    'tests/spec/rich-view-className',
+    'tests/spec/rich-view-core',
+    'tests/spec/rich-view-size',
+    'tests/spec/rich-view-zindex',
 
 ];
 

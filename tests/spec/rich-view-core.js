@@ -15,7 +15,7 @@ var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
 
 
-describe('View:', function() {
+describe('View+Core:', function() {
     var region;
     var context;
     var $el;
@@ -58,44 +58,6 @@ describe('View:', function() {
     });
 
 
-    it('uses className', function(done){
-        var model = new Rectangle({
-            size: [300, 500]
-        });
-
-        var view = new RectangleView({model: model, className: 'foo'});
-        view.context = context;
-
-        context.add(view);
-
-        render().then(function(){
-            expect(view.$el.hasClass('foo')).toBe(true);
-            done();
-        });
-    });
-
-
-    it('uses className as function', function(done){
-        var model = new Rectangle({
-            size: [300, 500],
-        });
-
-        var className = function(){
-            return 'bar';
-        };
-
-        var view = new RectangleView({model: model, className: className});
-        view.context = context;
-
-        context.add(view);
-
-        render().then(function(){
-            expect(view.$el.hasClass('bar')).toBe(true);
-            done();
-        });
-    });
-
-
     it('uses modifier', function(done){
         var model = new Rectangle({
             size: [300, 500],
@@ -121,78 +83,13 @@ describe('View:', function() {
         });
     });
 
-    it('uses default zIndex', function(done){
-        var model = new Rectangle({
-            size: [300, 500],
-        });
-
-        var view = new RectangleView({model: model});
-        view.context = context;
-
-        context.add(view);
-
-        render().then(function(){
-            var value = css.getZIndex(view.$el);
-            expect(value).toBe(1);
-            done();
-        });
+    it('uses modifier as function', function(done){
+        done();
     });
 
-    it('uses provided zIndex', function(done){
-        var model = new Rectangle({
-            size: [300, 500],
-        });
-
-        var view = new RectangleView({model: model, zIndex: 99});
-        view.context = context;
-
-        context.add(view);
-
-        render().then(function(){
-            var value = css.getZIndex(view.$el);
-            expect(value).toBe(99);
-            done();
-        });
+    it('uses modifier as array', function(done){
+        done();
     });
-
-    it('adjusts zIndex if superview is greater', function(done){
-        var model = new Rectangle({
-            size: [300, 500],
-        });
-
-        var view1 = new RectangleView({model: model, zIndex: 3});
-        var view2 = new RectangleView({model: model, zIndex: 2});
-
-        view1.addSubview(view2);
-        view1.context = context;
-        context.add(view1);
-
-        render().then(function(){
-            var value = css.getZIndex(view2.$el);
-            expect(value).toBe(4);
-            done();
-        });
-    });
-
-    it('forces zIndex if superview is greater', function(done){
-        var model = new Rectangle({
-            size: [300, 500],
-        });
-
-        var view1 = new RectangleView({model: model, zIndex: 3});
-        var view2 = new RectangleView({model: model, zIndex: 2});
-
-        view1.addSubview(view2, 1);
-        view1.context = context;
-        context.add(view1);
-
-        render().then(function(){
-            var value = css.getZIndex(view2.$el);
-            expect(value).toBe(1);
-            done();
-        });
-    });
-
 
     it('adds subviews', function(done){
         var rect1 = new Rectangle({
