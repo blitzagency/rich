@@ -28,7 +28,8 @@ var FamousRegion = marionette.Region.extend({
         this.options = options || {};
 
         var richOptions = ['context', 'modifier'];
-        var propertyOptions = ['size'];
+        var propertyOptions = ['size', 'zIndex'];
+
         _.extend(this, _.pick(this.options, richOptions.concat(propertyOptions)));
 
         this.el = Marionette.getOption(this, 'el');
@@ -64,7 +65,7 @@ var FamousRegion = marionette.Region.extend({
 
         var size = _.result(this, 'size');
 
-        this.view = new FamousView({size: size});
+        this.view = new FamousView({size: size, zIndex: this.zIndex || 1});
         this.view.context = this.context;
         this.view.superview = this;
 

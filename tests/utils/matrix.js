@@ -8,6 +8,7 @@ var css = require('./css');
 function getTranslation(matrix){
     if (matrix instanceof $){
         matrix = css.getTransformMatrix(matrix);
+        console.log(matrix);
     }
 
     if(matrix.length == 16){

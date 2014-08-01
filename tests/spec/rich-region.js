@@ -6,6 +6,12 @@ var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
+var Rectangle = require('app/shared/models/rectangle').Rectangle;
+var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
+var render = require('tests/utils/time').render;
+var wait = require('tests/utils/time').wait;
+var css = require('tests/utils/css');
+var colors = require('tests/utils/colors').blue;
 
 
 
@@ -24,6 +30,8 @@ describe('Region:', function() {
         $el = region.el;
         context = region.context;
         expect($el.length).toBe(1);
+
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
     });
 
     afterEach(function() {
@@ -31,9 +39,29 @@ describe('Region:', function() {
     });
 
     it('uses size', function(){
-
         var region = new rich.Region({context: context, size: [20, 20]});
         expect(region.getSize()).toEqual([20, 20]);
+    });
+
+    it('uses default zIndex', function(done){
+
+        var region = new rich.Region({context: context, zIndex: 3});
+        var rect1 = new Rectangle({
+            tx: 0,
+            ty: 0,
+            size: [200, 200],
+            color: colors[3]
+        });
+
+        var rect1View = new RectangleView({model: rect1});
+        region.show(rect1View);
+
+        render().then(function(){
+            var value = css.getZIndex(rect1View.$el);
+            expect(value).toBe(4);
+            done();
+        });
+
     });
 
     it('uses size as function', function(){
