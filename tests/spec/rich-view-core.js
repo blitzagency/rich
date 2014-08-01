@@ -84,7 +84,30 @@ describe('View+Core:', function() {
     });
 
     it('uses modifier as function', function(done){
-        done();
+        var obj = {
+            action: function(){
+                return new Modifier({
+                    transform: Transform.translate(10, 20, 0)
+                });
+            }
+        };
+
+        var spy = spyOn(obj, 'action').and.callThrough();
+        var view = new rich.View({nestedSubviews: true, modifier: obj.action});
+
+        view.context = context;
+        context.add(view);
+
+        render().then(function(){
+            var value = matrix.getTranslation(view.$el);
+
+            expect(spy).toHaveBeenCalled();
+            expect(value).toEqual({
+                x: 10, y: 20, z: 0
+            });
+
+            done();
+        });
     });
 
     it('uses modifier as array', function(done){
