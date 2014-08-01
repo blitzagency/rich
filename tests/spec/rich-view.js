@@ -143,9 +143,9 @@ describe('View:', function() {
             content: 'click'
         });
 
-        var rect1View = new RectangleView({model: rect1, zIndex: 3});
-        var rect2View = new RectangleView({model: rect2, zIndex: 4});
-        var rect3View = new RectangleView({model: rect3, zIndex: 5});
+        var rect1View = new RectangleView({model: rect1});
+        var rect2View = new RectangleView({model: rect2});
+        var rect3View = new RectangleView({model: rect3});
 
         rect2View.addSubview(rect3View);
         rect1View.addSubview(rect2View);
@@ -172,7 +172,71 @@ describe('View:', function() {
 
             done();
         });
+    });
 
+    it('adds nested subviews', function(done){
+
+        var rect1 = new Rectangle({
+            tx: 0,
+            ty: 0,
+            size: [200, 200],
+            color: colors[3]
+        });
+
+        var rect2 = new Rectangle({
+            tx: 20,
+            ty: 20,
+            size: [100, 100],
+            color: colors[5]
+        });
+
+        var rect3 = new Rectangle({
+            tx: 20,
+            ty: 20,
+            size: [50, 50],
+            color: colors[7],
+            content: 'click'
+        });
+
+        var view = new rich.View({nestedSubviews: true});
+
+        var rect1View = new RectangleView({model: rect1});
+        var rect2View = new RectangleView({model: rect2});
+        var rect3View = new RectangleView({model: rect3});
+
+        view.addSubview(rect1View);
+        view.addSubview(rect2View);
+        view.addSubview(rect3View);
+
+
+        view.context = context;
+        context.add(view);
+
+        render().then(function(){
+            expect(view.$el).not.toBe(undefined);
+
+            // <div class="famous-group famous-container-group">
+            expect(view.$el.children().length).toBe(1);
+            expect(view.$el.find('.famous-group > .famous-surface').length).toBe(3);
+
+            var value1 = matrix.getTranslation(rect1View.$el);
+            var value2 = matrix.getTranslation(rect2View.$el);
+            var value3 = matrix.getTranslation(rect3View.$el);
+
+            expect(value1).toEqual({
+                x: 0, y: 0, z: 0
+            });
+
+            expect(value2).toEqual({
+                x: 20, y: 20, z: 0
+            });
+
+            expect(value3).toEqual({
+                x: 20, y: 20, z: 0
+            });
+
+            done();
+        });
     });
 
 
