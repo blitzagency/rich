@@ -155,6 +155,44 @@ describe('View:', function() {
         });
     });
 
+    it('adjusts zIndex if superview is greater', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var view1 = new RectangleView({model: model, zIndex: 3});
+        var view2 = new RectangleView({model: model, zIndex: 2});
+
+        view1.addSubview(view2);
+        view1.context = context;
+        context.add(view1);
+
+        render().then(function(){
+            var value = css.getZIndex(view2.$el);
+            expect(value).toBe(4);
+            done();
+        });
+    });
+
+    it('forces zIndex if superview is greater', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var view1 = new RectangleView({model: model, zIndex: 3});
+        var view2 = new RectangleView({model: model, zIndex: 2});
+
+        view1.addSubview(view2, 1);
+        view1.context = context;
+        context.add(view1);
+
+        render().then(function(){
+            var value = css.getZIndex(view2.$el);
+            expect(value).toBe(1);
+            done();
+        });
+    });
+
 
     it('adds subviews', function(done){
         var rect1 = new Rectangle({

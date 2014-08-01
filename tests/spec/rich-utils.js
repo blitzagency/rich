@@ -87,7 +87,7 @@ describe('Utils:', function() {
         setTimeout(function(){
             expect(handler.calls.count()).toBe(1);
             done();
-        }, 100);
+        }, 500);
     });
 
     it('getViewSize', function(){
