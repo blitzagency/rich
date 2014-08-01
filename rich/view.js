@@ -386,15 +386,17 @@ var FamousView = marionette.View.extend({
         // this wrongly assumes it will always have a
         // .commit function. Will need to poribably rethink this.
 
-        if (this.className){
-            renderable.addClass(_.result(this, 'className'));
-        }
-
         if(!renderable._currTarget){
             renderable.setup(context._allocator);
         }
 
         var $el = $(renderable._currTarget);
+
+        if (this.className){
+            var className = _.result(this, 'className');
+            $el.addClass(className);
+            renderable.addClass(className);
+        }
 
         var attrs = _.extend({}, _.result(this, 'attributes'));
         if (this.id) attrs.id = _.result(this, 'id');

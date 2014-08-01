@@ -5,13 +5,13 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
-var matrix = require('tests/utils/matrix');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
-
-
+var matrix = require('tests/utils/matrix');
+var render = require('tests/utils/time').render;
+var colors = require('tests/utils/colors').blue;
 
 
 describe('View:', function() {
@@ -45,14 +45,15 @@ describe('View:', function() {
         });
 
         var view = new RectangleView({model: model});
+        view.context = context;
 
         context.add(view);
 
-        setTimeout(function(){
+        render().then(function(){
             expect(view.$el).not.toBe(undefined);
             expect($el.children().length).toBe(1);
             done();
-        }, 60);
+        });
     });
 
 
@@ -62,13 +63,14 @@ describe('View:', function() {
         });
 
         var view = new RectangleView({model: model, className: 'foo'});
+        view.context = context;
 
         context.add(view);
 
-        setTimeout(function(){
+        render().then(function(){
             expect(view.$el.hasClass('foo')).toBe(true);
             done();
-        }, 60);
+        });
     });
 
 
@@ -82,13 +84,14 @@ describe('View:', function() {
         };
 
         var view = new RectangleView({model: model, className: className});
+        view.context = context;
 
         context.add(view);
 
-        setTimeout(function(){
+        render().then(function(){
             expect(view.$el.hasClass('bar')).toBe(true);
             done();
-        }, 60);
+        });
     });
 
 
@@ -102,10 +105,11 @@ describe('View:', function() {
         });
 
         var view = new RectangleView({model: model, modifier: modifier});
+        view.context = context;
 
         context.add(view);
 
-        setTimeout(function(){
+        render().then(function(){
             var value = matrix.getTranslation(view.$el);
 
             expect(value).toEqual({
@@ -113,7 +117,62 @@ describe('View:', function() {
             });
 
             done();
-        }, 60);
+        });
+    });
+
+    it('adds subviews', function(done){
+        var rect1 = new Rectangle({
+            tx: 0,
+            ty: 0,
+            size: [200, 200],
+            color: colors[3]
+        });
+
+        var rect2 = new Rectangle({
+            tx: 20,
+            ty: 20,
+            size: [100, 100],
+            color: colors[5]
+        });
+
+        var rect3 = new Rectangle({
+            tx: 20,
+            ty: 20,
+            size: [50, 50],
+            color: colors[7],
+            content: 'click'
+        });
+
+        var rect1View = new RectangleView({model: rect1, zIndex: 3});
+        var rect2View = new RectangleView({model: rect2, zIndex: 4});
+        var rect3View = new RectangleView({model: rect3, zIndex: 5});
+
+        rect2View.addSubview(rect3View);
+        rect1View.addSubview(rect2View);
+
+        rect1View.context = context;
+        context.add(rect1View);
+
+        render().then(function(){
+            var value1 = matrix.getTranslation(rect1View.$el);
+            var value2 = matrix.getTranslation(rect2View.$el);
+            var value3 = matrix.getTranslation(rect3View.$el);
+
+            expect(value1).toEqual({
+                x: 0, y: 0, z: 0
+            });
+
+            expect(value2).toEqual({
+                x: 20, y: 20, z: 0
+            });
+
+            expect(value3).toEqual({
+                x: 40, y: 40, z: 0
+            });
+
+            done();
+        });
+
     });
 
 

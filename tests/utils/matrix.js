@@ -40,7 +40,7 @@ function getTranslation(matrix){
 
 function getTranslation2D(matrix){
     // [a, c, b, d, tx, ty]
-    return {x: matrix[4], y: matrix[5], z: null};
+    return {x: matrix[4], y: matrix[5], z: 0};
 }
 
 function getTranslation3D(matrix){
