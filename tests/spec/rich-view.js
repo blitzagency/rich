@@ -120,6 +120,7 @@ describe('View:', function() {
         });
     });
 
+
     it('adds subviews', function(done){
         var rect1 = new Rectangle({
             tx: 0,
@@ -207,7 +208,6 @@ describe('View:', function() {
         view.addSubview(rect1View);
         view.addSubview(rect2View);
         view.addSubview(rect3View);
-
 
         view.context = context;
         context.add(view);
