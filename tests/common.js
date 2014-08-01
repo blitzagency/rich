@@ -14,6 +14,11 @@ require.config({
         },
 
         {
+            location: 'tests',
+            name: 'tests',
+        },
+
+        {
             location: 'demos/src/static/js/app',
             name: 'app',
         },

@@ -5,12 +5,18 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var matrix = require('tests/utils/matrix');
 var Modifier = require('famous/core/Modifier');
+var Transform = require('famous/core/Transform');
+var Rectangle = require('app/shared/models/rectangle').Rectangle;
+var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
+
 
 
 
 describe('View:', function() {
     var region;
+    var context;
     var $el;
 
     beforeEach(function() {
@@ -21,11 +27,93 @@ describe('View:', function() {
         });
 
         $el = region.el;
+        context = region.context;
         expect($el.length).toBe(1);
+        expect(context).not.toBe(undefined);
+        //jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
     });
+
 
     afterEach(function() {
         region = null;
+    });
+
+
+    it('renders view', function(done){
+        var model = new Rectangle({
+            size: [300, 500]
+        });
+
+        var view = new RectangleView({model: model});
+
+        context.add(view);
+
+        setTimeout(function(){
+            expect(view.$el).not.toBe(undefined);
+            expect($el.children().length).toBe(1);
+            done();
+        }, 60);
+    });
+
+
+    it('uses className', function(done){
+        var model = new Rectangle({
+            size: [300, 500]
+        });
+
+        var view = new RectangleView({model: model, className: 'foo'});
+
+        context.add(view);
+
+        setTimeout(function(){
+            expect(view.$el.hasClass('foo')).toBe(true);
+            done();
+        }, 60);
+    });
+
+
+    it('uses className as function', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var className = function(){
+            return 'bar';
+        };
+
+        var view = new RectangleView({model: model, className: className});
+
+        context.add(view);
+
+        setTimeout(function(){
+            expect(view.$el.hasClass('bar')).toBe(true);
+            done();
+        }, 60);
+    });
+
+
+    it('uses modifier', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var modifier = new Modifier({
+            transform: Transform.translate(10, 20, 30)
+        });
+
+        var view = new RectangleView({model: model, modifier: modifier});
+
+        context.add(view);
+
+        setTimeout(function(){
+            var value = matrix.getTranslation(view.$el);
+
+            expect(value).toEqual({
+                x: 10, y: 20, z: 30
+            });
+
+            done();
+        }, 60);
     });
 
 
@@ -55,6 +143,7 @@ describe('View:', function() {
         expect(view3b.invalidateLayout.calls.count()).toBe(1);
         expect(view4.invalidateLayout.calls.count()).toBe(1);
     });
+
 
     it('invalidates subview', function(){
         // bottom to top

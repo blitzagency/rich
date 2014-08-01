@@ -14,15 +14,20 @@ var RectangleView = rich.ItemView.extend({
     },
 
     initialize : function(options){
+        options || (options = {});
+
         this.setSize(this.model.get('size'));
 
-        var transform = Transform.translate(
-            this.model.get('tx'),
-            this.model.get('ty'), 0);
+        if(!options.modifier){
+            var transform = Transform.translate(
+                this.model.get('tx'),
+                this.model.get('ty'),
+                this.model.get('tz'));
 
-        this.modifier = new StateModifier({
-            transform: transform
-        });
+            this.modifier = new StateModifier({
+                transform: transform
+            });
+        }
 
     }
 });

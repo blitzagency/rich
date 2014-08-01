@@ -1,11 +1,11 @@
 var tests = [
-    'tests/lib/jasmine/jasmine-jquery',
+    'tests/vendor/jasmine/jasmine-jquery',
     // Load mocks and vendor init
     //'tests/mocks/init',
 
-    'tests/spec/rich-layout',
-    'tests/spec/rich-region',
-    'tests/spec/rich-utils',
+    // 'tests/spec/rich-layout',
+    // 'tests/spec/rich-region',
+    // 'tests/spec/rich-utils',
     'tests/spec/rich-view',
 
 ];
@@ -14,7 +14,7 @@ requirejs.config({
     baseUrl: '/base',
 
     shim: {
-        'tests/lib/jasmine/jasmine-jquery': {
+        'tests/vendor/jasmine/jasmine-jquery': {
             'deps': ['jquery']
         },
     },

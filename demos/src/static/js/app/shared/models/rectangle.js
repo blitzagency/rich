@@ -7,7 +7,8 @@ var Rectangle = backbone.Model.extend({
         color: 'red',
         content: null,
         tx: 0,
-        ty: 0
+        ty: 0,
+        tz: 0
     }
 });
 
