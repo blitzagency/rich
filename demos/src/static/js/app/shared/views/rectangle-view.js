@@ -16,7 +16,9 @@ var RectangleView = rich.ItemView.extend({
     initialize : function(options){
         options || (options = {});
 
-        this.setSize(this.model.get('size'));
+        if(!options.size){
+            this.setSize(this.model.get('size'));
+        }
 
         if(!options.modifier){
             var transform = Transform.translate(

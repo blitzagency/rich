@@ -39,13 +39,30 @@ describe('View+Size:', function() {
         region = null;
     });
 
+    it('uses size', function(){
 
-    it('uses size as function', function(done){
-        done();
+        var view = new rich.View({size: [20, 20]});
+        view.context = context;
+
+        context.add(view);
+        expect(view.getSize()).toEqual([20, 20]);
     });
 
-    it('uses size', function(done){
-        done();
+    it('uses size as function', function(){
+
+        var obj = {
+            size: function(){
+                return [20, 20];
+            }
+        };
+
+        var spy = spyOn(obj, 'size').and.callThrough();
+
+        var view = new rich.View({size: obj.size});
+        view.context = context;
+
+        expect(spy).toHaveBeenCalled();
+        expect(view.getSize()).toEqual([20, 20]);
     });
 
 

@@ -9,8 +9,9 @@ var Modifier = require('famous/core/Modifier');
 
 
 
-describe('Layout:', function() {
+describe('Region:', function() {
     var region;
+    var context;
     var $el;
 
     beforeEach(function() {
@@ -21,11 +22,34 @@ describe('Layout:', function() {
         });
 
         $el = region.el;
+        context = region.context;
         expect($el.length).toBe(1);
     });
 
     afterEach(function() {
         region = null;
+    });
+
+    it('uses size', function(){
+
+        var region = new rich.Region({context: context, size: [20, 20]});
+        expect(region.getSize()).toEqual([20, 20]);
+    });
+
+    it('uses size as function', function(){
+
+        var obj = {
+            size: function(){
+                return [20, 20];
+            }
+        };
+
+        var spy = spyOn(obj, 'size').and.callThrough();
+
+        var region = new rich.Region({context: context, size: obj.size});
+
+        expect(spy).toHaveBeenCalled();
+        expect(region.getSize()).toEqual([20, 20]);
     });
 
 
