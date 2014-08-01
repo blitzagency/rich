@@ -10,6 +10,7 @@ var Transform = require('famous/core/Transform');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var matrix = require('tests/utils/matrix');
+var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
 
@@ -116,6 +117,40 @@ describe('View:', function() {
                 x: 10, y: 20, z: 30
             });
 
+            done();
+        });
+    });
+
+    it('uses default zIndex', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var view = new RectangleView({model: model});
+        view.context = context;
+
+        context.add(view);
+
+        render().then(function(){
+            var value = css.getZIndex(view.$el);
+            expect(value).toBe(1);
+            done();
+        });
+    });
+
+    it('uses provided zIndex', function(done){
+        var model = new Rectangle({
+            size: [300, 500],
+        });
+
+        var view = new RectangleView({model: model, zIndex: 99});
+        view.context = context;
+
+        context.add(view);
+
+        render().then(function(){
+            var value = css.getZIndex(view.$el);
+            expect(value).toBe(99);
             done();
         });
     });
