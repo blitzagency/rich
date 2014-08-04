@@ -235,14 +235,13 @@ var FamousRegion = marionette.Region.extend({
             view.__init__(this.context);
 
         }
-
+        this.view.name = 'region'
         // view.context = this.context;
         var size = this.getSize();
         if(size){
             view.setSize(size);
         }
         this.view.addSubview(view);
-        view._initializeConstraints();
     },
 
     // this is the default, i'll need to likely add stuff

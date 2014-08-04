@@ -14,7 +14,7 @@ var Context = require('famous/core/Context');
 var Engine = require('famous/core/Engine');
 var events = require('./events');
 var autolayout = require('./autolayout/init');
-
+var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
 
 var FamousView = marionette.View.extend({
 
@@ -82,7 +82,7 @@ var FamousView = marionette.View.extend({
 
         this.properties.size = _.result(this.properties, 'size') || _.result(this, 'size');
         this.properties.properties.zIndex = this.zIndex;
-
+        this._initializeAutolayout();
         this.initialize.apply(this, arguments);
 
         /* <<< END backbone.View() */
@@ -92,25 +92,75 @@ var FamousView = marionette.View.extend({
 
     },
 
-    _initializeConstraints: function(){
-        var size = this.superview.getSize();
+    _initializeAutolayout: function(){
         this._autolayout = {};
-        this._autolayout.width = autolayout.cv('width', size[0]);
-        this._autolayout.height = autolayout.cv('height', size[1]);
+        var w = 0;
+        var h = 0;
+
+        if(this.properties.size){
+            w = this.properties.size[0];
+            h = this.properties.size[1];
+        }
+
+        this._autolayout.width = autolayout.cv('width', w);
+        this._autolayout.height = autolayout.cv('height', h);
+        this._autolayout.top = autolayout.cv('top', 0);
+        this._autolayout.right = autolayout.cv('right', 0);
+        this._autolayout.bottom = autolayout.cv('bottom', 0);
+        this._autolayout.left = autolayout.cv('left', 0);
         this._solver = new autolayout.cassowary.SimplexSolver();
 
-        this._solver.addStay(autolayout.requiredStay(this.superview._autolayout.width, 0));
-        this._solver.addStay(autolayout.requiredStay(this.superview._autolayout.height, 0));
+        // add some constraints
+        var width = autolayout.eq(
+            autolayout.minus(this._autolayout.right, this._autolayout.left),
+            this._autolayout.width,
+            autolayout.required
+        );
+
+        var height = autolayout.eq(
+            autolayout.minus(this._autolayout.bottom, this._autolayout.top),
+            this._autolayout.height,
+            autolayout.required
+        );
+
+        if(this.properties.size){
+            this._solver.addStay(this._autolayout.width, autolayout.required, 0);
+            this._solver.addStay(this._autolayout.height, autolayout.required, 0);
+        }
+
+        this._solver.addConstraint(width);
+        this._solver.addConstraint(height);
+
+    },
+
+    _initializeConstraints: function(){
+        var size = this.superview.getSize();
+        var width = this.superview._autolayout.width.value;
+        var height = this.superview._autolayout.height.value;
+
+        this._solver.addStay(this.superview._autolayout.width, autolayout.required);
+        this._solver.addStay(this.superview._autolayout.height, autolayout.required);
+
+        this._solver.addConstraint(
+            autolayout.eq(this._autolayout.width, this.superview._autolayout.width),
+            autolayout.weak, 0
+        );
+
+        this._solver.addConstraint(
+            autolayout.eq(this._autolayout.height, this.superview._autolayout.height),
+            autolayout.weak, 0
+        );
 
         _.each(this.constraints, this.addConstraintFromJson, this);
     },
 
     addConstraintFromJson: function(json){
-        this.addConstraint(autolayout.constraintsFromJson(json, this));
+        var view = this[json.item];
+        view.addConstraint(constraintsFromJson(json, this));
     },
 
     addConstraint: function(constraint){
-        // this._solver.addConstraint(constraint);
+        this._solver.addConstraint(constraint);
     },
 
     _prepareModification: function(duration, requireModifier){
@@ -288,7 +338,15 @@ var FamousView = marionette.View.extend({
         }
 
         this.children.each(function(view){
+            var needsTrigger = false;
+            if(!view.context){
+                 needsTrigger = true;
+            }
             view.context = context;
+
+            if(needsTrigger){
+                view.triggerMethod('context');
+            }
             relative.add(view);
         }, this);
 
@@ -297,6 +355,11 @@ var FamousView = marionette.View.extend({
 
     addSubview: function(view, zIndex){
         view.superview = this;
+        if(this.context){
+            view._initializeConstraints();
+        }else{
+            this.once('context', view._initializeConstraints.bind(view));
+        }
 
         function setZIndex(value){
             view.zIndex = value;
@@ -393,11 +456,7 @@ var FamousView = marionette.View.extend({
     },
 
     getSize: function(){
-        if(!this.properties.size){
-            this.properties.size = _.result(this.properties, 'size') || [undefined, undefined];
-        }
-
-        return this.properties.size;
+        return [this._autolayout.width.value, this._autolayout.height.value];
     },
 
     // Ensure that the View has a DOM element to render into.

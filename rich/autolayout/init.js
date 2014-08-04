@@ -1,6 +1,5 @@
 define(function (require, exports, module) {
     require('./cassowary/c');
-    var utils = require('./utils');
 
     var cassowary = c;
     delete c;
@@ -48,5 +47,4 @@ define(function (require, exports, module) {
     exports.times = times;
     exports.div = div;
     exports.cv = cv;
-    exports.constraintsFromJson = utils.constraintsFromJson;
 });

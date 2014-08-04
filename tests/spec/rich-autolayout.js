@@ -33,29 +33,119 @@ describe('Auto Layout:', function() {
     });
 
 
-    xit('initializes variables', function(){
+    xit('initializes autolayout', function(){
         var model = new Rectangle();
         var view = new RectangleView({model: model});
         region.show(view);
         expect(view._autolayout).not.toBe(undefined);
     });
 
-    it('parses constraints object', function(){
+    xit('sets explicit size on subview', function(done){
         var model = new Rectangle();
+
+        var view = new RectangleView({
+            model: model,
+            // constraints: [
+            //     {
+            //         item: 'navigation',
+            //         attribute: 'width',
+            //         relatedBy: '==', // '=|>=|<='
+            //         toItem: 'superview', //'null is superview'
+            //         toAttribute: 'width',
+            //         multiplier: 0.5,
+            //         constant: 0
+            //     }
+            // ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+            size: [100, 200]
+        });
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        render().then(function(){
+            expect(view.navigation.getSize()).toEqual([100, 200]);
+            done();
+        });
+    });
+
+    xit('inherits size', function(done){
+        var model = new Rectangle();
+
+        var view = new RectangleView({
+            model: model,
+        });
+        view.navigation = new rich.View({});
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        render().then(function(){
+            expect(view.navigation.getSize()).toEqual([1000, 800]);
+            done();
+        });
+    });
+
+    xit('ignores constraints over explicit size', function(done){
+        var model = new Rectangle();
+
         var view = new RectangleView({
             model: model,
             constraints: [
                 {
-                    target: 'navigation',
+                    item: 'navigation',
                     attribute: 'width',
-                    to: 'superview',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
                     toAttribute: 'width',
-                    value: '50%'
+                    multiplier: 0.5,
+                    constant: 0
                 }
             ]
         });
+        view.navigation = new RectangleView({
+            model:model,
+            size: [100, 200]
+        });
+        view.addSubview(view.navigation);
         region.show(view);
 
+        render().then(function(){
+            expect(view.navigation.getSize()).toEqual([100, 200]);
+            done();
+        });
+    });
+
+    it('ignores constraints over explicit size', function(done){
+        var model = new Rectangle();
+
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'width',
+                    multiplier: 0.5,
+                    constant: 0
+                }
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.name = 'rectangle'
+        view.navigation.name = 'navigation'
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        render().then(function(){
+            console.log(view.navigation.getSize())
+            // expect(view.navigation.getSize()).toEqual([500, 800]);
+            done();
+        });
     });
 
 
