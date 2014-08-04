@@ -13,6 +13,7 @@ var Entity = require('famous/core/Entity');
 var Context = require('famous/core/Context');
 var Engine = require('famous/core/Engine');
 var events = require('./events');
+var autolayout = require('./autolayout/init');
 
 
 var FamousView = marionette.View.extend({
@@ -68,7 +69,7 @@ var FamousView = marionette.View.extend({
         // we only add 'context' for a convenience
 
         var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
-        var richOptions = ['context', 'modifier', 'nestedSubviews'];
+        var richOptions = ['constraints', 'context', 'modifier', 'nestedSubviews'];
         var propertyOptions = ['size'];
         var styleOptions = ['zIndex'];
 
@@ -88,6 +89,28 @@ var FamousView = marionette.View.extend({
         marionette.MonitorDOMRefresh(this);
         this.listenTo(this, 'show', this.onShowCalled);
         /* <<< END marionette.View() override */
+
+    },
+
+    _initializeConstraints: function(){
+        var size = this.superview.getSize();
+        this._autolayout = {};
+        this._autolayout.width = autolayout.cv('width', size[0]);
+        this._autolayout.height = autolayout.cv('height', size[1]);
+        this._solver = new autolayout.cassowary.SimplexSolver();
+
+        this._solver.addStay(autolayout.requiredStay(this.superview._autolayout.width, 0));
+        this._solver.addStay(autolayout.requiredStay(this.superview._autolayout.height, 0));
+
+        _.each(this.constraints, this.addConstraintFromJson, this);
+    },
+
+    addConstraintFromJson: function(json){
+        this.addConstraint(autolayout.constraintsFromJson(json, this));
+    },
+
+    addConstraint: function(constraint){
+        // this._solver.addConstraint(constraint);
     },
 
     _prepareModification: function(duration, requireModifier){
