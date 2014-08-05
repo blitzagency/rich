@@ -116,7 +116,7 @@ describe('Auto Layout:', function() {
         });
     });
 
-    it('ignores constraints over explicit size', function(done){
+    it('uses constraints', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
