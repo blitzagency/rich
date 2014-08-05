@@ -34,14 +34,14 @@ describe('Auto Layout:', function() {
     });
 
 
-    xit('initializes autolayout', function(){
+    it('initializes autolayout', function(){
         var model = new Rectangle();
         var view = new RectangleView({model: model});
         region.show(view);
         expect(view._autolayout).not.toBe(undefined);
     });
 
-    xit('sets explicit size on subview', function(done){
+    it('sets explicit size on subview', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -65,13 +65,13 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render().then(function(){
+        view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([100, 200]);
             done();
-        });
+        };
     });
 
-    xit('inherits size', function(done){
+    it('inherits size', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -92,7 +92,7 @@ describe('Auto Layout:', function() {
         // });
     });
 
-    xit('ignores constraints over explicit size', function(done){
+    it('ignores constraints over explicit size', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -123,7 +123,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    xit('uses constraints with superview, ==, and width', function(done){
+    it('uses constraints with superview, ==, and width', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -154,7 +154,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    xit('handles multiple simple constraints', function(done){
+    it('handles multiple simple constraints', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -188,7 +188,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    xit('handles left simple constraint', function(done){
+    it('handles left simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -215,7 +215,7 @@ describe('Auto Layout:', function() {
         });
     });
 
-    xit('handles width simple constraint', function(done){
+    it('handles width simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -266,13 +266,13 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render().then(function(){
+        view.onShow = function(){
             expect(view.navigation._autolayout.right.value).toBe(80);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(920);
             // expect(view.navigation._autolayout.left.value).toBe(20);
             done();
-        });
+        };
     });
 
 
