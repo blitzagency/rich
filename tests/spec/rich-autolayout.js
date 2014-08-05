@@ -65,7 +65,7 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render(100).then(function(){
+        render().then(function(){
             expect(view.navigation.getSize()).toEqual([100, 200]);
             done();
         });
@@ -79,12 +79,17 @@ describe('Auto Layout:', function() {
         });
         view.navigation = new rich.View({});
         view.addSubview(view.navigation);
-        region.show(view);
 
-        render(100).then(function(){
+        region.show(view);
+        view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([1000, 800]);
             done();
-        });
+        };
+
+        // render().then(function(){
+        //     expect(view.navigation.getSize()).toEqual([1000, 800]);
+        //     done();
+        // });
     });
 
     xit('ignores constraints over explicit size', function(done){
@@ -108,13 +113,14 @@ describe('Auto Layout:', function() {
             model:model,
             size: [100, 200]
         });
+
         view.addSubview(view.navigation);
         region.show(view);
 
-        render(100).then(function(){
+        view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([100, 200]);
             done();
-        });
+        };
     });
 
     xit('uses constraints with superview, ==, and width', function(done){
@@ -134,16 +140,18 @@ describe('Auto Layout:', function() {
                 }
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.addSubview(view.navigation);
         region.show(view);
 
-        render(100).then(function(){
+        view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([500, 800]);
             done();
-        });
+        };
     });
 
     xit('handles multiple simple constraints', function(done){
@@ -173,10 +181,10 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render(100).then(function(){
+        view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([100, 800]);
             done();
-        });
+        };
     });
 
     it('handles left simple constraint', function(done){

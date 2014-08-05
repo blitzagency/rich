@@ -31,7 +31,7 @@ describe('Region:', function() {
         context = region.context;
         expect($el.length).toBe(1);
 
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+        //jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
     });
 
     afterEach(function() {
@@ -44,7 +44,6 @@ describe('Region:', function() {
     });
 
     it('uses default zIndex', function(done){
-
         var region = new rich.Region({context: context, zIndex: 3});
         var rect1 = new Rectangle({
             tx: 0,
@@ -56,11 +55,17 @@ describe('Region:', function() {
         var rect1View = new RectangleView({model: rect1});
         region.show(rect1View);
 
-        render().then(function(){
+        // don't understand the issue with needing to do this here:
+        // vs the blow. the render().then() should be after a render,
+        // at which time we should have an element, but we don't just
+        // using render().then() had to use rect1View.onElement THEN
+        // render().then()...  Will need to understand why that is
+
+        rect1View.onShow = function(){
             var value = css.getZIndex(rect1View.$el);
             expect(value).toBe(4);
             done();
-        });
+        };
 
     });
 
