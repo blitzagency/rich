@@ -45,34 +45,21 @@ exports.constraintsFromJson = function(json, view){
             related = autolayout.eq;
             break;
     }
-    // var expression = new c.Expression(toAttribute);
-    // expression.times(multiplier);
-    var expression = c.Expression.fromVariable(toAttribute).times(multiplier);
 
-    console.log(expression)
+    var times = autolayout.times(multiplier, toAttribute, autolayout.weak, 0);
+    var solve =  autolayout.plus(times, constant, autolayout.weak, 0);
 
-    // return autolayout.eq(itemAttribute, 500, autolayout.required);
-
-    // console.log(expression)
-    // var times = autolayout.times(multiplier, toAttribute, autolayout.weak, 0);
-    // var solve =  autolayout.plus(times, constant, autolayout.weak, 0);
-
-    // @adam, this works...
-    // return related(
-    //     itemAttribute,
-    //     500,
-    //     autolayout.weak,
-    //     2
-    // );
-
-    // this doesn't...
-    return related(
+    var constraint = related(
         itemAttribute,
-        expression,
+        solve,
         autolayout.weak,
         2
     );
 
+    return {
+        constraint: constraint,
+        stay: toAttribute
+    };
 
 
 };

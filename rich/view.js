@@ -159,8 +159,9 @@ var FamousView = marionette.View.extend({
         view.addConstraint(constraintsFromJson(json, this));
     },
 
-    addConstraint: function(constraint){
-        this._solver.addConstraint(constraint);
+    addConstraint: function(options){
+        this._solver.addStay(options.stay, autolayout.required, 0);
+        this._solver.addConstraint(options.constraint);
     },
 
     _prepareModification: function(duration, requireModifier){
