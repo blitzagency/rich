@@ -56,9 +56,6 @@ exports.constraintsFromJson = function(json, view){
         solve =  autolayout.plus(times, constant, autolayout.weak, 0);
     }
 
-
-
-
     var constraint = related(
         itemAttribute,
         solve,
@@ -70,8 +67,6 @@ exports.constraintsFromJson = function(json, view){
         constraint: constraint,
         stay: toAttribute
     };
-
-
 };
 
 });

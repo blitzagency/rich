@@ -164,7 +164,9 @@ var FamousView = marionette.View.extend({
     },
 
     addConstraint: function(options){
-        this._solver.addStay(options.stay, autolayout.required, 0);
+        var s = autolayout.requiredStay(options.stay, 1);
+        console.log(this.name)
+        this._solver.addStay(s);
         this._solver.addConstraint(options.constraint);
     },
 
