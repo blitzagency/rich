@@ -110,36 +110,23 @@ var FamousView = marionette.View.extend({
         this._autolayout.left = autolayout.cv('left', 0);
         this._solver = new autolayout.cassowary.SimplexSolver();
 
-        // add some constraints
-        var width = autolayout.eq(
-            autolayout.minus(this._autolayout.right, this._autolayout.left),
-            this._autolayout.width,
-            autolayout.required
-        );
-
-        var height = autolayout.eq(
-            autolayout.minus(this._autolayout.bottom, this._autolayout.top),
-            this._autolayout.height,
-            autolayout.required
-        );
-
         // add some loose constraints about top/left/bottom/right
-        var top = autolayout.geq(this._autolayout.top, 0, autolayout.weak);
-        var right = autolayout.geq(this._autolayout.right, 0, autolayout.weak);
-        var bottom = autolayout.geq(this._autolayout.bottom, 0, autolayout.weak);
-        var left = autolayout.geq(this._autolayout.left, 0, autolayout.weak, 4);
+        var top = autolayout.geq(this._autolayout.top, 0, autolayout.weak, 1);
+        var right = autolayout.geq(this._autolayout.right, 0, autolayout.weak, 1);
+        var bottom = autolayout.geq(this._autolayout.bottom, 0, autolayout.weak, 1);
+        var left = autolayout.geq(this._autolayout.left, 0, autolayout.weak, 1);
+        var pullLeft = autolayout.eq(this._autolayout.left, 0, autolayout.weak, 1);
 
         if(this.properties.size){
             this._solver.addStay(this._autolayout.width, autolayout.required, 0);
             this._solver.addStay(this._autolayout.height, autolayout.required, 0);
         }
 
+        this._solver.addConstraint(pullLeft);
         this._solver.addConstraint(left);
-        this._solver.addConstraint(width);
-        // this._solver.addConstraint(height);
-        // this._solver.addConstraint(top);
-        // this._solver.addConstraint(right);
-        // this._solver.addConstraint(bottom);
+        this._solver.addConstraint(top);
+        this._solver.addConstraint(right);
+        this._solver.addConstraint(bottom);
 
 
     },
@@ -153,12 +140,16 @@ var FamousView = marionette.View.extend({
         this._solver.addStay(this.superview._autolayout.height, autolayout.required);
 
         this._solver.addConstraint(
-            autolayout.eq(this._autolayout.width, this.superview._autolayout.width),
+            autolayout.eq(
+                autolayout.plus(this._autolayout.width, this._autolayout.right).plus(this._autolayout.left),
+                this.superview._autolayout.width),
             autolayout.weak, 0
         );
 
         this._solver.addConstraint(
-            autolayout.eq(this._autolayout.height, this.superview._autolayout.height),
+            autolayout.eq(
+                autolayout.plus(this._autolayout.height, this._autolayout.bottom).plus(this._autolayout.top),
+                this.superview._autolayout.height),
             autolayout.weak, 0
         );
 
