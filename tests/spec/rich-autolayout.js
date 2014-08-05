@@ -209,10 +209,10 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render(100).then(function(){
+        view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(20);
             done();
-        });
+        };
     });
 
     it('handles width simple constraint', function(done){
@@ -236,13 +236,12 @@ describe('Auto Layout:', function() {
         view.addSubview(view.navigation);
         region.show(view);
 
-        render().then(function(){
+        view.onShow = function(){
             expect(view.navigation._autolayout.right.value).toBe(920);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(80);
-            // expect(view.navigation._autolayout.left.value).toBe(20);
             done();
-        });
+        };
     });
 
     it('handles right simple constraint', function(done){
@@ -270,7 +269,75 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.right.value).toBe(80);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(920);
-            // expect(view.navigation._autolayout.left.value).toBe(20);
+            done();
+        };
+    });
+
+    it('handles top and bottom simple constraint', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 80
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'bottom',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 80
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.bottom.value).toBe(80);
+            expect(view.navigation._autolayout.top.value).toBe(80);
+            expect(view.navigation._autolayout.height.value).toBe(640);
+            done();
+        };
+    });
+
+
+    it('handles constraints outside of bounds of parent', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 800
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 800
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.left.value).toBe(800)
+            expect(view.navigation._autolayout.width.value).toBe(800)
+            expect(view.navigation._autolayout.right.value).toBe(-600)
             done();
         };
     });
