@@ -156,17 +156,28 @@ var FamousView = marionette.View.extend({
         );
 
         _.each(this.constraints, this.addConstraintFromJson, this);
+
+        this._constraintsInitialized = true;
     },
 
     addConstraintFromJson: function(json){
+
         var view = this[json.item];
+
+        if(!view._constraintsInitialized){
+            view._initializeConstraints();
+            view._constraintsInitialized = true;
+        }
+
         view.addConstraint(constraintsFromJson(json, this));
     },
 
     addConstraint: function(options){
-        var s = autolayout.requiredStay(options.stay, 1);
-        console.log(this.name)
-        this._solver.addStay(s);
+
+        if(options.stay){
+            this._solver.addStay(options.stay, autolayout.required, 1);
+        }
+
         this._solver.addConstraint(options.constraint);
     },
 
