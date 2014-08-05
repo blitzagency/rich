@@ -123,13 +123,24 @@ var FamousView = marionette.View.extend({
             autolayout.required
         );
 
+        // add some loose constraints about top/left/bottom/right
+        var top = autolayout.geq(this._autolayout.top, 0, autolayout.weak);
+        var right = autolayout.geq(this._autolayout.right, 0, autolayout.weak);
+        var bottom = autolayout.geq(this._autolayout.bottom, 0, autolayout.weak);
+        var left = autolayout.geq(this._autolayout.left, 0, autolayout.weak, 4);
+
         if(this.properties.size){
             this._solver.addStay(this._autolayout.width, autolayout.required, 0);
             this._solver.addStay(this._autolayout.height, autolayout.required, 0);
         }
 
+        this._solver.addConstraint(left);
         this._solver.addConstraint(width);
-        this._solver.addConstraint(height);
+        // this._solver.addConstraint(height);
+        // this._solver.addConstraint(top);
+        // this._solver.addConstraint(right);
+        // this._solver.addConstraint(bottom);
+
 
     },
 
