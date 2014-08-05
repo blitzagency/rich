@@ -12,11 +12,11 @@ exports.constraintsFromJson = function(json, view){
     // multiplier: 0.5,
     // constant: 0
     // console.log(json)
-    var item = view[json.item]; // navigation
+    var item = view[json.item];
 
     var toItem;
     if(json.toItem == 'superview'){
-        toItem = view; //'rectangle'
+        toItem = view;
     }else{
         toItem = view[json.toItem] || view;
     }
@@ -25,9 +25,6 @@ exports.constraintsFromJson = function(json, view){
     var multiplier = json.multiplier || 1;
     var constant = json.constant || 0;
 
-    if(!toAttribute){
-        // throw error
-    }
     var itemAttribute = item._autolayout[json.attribute];
 
     var related;
@@ -46,13 +43,26 @@ exports.constraintsFromJson = function(json, view){
             break;
     }
 
-    var times = autolayout.times(multiplier, toAttribute, autolayout.weak, 0);
-    var solve =  autolayout.plus(times, constant, autolayout.weak, 0);
+
+    var solve;
+    var strength = autolayout.weak;
+
+    if(!toAttribute){
+        solve = constant;
+        // do we want to set a strength if they are only modifying a prop?
+        // strength = autolayout.strong;
+    }else{
+        var times = autolayout.times(multiplier, toAttribute, autolayout.weak, 0);
+        solve =  autolayout.plus(times, constant, autolayout.weak, 0);
+    }
+
+
+
 
     var constraint = related(
         itemAttribute,
         solve,
-        autolayout.weak,
+        strength,
         2
     );
 
