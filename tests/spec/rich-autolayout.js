@@ -106,6 +106,15 @@ describe('Auto Layout:', function() {
                     toAttribute: 'width',
                     multiplier: 0.5,
                     constant: 0
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'height',
+                    multiplier: 0.5,
+                    constant: 0
                 }
             ]
         });
@@ -137,6 +146,15 @@ describe('Auto Layout:', function() {
                     toAttribute: 'width',
                     multiplier: 0.5,
                     constant: 0
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'height',
+                    multiplier: 0.5,
+                    constant: 0
                 }
             ]
         });
@@ -149,7 +167,7 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation.getSize()).toEqual([500, 800]);
+            expect(view.navigation.getSize()).toEqual([500, 400]);
             done();
         };
     });
@@ -171,6 +189,18 @@ describe('Auto Layout:', function() {
                     relatedBy: '>=', // '=|>=|<='
                     constant: 50
                 },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '<=', // '=|>=|<='
+                    constant: 100
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '>=', // '=|>=|<='
+                    constant: 50
+                },
 
 
             ]
@@ -183,7 +213,7 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation.getSize()).toEqual([100, 800]);
+            expect(view.navigation.getSize()).toEqual([100, 100]);
             done();
         };
     });
@@ -226,6 +256,12 @@ describe('Auto Layout:', function() {
                     relatedBy: '==', // '=|>=|<='
                     constant: 80
                 },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 80
+                },
 
             ]
         });
@@ -240,6 +276,10 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.right.value).toBe(920);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(80);
+
+            expect(view.navigation._autolayout.bottom.value).toBe(720);
+            expect(view.navigation._autolayout.top.value).toBe(0);
+            expect(view.navigation._autolayout.height.value).toBe(80);
             done();
         };
     });
@@ -252,6 +292,12 @@ describe('Auto Layout:', function() {
                 {
                     item: 'navigation',
                     attribute: 'right',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 80
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'bottom',
                     relatedBy: '==', // '=|>=|<='
                     constant: 80
                 },
@@ -269,6 +315,10 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.right.value).toBe(80);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(920);
+
+            expect(view.navigation._autolayout.bottom.value).toBe(80);
+            expect(view.navigation._autolayout.top.value).toBe(0);
+            expect(view.navigation._autolayout.height.value).toBe(720);
             done();
         };
     });
@@ -325,6 +375,18 @@ describe('Auto Layout:', function() {
                     relatedBy: '==', // '=|>=|<='
                     constant: 800
                 },
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 800
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 800
+                },
             ]
         });
         view.navigation = new RectangleView({
@@ -335,9 +397,13 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation._autolayout.left.value).toBe(800)
-            expect(view.navigation._autolayout.width.value).toBe(800)
-            expect(view.navigation._autolayout.right.value).toBe(-600)
+            expect(view.navigation._autolayout.left.value).toBe(800);
+            expect(view.navigation._autolayout.width.value).toBe(800);
+            expect(view.navigation._autolayout.right.value).toBe(-600);
+
+            expect(view.navigation._autolayout.top.value).toBe(800);
+            expect(view.navigation._autolayout.height.value).toBe(800);
+            expect(view.navigation._autolayout.bottom.value).toBe(-800);
             done();
         };
     });
