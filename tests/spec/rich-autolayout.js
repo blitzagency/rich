@@ -34,29 +34,18 @@ describe('Auto Layout:', function() {
     });
 
 
-    it('initializes autolayout', function(){
+    xit('initializes autolayout', function(){
         var model = new Rectangle();
         var view = new RectangleView({model: model});
         region.show(view);
         expect(view._autolayout).not.toBe(undefined);
     });
 
-    it('sets explicit size on subview', function(done){
+    xit('sets explicit size on subview', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
             model: model,
-            // constraints: [
-            //     {
-            //         item: 'navigation',
-            //         attribute: 'width',
-            //         relatedBy: '==', // '=|>=|<='
-            //         toItem: 'superview', //'null is superview'
-            //         toAttribute: 'width',
-            //         multiplier: 0.5,
-            //         constant: 0
-            //     }
-            // ]
         });
         view.navigation = new RectangleView({
             model:model,
@@ -71,7 +60,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('inherits size', function(done){
+    xit('inherits size', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -85,14 +74,9 @@ describe('Auto Layout:', function() {
             expect(view.navigation.getSize()).toEqual([1000, 800]);
             done();
         };
-
-        // render().then(function(){
-        //     expect(view.navigation.getSize()).toEqual([1000, 800]);
-        //     done();
-        // });
     });
 
-    it('ignores constraints over explicit size', function(done){
+    xit('ignores constraints over explicit size', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -132,7 +116,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('uses constraints with superview, ==, and width', function(done){
+    xit('uses constraints with superview, ==, and width', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -172,7 +156,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('handles multiple simple constraints', function(done){
+    xit('handles multiple simple constraints', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -218,7 +202,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('handles left simple constraint', function(done){
+    xit('handles left simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -245,7 +229,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('handles width simple constraint', function(done){
+    xit('handles width simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -284,7 +268,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('handles right simple constraint', function(done){
+    xit('handles right simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -323,7 +307,7 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('handles top and bottom simple constraint', function(done){
+    xit('handles top and bottom simple constraint', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -358,7 +342,7 @@ describe('Auto Layout:', function() {
     });
 
 
-    it('handles constraints outside of bounds of parent', function(done){
+    xit('handles constraints outside of bounds of parent', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -404,6 +388,105 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.top.value).toBe(800);
             expect(view.navigation._autolayout.height.value).toBe(800);
             expect(view.navigation._autolayout.bottom.value).toBe(-800);
+            done();
+        };
+    });
+
+    xit('adds constraints based on parent', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'width',
+                    multiplier: 0.5,
+                    constant: 40
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'height',
+                    multiplier: 0.5,
+                    constant: 40
+                }
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.left.value).toBe(0);
+            expect(view.navigation._autolayout.width.value).toBe(540);
+            expect(view.navigation._autolayout.right.value).toBe(460);
+
+            expect(view.navigation._autolayout.top.value).toBe(0);
+            expect(view.navigation._autolayout.height.value).toBe(440);
+            expect(view.navigation._autolayout.bottom.value).toBe(360);
+            done();
+        };
+    });
+
+    it('adds constraints based on sibling', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'width',
+                    multiplier: 0.5,
+                    constant: -40
+                },
+                {
+                    item: 'button',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 40
+                },
+                // {
+                //     item: 'button',
+                //     attribute: 'left',
+                //     relatedBy: '==', // '=|>=|<='
+                //     toItem: 'navigation', //'null is superview'
+                //     toAttribute: 'right'
+                // },
+
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.navigation.name = 'navigation';
+
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.button.name = 'button';
+        view.name = 'view'
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            // console.log(view.navigation._autolayout.width)
+            // console.log(view.button._autolayout.width)
+            console.log(view.navigation._autolayout.left)
+            console.log(view.navigation._autolayout.width)
+            console.log(view.navigation._autolayout.right)
+            // console.log(view.button._autolayout.left)
             done();
         };
     });
