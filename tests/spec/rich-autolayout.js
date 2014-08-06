@@ -598,9 +598,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
@@ -660,9 +657,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
@@ -722,9 +716,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
@@ -784,9 +775,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
@@ -846,9 +834,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
@@ -908,9 +893,6 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
-        view.name = 'view';
-        view.navigation.name = 'navigation';
-        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
