@@ -466,6 +466,61 @@ describe('Auto Layout:', function() {
                     toItem: 'navigation', //'null is superview'
                     toAttribute: 'right',
                 },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.left.value).toBe(0);
+            expect(view.navigation._autolayout.right.value).toBe(540);
+            expect(view.navigation._autolayout.width.value).toBe(460);
+
+            expect(view.button._autolayout.left.value).toBe(460);
+            expect(view.button._autolayout.right.value).toBe(500);
+            expect(view.button._autolayout.width.value).toBe(40);
+            done();
+        };
+
+    });
+
+    it('adds constraints based on sibling out of sequence', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'width',
+                    multiplier: 0.5,
+                    constant: -40
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 40
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'right',
+                },
 
                 {
                     item: 'navigation',
@@ -493,16 +548,13 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            // console.log(view.navigation._autolayout.width)
-            // console.log(view.button._autolayout.width)
-            console.log('-', view.navigation._autolayout.left);
-            console.log('-', view.navigation._autolayout.right);
-            console.log('-', view.navigation._autolayout.width);
+            expect(view.navigation._autolayout.left.value).toBe(10);
+            expect(view.navigation._autolayout.right.value).toBe(530);
+            expect(view.navigation._autolayout.width.value).toBe(460);
 
-            console.log('+', view.button._autolayout.left);
-            console.log('+', view.button._autolayout.right);
-            console.log('+', view.button._autolayout.width);
-            // console.log(view.button._autolayout.left)
+            expect(view.button._autolayout.left.value).toBe(470);
+            expect(view.button._autolayout.right.value).toBe(490);
+            expect(view.button._autolayout.width.value).toBe(40);
             done();
         };
 

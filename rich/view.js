@@ -214,6 +214,7 @@ var FamousView = marionette.View.extend({
             solver.suggestValue(vars.right, valueRight);
             solver.suggestValue(vars.bottom, valueBottom);
             solver.suggestValue(vars.left, valueLeft);
+            solver.resolve();
             solver.endEdit();
 
         }, this);

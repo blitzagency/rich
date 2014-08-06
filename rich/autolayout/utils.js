@@ -85,10 +85,7 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
     // to each other not the walls of their superview.
     itemsAreLeaves = (item.superview == toItem.superview);
 
-    console.log('-- expression for \'' + item.name + '\' -> \'' + toItem.name + '\'');
-
     if(itemsAreLeaves){
-        console.log('-- laeves \'' + item.name + '\' & \'' + toItem.name + '\'');
 
         switch(toAttribute.name){
             case 'right':
