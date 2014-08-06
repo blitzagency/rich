@@ -123,14 +123,14 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                 }
                 break;
 
-            // case 'top':
-            //     value = autolayout.plus(toItem._autolayout.bottom, toItem._autolayout.height);
-            //     stays = [toItem._autolayout.bottom, toItem._autolayout.height, toItem._autolayout.bottom];
+            case 'top':
+                value = autolayout.plus(toItem._autolayout.bottom, toItem._autolayout.height);
+                stays = [toItem._autolayout.bottom, toItem._autolayout.height, toItem._autolayout.bottom];
 
-            //     if(itemAttribute.name == 'top'){
-            //         leftExpression = autolayout.plus(item._autolayout.bottom, item._autolayout.height);
-            //     }
-            //     break;
+                if(itemAttribute.name == 'top'){
+                    leftExpression = autolayout.plus(item._autolayout.bottom, item._autolayout.height);
+                }
+                break;
         }
     }
 

@@ -882,14 +882,14 @@ describe('Auto Layout:', function() {
                     item: 'button',
                     attribute: 'height',
                     relatedBy: '==', // '=|>=|<='
-                    constant: 50
+                    constant: 45
                 },
 
                 {
                     item: 'navigation',
                     attribute: 'bottom',
                     relatedBy: '==', // '=|>=|<='
-                    constant: 50,
+                    constant: 250,
                     multiplier: 1
                 },
 
@@ -917,12 +917,12 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation._autolayout.top.value).toBe(650);
-            expect(view.navigation._autolayout.bottom.value).toBe(50);
+            expect(view.navigation._autolayout.top.value).toBe(450);
+            expect(view.navigation._autolayout.bottom.value).toBe(250);
             expect(view.navigation._autolayout.height.value).toBe(100);
-            expect(view.button._autolayout.top.value).toBe(650);
-            expect(view.button._autolayout.bottom.value).toBe(100);
-            expect(view.button._autolayout.height.value).toBe(50);
+            expect(view.button._autolayout.top.value).toBe(450);
+            expect(view.button._autolayout.bottom.value).toBe(305);
+            expect(view.button._autolayout.height.value).toBe(45);
             done();
         };
 
