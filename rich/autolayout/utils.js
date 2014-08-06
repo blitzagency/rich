@@ -95,6 +95,7 @@ exports.constraintsFromJson = function(json, view){
     var related;
     var solve;
     var strength = autolayout.weak;
+    var stays = [];
 
     if(json.toItem == 'superview'){
         toItem = view;
@@ -103,6 +104,7 @@ exports.constraintsFromJson = function(json, view){
     }
 
     toAttribute = toItem._autolayout[json.toAttribute] || false;
+
 
     // what kind of equation do we need:
     switch(json.relatedBy){
@@ -125,7 +127,9 @@ exports.constraintsFromJson = function(json, view){
         // do we want to set a strength if they are only modifying a prop?
         // strength = autolayout.strong;
     } else {
-        solve = buildExpression(item, toItem, toAttribute, multiplier, constant);
+        var result = buildExpression(item, toItem, toAttribute, multiplier, constant);
+        solve = result.expression;
+        stays = result.stays;
     }
 
     var constraint = related(
@@ -137,12 +141,13 @@ exports.constraintsFromJson = function(json, view){
 
     return {
         constraint: constraint,
-        stay: toAttribute
+        stays: stays
     };
 };
 
 function buildExpression(item, toItem, toAttribute, multiplier, constant){
     var value = toAttribute;
+    var stays = [toAttribute];
 
     // lets get contextual. If item and toItem share the same
     // superview left, right, top and bottom are in relation
@@ -156,19 +161,24 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
 
         switch(toAttribute.name){
             case 'right':
-                //value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
-                //console.log(value.toString());
+                value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
+                stays = [toItem._autolayout.left, toItem._autolayout.width];
                 break;
-            // case 'bottom':
-            //     toAttribute = autolayout.plus(toItem._autolayout.top, toItem._autolayout.height);
-            //     break;
+
+            case 'bottom':
+                value = autolayout.plus(toItem._autolayout.top, toItem._autolayout.height);
+                stays = [toItem._autolayout.top, toItem._autolayout.height];
+                break;
         }
     }
 
     var times = autolayout.times(multiplier, value, autolayout.weak, 0);
     var expression = autolayout.plus(times, constant, autolayout.weak, 0);
 
-    return expression;
+    return {
+        expression: expression,
+        stays: stays
+    };
 }
 
 });
