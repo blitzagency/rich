@@ -80,11 +80,11 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
     // lets get contextual. If item and toItem share the same
     // superview left, right, top and bottom are in relation
     // to each other not the walls of their superview.
-    itemsAreLeafs = (item.superview == toItem.superview);
+    itemsAreLeaves = (item.superview == toItem.superview);
 
     console.log('-- expression for \'' + item.name + '\' -> \'' + toItem.name + '\'');
 
-    if(itemsAreLeafs){
+    if(itemsAreLeaves){
         console.log('-- views \'' + item.name + '\' & \'' + toItem.name + '\' are leafs');
 
         switch(toAttribute.name){

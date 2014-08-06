@@ -450,6 +450,7 @@ describe('Auto Layout:', function() {
                     multiplier: 0.5,
                     constant: -40
                 },
+
                 {
                     item: 'button',
                     attribute: 'width',
@@ -461,9 +462,15 @@ describe('Auto Layout:', function() {
                     attribute: 'left',
                     relatedBy: '==', // '=|>=|<='
                     toItem: 'navigation', //'null is superview'
-                    toAttribute: 'right'
+                    toAttribute: 'right',
                 },
 
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 10
+                },
             ]
         });
         view.navigation = new RectangleView({
