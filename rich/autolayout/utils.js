@@ -93,12 +93,12 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
         switch(toAttribute.name){
             case 'right':
                 value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
-                stays = [toItem._autolayout.left, toItem._autolayout.width];
+                stays = [toItem._autolayout.left, toItem._autolayout.width, toItem._autolayout.right];
                 break;
 
             case 'bottom':
                 value = autolayout.plus(toItem._autolayout.top, toItem._autolayout.height);
-                stays = [toItem._autolayout.top, toItem._autolayout.height];
+                stays = [toItem._autolayout.top, toItem._autolayout.height, toItem._autolayout.bottom];
                 break;
         }
     }

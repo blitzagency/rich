@@ -178,7 +178,7 @@ var FamousView = marionette.View.extend({
 
         if(options.stays){
             _.each(options.stays, function(stay){
-                this._solver.addStay(stay, autolayout.weak, 1);
+                this._solver.addStay(stay, autolayout.weak, 10);
             }, this);
         }
 
