@@ -536,13 +536,9 @@ describe('Auto Layout:', function() {
         view.navigation = new RectangleView({
             model:model,
         });
-        view.navigation.name = 'navigation';
-
         view.button = new RectangleView({
             model:model,
         });
-        view.button.name = 'button';
-        view.name = 'view';
         view.addSubview(view.navigation);
         view.addSubview(view.button);
         region.show(view);
