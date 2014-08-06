@@ -556,6 +556,254 @@ describe('Auto Layout:', function() {
 
     });
 
+    it('adds constraints based on siblings with right/right', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 100
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 50
+                },
+
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 250,
+                    multiplier: 1
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'right',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'right',
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.name = 'view';
+        view.navigation.name = 'navigation';
+        view.button.name = 'button';
+
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.left.value).toBe(250);
+            expect(view.navigation._autolayout.right.value).toBe(650);
+            expect(view.navigation._autolayout.width.value).toBe(100);
+            expect(view.button._autolayout.left.value).toBe(300);
+            expect(view.button._autolayout.right.value).toBe(650);
+            expect(view.button._autolayout.width.value).toBe(50);
+            done();
+        };
+
+    });
+
+    it('adds constraints based on siblings with left/left', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 100
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'width',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 50
+                },
+
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 250,
+                    multiplier: 1
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'left',
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.name = 'view';
+        view.navigation.name = 'navigation';
+        view.button.name = 'button';
+
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.left.value).toBe(250);
+            expect(view.navigation._autolayout.right.value).toBe(650);
+            expect(view.navigation._autolayout.width.value).toBe(100);
+            expect(view.button._autolayout.left.value).toBe(250);
+            expect(view.button._autolayout.right.value).toBe(700);
+            expect(view.button._autolayout.width.value).toBe(50);
+            done();
+        };
+
+    });
+
+    it('adds constraints based on siblings with bottom/bottom', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 100
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 50
+                },
+
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 250,
+                    multiplier: 1
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'bottom',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'bottom',
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.name = 'view';
+        view.navigation.name = 'navigation';
+        view.button.name = 'button';
+
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.top.value).toBe(250);
+            expect(view.navigation._autolayout.bottom.value).toBe(450);
+            expect(view.navigation._autolayout.height.value).toBe(100);
+            expect(view.button._autolayout.top.value).toBe(300);
+            expect(view.button._autolayout.bottom.value).toBe(450);
+            expect(view.button._autolayout.height.value).toBe(50);
+            done();
+        };
+
+    });
+
+    it('adds constraints based on siblings with top/top', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 100
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 50
+                },
+
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 250,
+                    multiplier: 1
+                },
+
+                {
+                    item: 'button',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'top',
+                },
+            ]
+        });
+        view.navigation = new RectangleView({
+            model:model,
+        });
+        view.button = new RectangleView({
+            model:model,
+        });
+        view.name = 'view';
+        view.navigation.name = 'navigation';
+        view.button.name = 'button';
+
+        view.addSubview(view.navigation);
+        view.addSubview(view.button);
+        region.show(view);
+
+        view.onShow = function(){
+            expect(view.navigation._autolayout.top.value).toBe(250);
+            expect(view.navigation._autolayout.bottom.value).toBe(450);
+            expect(view.navigation._autolayout.height.value).toBe(100);
+            expect(view.button._autolayout.top.value).toBe(250);
+            expect(view.button._autolayout.bottom.value).toBe(500);
+            expect(view.button._autolayout.height.value).toBe(50);
+            done();
+        };
+
+    });
+
 
 }); // eof describe
 }); // eof define
