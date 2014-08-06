@@ -113,6 +113,24 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                     leftExpression = autolayout.plus(item._autolayout.top, item._autolayout.height);
                 }
                 break;
+
+            case 'left':
+                value = autolayout.plus(toItem._autolayout.right, toItem._autolayout.width);
+                stays = [toItem._autolayout.right, toItem._autolayout.width, toItem._autolayout.right];
+
+                if(itemAttribute.name == 'left'){
+                    leftExpression = autolayout.plus(item._autolayout.right, item._autolayout.width);
+                }
+                break;
+
+            // case 'top':
+            //     value = autolayout.plus(toItem._autolayout.bottom, toItem._autolayout.height);
+            //     stays = [toItem._autolayout.bottom, toItem._autolayout.height, toItem._autolayout.bottom];
+
+            //     if(itemAttribute.name == 'top'){
+            //         leftExpression = autolayout.plus(item._autolayout.bottom, item._autolayout.height);
+            //     }
+            //     break;
         }
     }
 
