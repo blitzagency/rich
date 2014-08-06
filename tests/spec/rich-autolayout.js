@@ -9,6 +9,7 @@ var Modifier = require('famous/core/Modifier');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
+var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
 
 
@@ -469,7 +470,10 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'left',
                     relatedBy: '==', // '=|>=|<='
-                    constant: 10
+                    toItem: 'superview', //'null is superview'
+                    toAttribute: 'left',
+                    constant: 10,
+                    multiplier: 1
                 },
             ]
         });
@@ -500,6 +504,7 @@ describe('Auto Layout:', function() {
             // console.log(view.button._autolayout.left)
             done();
         };
+
     });
 
 

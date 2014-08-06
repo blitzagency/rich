@@ -85,7 +85,7 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
     console.log('-- expression for \'' + item.name + '\' -> \'' + toItem.name + '\'');
 
     if(itemsAreLeaves){
-        console.log('-- views \'' + item.name + '\' & \'' + toItem.name + '\' are leafs');
+        console.log('-- views \'' + item.name + '\' & \'' + toItem.name + '\' are leaves');
 
         switch(toAttribute.name){
             case 'right':
