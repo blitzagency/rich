@@ -134,6 +134,8 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeConstraints: function(){
+        if(this._constraintsInitialized) return;
+
         var size = this.superview.getSize();
         var width = this.superview._autolayout.width.value;
         var height = this.superview._autolayout.height.value;

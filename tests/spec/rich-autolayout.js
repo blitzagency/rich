@@ -456,13 +456,13 @@ describe('Auto Layout:', function() {
                     relatedBy: '==', // '=|>=|<='
                     constant: 40
                 },
-                // {
-                //     item: 'button',
-                //     attribute: 'left',
-                //     relatedBy: '==', // '=|>=|<='
-                //     toItem: 'navigation', //'null is superview'
-                //     toAttribute: 'right'
-                // },
+                {
+                    item: 'button',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'navigation', //'null is superview'
+                    toAttribute: 'right'
+                },
 
             ]
         });
@@ -475,7 +475,7 @@ describe('Auto Layout:', function() {
             model:model,
         });
         view.button.name = 'button';
-        view.name = 'view'
+        view.name = 'view';
         view.addSubview(view.navigation);
         view.addSubview(view.button);
         region.show(view);
@@ -483,9 +483,13 @@ describe('Auto Layout:', function() {
         view.onShow = function(){
             // console.log(view.navigation._autolayout.width)
             // console.log(view.button._autolayout.width)
-            console.log(view.navigation._autolayout.left)
-            console.log(view.navigation._autolayout.width)
-            console.log(view.navigation._autolayout.right)
+            console.log('-', view.navigation._autolayout.left);
+            console.log('-', view.navigation._autolayout.right);
+            console.log('-', view.navigation._autolayout.width);
+
+            console.log('+', view.button._autolayout.left);
+            console.log('+', view.button._autolayout.right);
+            console.log('+', view.button._autolayout.width);
             // console.log(view.button._autolayout.left)
             done();
         };
