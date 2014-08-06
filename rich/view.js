@@ -102,6 +102,7 @@ var FamousView = marionette.View.extend({
             h = this.properties.size[1];
         }
 
+        this._constraintRelations = {};
         this._autolayout.width = autolayout.cv('width', w);
         this._autolayout.height = autolayout.cv('height', h);
         this._autolayout.top = autolayout.cv('top', 0);
@@ -168,7 +169,6 @@ var FamousView = marionette.View.extend({
 
         if(!view._constraintsInitialized){
             view._initializeConstraints();
-            view._constraintsInitialized = true;
         }
 
         view.addConstraint(constraintsFromJson(json, this));
@@ -178,11 +178,45 @@ var FamousView = marionette.View.extend({
 
         if(options.stays){
             _.each(options.stays, function(stay){
-                this._solver.addStay(stay, autolayout.required, 1);
+                this._solver.addStay(stay, autolayout.weak, 1);
             }, this);
         }
 
         this._solver.addConstraint(options.constraint);
+
+        var vars = this._autolayout;
+        var context = [vars.width, vars.height,
+                       vars.top, vars.right,
+                       vars.bottom, vars.left];
+
+        _.each(this._constraintRelations, function(value){
+            //console.log(this.name, value.name)
+            var solver = value._solver;
+
+            var valueWidth = vars.width.value;
+            var valueHeight = vars.height.value;
+            var valueTop = vars.top.value;
+            var valueRight = vars.right.value;
+            var valueBottom = vars.bottom.value;
+            var valueLeft = vars.left.value;
+
+            solver.addEditVar(vars.width);
+            solver.addEditVar(vars.height);
+            solver.addEditVar(vars.top);
+            solver.addEditVar(vars.right);
+            solver.addEditVar(vars.bottom);
+            solver.addEditVar(vars.left);
+
+            solver.beginEdit();
+            solver.suggestValue(vars.width, valueWidth);
+            solver.suggestValue(vars.height, valueHeight);
+            solver.suggestValue(vars.top, valueTop);
+            solver.suggestValue(vars.right, valueRight);
+            solver.suggestValue(vars.bottom, valueBottom);
+            solver.suggestValue(vars.left, valueLeft);
+            solver.endEdit();
+
+        }, this);
     },
 
     _prepareModification: function(duration, requireModifier){

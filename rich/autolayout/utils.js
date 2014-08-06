@@ -3,6 +3,8 @@ define(function (require, exports, module) {
 var autolayout = require('./init');
 var c = autolayout.cassowary;
 
+
+
 exports.constraintsFromJson = function(json, view){
     // item: 'navigation',
     // attribute: 'width',
@@ -58,6 +60,7 @@ exports.constraintsFromJson = function(json, view){
         var result = buildExpression(item, toItem, toAttribute, multiplier, constant);
         solve = result.expression;
         stays = result.stays;
+        toItem._constraintRelations[item.cid] = item;
     }
 
     var constraint = related(
@@ -85,7 +88,7 @@ function buildExpression(item, toItem, toAttribute, multiplier, constant){
     console.log('-- expression for \'' + item.name + '\' -> \'' + toItem.name + '\'');
 
     if(itemsAreLeaves){
-        console.log('-- views \'' + item.name + '\' & \'' + toItem.name + '\' are leaves');
+        console.log('-- laeves \'' + item.name + '\' & \'' + toItem.name + '\'');
 
         switch(toAttribute.name){
             case 'right':

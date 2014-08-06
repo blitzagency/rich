@@ -458,6 +458,7 @@ describe('Auto Layout:', function() {
                     relatedBy: '==', // '=|>=|<='
                     constant: 40
                 },
+
                 {
                     item: 'button',
                     attribute: 'left',
