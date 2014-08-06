@@ -99,7 +99,10 @@ define(function (require, exports, module) {
             var context = this.context;
 
             if(this.modifier){
-                relative = root.add(_.result(this, 'modifier'));
+                var modifiers = _.result(this, 'modifier');
+                relative = this.applyModifiers(modifiers, root);
+
+                this._modifier = modifiers;
             }
 
             if(this.nestedSubviews){
