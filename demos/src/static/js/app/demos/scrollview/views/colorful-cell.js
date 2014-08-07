@@ -15,7 +15,7 @@ var ColorfulCell = rich.ItemView.extend({
     },
 
     clicking: function(){
-        this.invalidate();
+        this.invalidateView();
     },
 
 
