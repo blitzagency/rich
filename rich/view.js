@@ -36,6 +36,8 @@ var FamousView = marionette.View.extend({
         options || (options = {});
 
         this.children = new backbone.ChildViewContainer();
+        this._autolayoutModifier = new Modifier();
+
 
         /* >>> BEGIN marionette.View() override */
          _.bindAll(this, 'render');
@@ -93,7 +95,7 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeAutolayout: function(){
-        this._autolayout = {};
+        var al = this._autolayout = {};
         var w = 0;
         var h = 0;
 
@@ -110,6 +112,14 @@ var FamousView = marionette.View.extend({
         this._autolayout.bottom = autolayout.cv('bottom', 0);
         this._autolayout.left = autolayout.cv('left', 0);
         this._solver = new autolayout.cassowary.SimplexSolver();
+
+        this._autolayoutModifier.transformFrom(function(){
+            return Transform.translate(al.left.value, al.top.value, 0);
+        });
+
+        this._autolayoutModifier.sizeFrom(function(){
+            return [al.width, al.height];
+        });
 
         // add some loose constraints about top/left/bottom/right
         var top = autolayout.geq(this._autolayout.top, 0, autolayout.weak, 1);
@@ -184,11 +194,19 @@ var FamousView = marionette.View.extend({
 
         this._solver.addConstraint(options.constraint);
 
-        var vars = this._autolayout;
-        var context = [vars.width, vars.height,
-                       vars.top, vars.right,
-                       vars.bottom, vars.left];
+        // @adam, i commented this out and moved the update to another func
+        // you cool w/ this and do you need these vars? i dont see them used...
+        //
+        // var vars = this._autolayout;
+        // var context = [vars.width, vars.height,
+        //                vars.top, vars.right,
+        //                vars.bottom, vars.left];
 
+        this._updateConstraintVariables();
+    },
+
+    _updateConstraintVariables: function(){
+        var vars = this._autolayout;
         _.each(this._constraintRelations, function(value){
             //console.log(this.name, value.name)
             var solver = value._solver;
@@ -369,7 +387,8 @@ var FamousView = marionette.View.extend({
 
         if(this.modifier){
             var modifiers = _.result(this, 'modifier');
-            relative = this.applyModifiers(modifiers, root);
+            relative = this.applyModifiers([this._autolayoutModifier], root);
+            relative = this.applyModifiers(modifiers, relative);
 
             this._modifier = modifiers;
         }
@@ -506,6 +525,20 @@ var FamousView = marionette.View.extend({
 
     setSize: function(value){
         this.properties.size = value;
+        var vars = this._autolayout;
+
+        this._solver.addEditVar(vars.width);
+        this._solver.addEditVar(vars.height);
+
+        this._solver.beginEdit();
+        this._solver.suggestValue(vars.width, value[0]);
+        this._solver.suggestValue(vars.height, value[1]);
+        this._solver.resolve();
+        this._solver.endEdit();
+
+        console.log(this._autolayout.width)
+        // @adam, this should not be 1000...should be 200
+        this._updateConstraintVariables();
 
         if(this.root){
             this.invalidateView();

@@ -11,7 +11,7 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
 
-
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Auto Layout:', function() {
     var region;
@@ -35,43 +35,59 @@ describe('Auto Layout:', function() {
 
 
     it('generates layout modifiers', function(done){
-        var model = new Rectangle();
+        var model = new Rectangle({
+            color: 'red'
+        });
 
-        var view = new RectangleView({
+        var view = new rich.View({
             model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'height',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 300
+                },
+
+                // {
+                //     item: 'navigation',
+                //     attribute: 'width',
+                //     relatedBy: '==', // '=|>=|<='
+                //     constant: 50,
+                //     multiplier: 1
+                // },
+                {
+                    item: 'navigation',
+                    attribute: 'right',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem:'superview',
+                    toAttribute: 'width',
+                    constant: 0,
+                    multiplier: .5
+                },
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    constant: 10,
+                    multiplier: 1
+                },
+            ]
         });
         view.navigation = new RectangleView({
-            model:model,
-            size: [100, 200]
+            model:model
         });
         view.addSubview(view.navigation);
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation.getSize()).toEqual([100, 200]);
+            // var size = rich.utils.getViewSize(view);
+            // console.log(size)
+            view.setSize([200, 200]);
             done();
+
         };
 
-        // constraints: [
-        //         {
-        //             item: 'navigation',
-        //             attribute: 'width',
-        //             relatedBy: '==', // '=|>=|<='
-        //             toItem: 'superview', //'null is superview'
-        //             toAttribute: 'width',
-        //             multiplier: 0.5,
-        //             constant: 0
-        //         },
-        //         {
-        //             item: 'navigation',
-        //             attribute: 'height',
-        //             relatedBy: '==', // '=|>=|<='
-        //             toItem: 'superview', //'null is superview'
-        //             toAttribute: 'height',
-        //             multiplier: 0.5,
-        //             constant: 0
-        //         }
-        //     ]
     });
 
 

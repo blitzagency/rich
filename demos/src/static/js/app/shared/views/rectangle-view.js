@@ -16,10 +16,6 @@ var RectangleView = rich.ItemView.extend({
     initialize : function(options){
         options || (options = {});
 
-        if(!options.size){
-            this.setSize(this.model.get('size'));
-        }
-
         if(!options.modifier){
             var transform = Transform.translate(
                 this.model.get('tx'),
@@ -31,7 +27,14 @@ var RectangleView = rich.ItemView.extend({
             });
         }
 
-    }
+    },
+    serializeData: function(){
+        var obj = {
+            size: this.getSize(),
+            color: this.model.get('color')
+        };
+        return obj;
+    },
 });
 
 exports.RectangleView = RectangleView;
