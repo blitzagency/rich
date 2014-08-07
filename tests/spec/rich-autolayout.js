@@ -77,7 +77,8 @@ describe('Auto Layout:', function() {
         };
     });
 
-    it('ignores constraints over explicit size', function(done){
+    // the concept for this test is fundamentally wrong.
+    xit('ignores constraints over explicit size', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -212,6 +213,8 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'left',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'left',
                     constant: 20
                 },
 
@@ -250,6 +253,7 @@ describe('Auto Layout:', function() {
 
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -258,6 +262,7 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
+
             expect(view.navigation._autolayout.right.value).toBe(920);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(80);
@@ -278,17 +283,22 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'right',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'right',
                     constant: 80
                 },
                 {
                     item: 'navigation',
                     attribute: 'bottom',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
                     constant: 80
                 },
 
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -317,16 +327,21 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'top',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'top',
                     constant: 80
                 },
                 {
                     item: 'navigation',
                     attribute: 'bottom',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
                     constant: 80
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -352,6 +367,8 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'left',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'left',
                     constant: 800
                 },
                 {
@@ -364,6 +381,8 @@ describe('Auto Layout:', function() {
                     item: 'navigation',
                     attribute: 'top',
                     relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'top',
                     constant: 800
                 },
                 {
@@ -418,6 +437,7 @@ describe('Auto Layout:', function() {
                 }
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -468,6 +488,7 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -475,6 +496,7 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
+
         view.addSubview(view.navigation);
         view.addSubview(view.button);
         region.show(view);
@@ -592,6 +614,7 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -651,9 +674,11 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.button = new RectangleView({
             model:model,
         });
@@ -710,9 +735,11 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.button = new RectangleView({
             model:model,
         });
@@ -769,6 +796,7 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
@@ -828,9 +856,11 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.button = new RectangleView({
             model:model,
         });
@@ -887,9 +917,11 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.button = new RectangleView({
             model:model,
         });

@@ -16,6 +16,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 describe('Auto Layout:', function() {
     var region;
     var $el;
+    var context;
 
     beforeEach(function() {
         loadFixtures('famous.html');
@@ -24,7 +25,10 @@ describe('Auto Layout:', function() {
             el: '#famous-context'
         });
 
+
         $el = region.el;
+        context = region.context;
+
         expect($el.length).toBe(1);
     });
 
@@ -42,20 +46,16 @@ describe('Auto Layout:', function() {
         var view = new rich.View({
             model: model,
             constraints: [
+
                 {
                     item: 'navigation',
-                    attribute: 'height',
+                    attribute: 'left',
                     relatedBy: '==', // '=|>=|<='
-                    constant: 300
+                    toItem: 'superview',
+                    toAttribute: 'top',
+                    constant: 10,
                 },
 
-                // {
-                //     item: 'navigation',
-                //     attribute: 'width',
-                //     relatedBy: '==', // '=|>=|<='
-                //     constant: 50,
-                //     multiplier: 1
-                // },
                 {
                     item: 'navigation',
                     attribute: 'right',
@@ -63,29 +63,40 @@ describe('Auto Layout:', function() {
                     toItem:'superview',
                     toAttribute: 'width',
                     constant: 0,
-                    multiplier: .5
+                    multiplier: 0.5
                 },
+
                 {
                     item: 'navigation',
                     attribute: 'top',
                     relatedBy: '==', // '=|>=|<='
-                    constant: 10,
+                    toItem: 'superview',
+                    toAttribute: 'top',
+                    constant: 5,
                     multiplier: 1
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model
         });
+
         view.addSubview(view.navigation);
         region.show(view);
 
-        view.onShow = function(){
-            // var size = rich.utils.getViewSize(view);
-            // console.log(size)
-            view.setSize([200, 200]);
-            done();
+        view.setSize([200, 200]);
 
+        view.onShow = function(){
+
+            expect(view._autolayout.width.value).toBe(200);
+            expect(view._autolayout.height.value).toBe(200);
+
+            expect(view.navigation._autolayout.top.value).toBe(5);
+            expect(view.navigation._autolayout.height.value).toBe(195);
+            expect(view.navigation._autolayout.width.value).toBe(90);
+            expect(view.navigation._autolayout.left.value).toBe(10);
+            done();
         };
 
     });
