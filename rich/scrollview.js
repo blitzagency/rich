@@ -146,7 +146,7 @@ define(function (require, exports, module) {
             this._positionX.set(x);
             this._positionY.set(y);
             this._particle.setPosition([x, y]);
-            this._scrollableView.invalidate();
+            this._scrollableView.invalidateView();
         },
 
         addSubview: function(view){
