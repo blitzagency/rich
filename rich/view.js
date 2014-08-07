@@ -173,7 +173,6 @@ var FamousView = marionette.View.extend({
 
 
         if(!this.properties.size){
-            //console.log('---- inheriting size from superview', this.cid);
             this._solver.addEditVar(vars.width);
             this._solver.addEditVar(vars.height);
             this._solver.beginEdit();
@@ -196,20 +195,6 @@ var FamousView = marionette.View.extend({
                 this.superview._autolayout.height,
                 autolayout.weak, 0)
         );
-
-        // this._solver.addConstraint(
-        //     autolayout.eq(
-        //         autolayout.plus(this._autolayout.width, this._autolayout.right).plus(this._autolayout.left),
-        //         this.superview._autolayout.width),
-        //     autolayout.weak, 0
-        // );
-
-        // this._solver.addConstraint(
-        //     autolayout.eq(
-        //         autolayout.plus(this._autolayout.height, this._autolayout.bottom).plus(this._autolayout.top),
-        //         this.superview._autolayout.height),
-        //     autolayout.weak, 0
-        // );
 
         _.each(this.constraints, this.addConstraintFromJson, this);
 
