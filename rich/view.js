@@ -118,7 +118,7 @@ var FamousView = marionette.View.extend({
         });
 
         this._autolayoutModifier.sizeFrom(function(){
-            return [al.width, al.height];
+            return [al.width.value, al.height.value];
         });
 
         // add some loose constraints about top/left/bottom/right
