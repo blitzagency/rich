@@ -102,6 +102,84 @@ describe('Auto Layout:', function() {
     });
 
     it('generates complex layout modifiers', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var color1 = new Rectangle({
+            color: colors[1]
+        });
+
+        var color2 = new Rectangle({
+            color: colors[2]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+            constraints: [
+                {
+                    item: 'box1',
+                    attribute: 'bottom',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
+                    constant: 0
+                },
+
+                {
+                    item: 'box1',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'height',
+                    constant: 200
+                }
+            ]
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+
+            constraints: [
+                {
+                    item: 'box2',
+                    attribute: 'bottom',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
+                    constant: 0
+                },
+            ]
+        });
+
+        var box2 = new RectangleView({
+            model: color2
+        });
+
+        box0.name = 'box0';
+        box1.name = 'box1';
+        box2.name = 'box2';
+
+        box0.box1 = box1;
+        box0.addSubview(box1);
+
+        box1.box2 = box2;
+        box1.addSubview(box2);
+
+        region.show(box0);
+
+        box0.onShow = function(){
+            console.log('(box2) L:' + box2._autolayout.left.value);
+            console.log('(box2) R:' + box2._autolayout.right.value);
+            console.log('(box2) W:' + box2._autolayout.width.value);
+            console.log('(box2) H:' + box2._autolayout.height.value);
+            console.log('---');
+            done();
+        };
+
+    });
+
+    xit('generates complex layout modifiers', function(done){
 
         var color0 = new Rectangle({
             color: colors[0]
