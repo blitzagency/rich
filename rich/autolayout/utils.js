@@ -70,12 +70,12 @@ exports.constraintsFromJson = function(json, view){
     // console.log(item.name)
     if(item.name == 'subaction'){
         console.log('subaction')
-        console.log(item.superview._autolayout.height.value)
+        console.log(item.superview._autolayout.width.value)
     }
 
     if(item.name == 'footer'){
         console.log('footer')
-        console.log(item.superview._autolayout.height.value)
+        console.log(item.superview._autolayout.width.value)
     }
     var constraint = related(
         leftExpression,

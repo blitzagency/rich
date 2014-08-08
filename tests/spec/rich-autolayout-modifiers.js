@@ -285,13 +285,13 @@ describe('Auto Layout:', function() {
             model: color4,
             constraints: [
                 {
-                    item: 'subaction',
+                    item: 'action4',
                     attribute: 'top',
                     relatedBy: '==',
                     constant: 0
                 },
                 // {
-                //     item: 'subaction',
+                //     item: 'action4',
                 //     attribute: 'height',
                 //     relatedBy: '==',
                 //     // toItem: 'action2',
@@ -299,7 +299,7 @@ describe('Auto Layout:', function() {
                 //     constant: 10
                 // },
                 // {
-                //     item: 'subaction',
+                //     item: 'action4',
                 //     attribute: 'right',
                 //     relatedBy: '==',
                 //     // toItem: 'action2',
@@ -307,7 +307,7 @@ describe('Auto Layout:', function() {
                 //     constant: 0
                 // },
                 // {
-                //     item: 'subaction',
+                //     item: 'action4',
                 //     attribute: 'bottom',
                 //     relatedBy: '==',
                 //     // toItem: 'action2',
@@ -317,14 +317,14 @@ describe('Auto Layout:', function() {
             ]
         });
 
-        var subaction = new RectangleView({
+        var action4 = new RectangleView({
             model: color2
         });
 
         action1.name = 'action1';
         action2.name = 'action2';
         action3.name = 'action3';
-        subaction.name = 'subaction';
+        action4.name = 'action4';
 
 
         footer.name = 'footer';
@@ -349,8 +349,8 @@ describe('Auto Layout:', function() {
         footer.action3 = action3;
         footer.addSubview(action3, 3);
 
-        action3.subaction = subaction;
-        action3.addSubview(subaction);
+        action3.action4 = action4;
+        action3.addSubview(action4);
 
         region.show(view);
 
