@@ -38,7 +38,7 @@ describe('Auto Layout:', function() {
     });
 
 
-    it('generates layout modifiers', function(done){
+    xit('generates layout modifiers', function(done){
         var model = new Rectangle({
             color: 'red'
         });
@@ -96,6 +96,240 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.height.value).toBe(195);
             expect(view.navigation._autolayout.width.value).toBe(90);
             expect(view.navigation._autolayout.left.value).toBe(10);
+            done();
+        };
+
+    });
+
+    it('generates layout modifiers', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var color1 = new Rectangle({
+            color: colors[1]
+        });
+
+        var color2 = new Rectangle({
+            color: colors[2]
+        });
+
+        var color3 = new Rectangle({
+            color: colors[3]
+        });
+
+        var color4 = new Rectangle({
+            color: colors[4]
+        });
+
+        var color5 = new Rectangle({
+            color: colors[5]
+        });
+
+        var gray = new Rectangle({
+            color: '#ccc'
+        });
+
+        var view = new rich.View({
+            constraints: [
+                {
+                    item: 'column',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 200
+                },
+
+                {
+                    item: 'column',
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'left',
+                    constant: 0
+                },
+
+                {
+                    item: 'content',
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: 'column',
+                    toAttribute: 'right',
+                    constant: 0
+                },
+            ]
+        });
+
+        var column = new RectangleView({
+            model: color0,
+
+            constraints: [
+                {
+                    item: 'action1',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action1',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action1',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'right',
+                    constant: 0
+                },
+
+                // {
+                //     item: 'footer',
+                //     attribute: 'bottom',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'bottom',
+                //     constant: 0
+                // },
+
+                // {
+                //     item: 'footer',
+                //     attribute: 'height',
+                //     relatedBy: '==',
+                //     constant: 50
+                // },
+
+                // {
+                //     item: 'footer',
+                //     attribute: 'width',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'width',
+                // },
+            ]
+        });
+
+        var footer = new RectangleView({
+            model: color1,
+
+            constraints: [
+
+                {
+                    item: 'action2',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action2',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action2',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'action1',
+                    toAttribute: 'left',
+                    constant: 5
+                },
+
+                {
+                    item: 'action3',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action3',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action3',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'right',
+                    constant: 0
+                },
+
+
+            ]
+        });
+
+        var content = new RectangleView({
+            model: gray
+        });
+
+        var action1 = new RectangleView({
+            model: color3
+        });
+
+        var action2 = new RectangleView({
+            model: color4
+        });
+
+        var action3 = new RectangleView({
+            model: color4
+        });
+
+        action1.name = 'action1';
+        action2.name = 'action2';
+        action3.name = 'action3';
+
+        footer.name = 'footer';
+        column.name = 'column';
+        view.name = 'view';
+        content.name = 'content';
+
+        view.column = column;
+        view.content = content;
+        view.addSubview(column);
+        view.addSubview(content);
+
+        column.footer = footer;
+        column.action1 = action1;
+        //column.addSubview(footer);
+        column.addSubview(action1);
+
+        footer.action2 = action1;
+        footer.action3 = action2;
+        footer.addSubview(action2, 3);
+        footer.addSubview(action3, 3);
+
+
+
+        region.show(view);
+
+        //view.setSize([1000, 400]);
+        view.onShow = function(){
+            console.log('(content) L:' + content._autolayout.left.value);
+            console.log('(content) R:' + content._autolayout.right.value);
+
+            console.log('(column) L:' + column._autolayout.left.value);
+            console.log('(column) R:' + column._autolayout.right.value);
+
+            console.log('(action1) L:' + action1._autolayout.left.value);
+            console.log('(action1) R:' + action1._autolayout.right.value);
+
+            console.log('(action2) L:' + action2._autolayout.left.value);
+            console.log('(action2) R:' + action2._autolayout.right.value);
+
+            console.log('(action3) L:' + action3._autolayout.left.value);
+            console.log('(action3) R:' + action3._autolayout.right.value);
+            //console.log(footer.getSize());
+            //console.log(action1._autolayout.left.value);
             done();
         };
 
