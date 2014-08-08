@@ -64,7 +64,8 @@ exports.constraintsFromJson = function(json, view){
         stays = result.stays;
         toItem._constraintRelations[item.cid] = item;
     }
-    if(item.name == 'button'){
+    // console.log(item.name)
+    if(item.name == 'footer'){
         // console.log(leftExpression.toString())
         // console.log(rightExpression.toString())
 
@@ -144,10 +145,18 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                 stays = [toItem._autolayout.left, toItem._autolayout.right];
 
                 if(item.name == 'action2'){
-                    console.log('-- autolayout.utils.js [Line 147]');
-                    console.log(toItem.name);
-                    console.log(toItem._autolayout.left.value);
-                    console.log(toItem._autolayout.width.value);
+                    // console.log('-- autolayout.utils.js [Line 147]');
+                    // console.log(toItem.name);
+                    // console.log(toItem._autolayout.left.value);
+                    // console.log(toItem._autolayout.width.value);
+                    // console.log(toItem.superview.name)
+                    // console.log(toItem.superview._autolayout.left.value)
+                    // console.log(toItem.superview._autolayout.right.value)
+                    // console.log(toItem.superview._autolayout.width.value)
+                    // console.log(item.name);
+                    // console.log(item._autolayout.left.value);
+                    // console.log(item._autolayout.right.value);
+                    // console.log(item._autolayout.width.value);
                 }
             break;
         }

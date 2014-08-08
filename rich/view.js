@@ -210,6 +210,7 @@ var FamousView = marionette.View.extend({
         }
 
         view.addConstraint(constraintsFromJson(json, this));
+        view.invalidateLayout();
     },
 
     addConstraint: function(options){
@@ -323,6 +324,8 @@ var FamousView = marionette.View.extend({
     invalidateLayout: function(){
         var superviewSize = this.superview.getSize();
         // TODO need to recalculate the constraints.
+
+        this._updateConstraintVariables();
 
         this.children.each(function(subview){
             subview.invalidateLayout();
