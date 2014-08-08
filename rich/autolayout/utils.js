@@ -16,6 +16,7 @@ exports.constraintsFromJson = function(json, view){
     // console.log(json)
 
     var item = view[json.item];
+    console.log(item.name)
     var toItem;
     var toAttribute;
     var multiplier = json.multiplier || 1;

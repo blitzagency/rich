@@ -147,8 +147,10 @@ var FamousView = marionette.View.extend({
 
     _initializeConstraints: function(){
         if(this._constraintsInitialized) return;
-
         if(!this.superview) return;
+
+       //this.superview._initializeConstraints();
+
 
         var vars = this._autolayout;
         var superview = this.superview._autolayout;
@@ -196,25 +198,26 @@ var FamousView = marionette.View.extend({
                 autolayout.weak, 0)
         );
 
+        // console.log(this.name);
         _.each(this.constraints, this.addConstraintFromJson, this);
 
         this._constraintsInitialized = true;
+
     },
 
     addConstraintFromJson: function(json){
 
         var view = this[json.item];
 
+        view.addConstraint(constraintsFromJson(json, this));
+
         if(!view._constraintsInitialized){
             view._initializeConstraints();
         }
-
-        view.addConstraint(constraintsFromJson(json, this));
-        view.invalidateLayout();
+        //view.invalidateLayout();
     },
 
     addConstraint: function(options){
-
 
         if(options.stays){
             _.each(options.stays, function(stay){
