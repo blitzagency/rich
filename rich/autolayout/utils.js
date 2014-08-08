@@ -135,11 +135,20 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
     } else {
         switch(toAttribute.name){
             case 'right':
-                leftExpression = item._autolayout.left;
-                constant = -1 * constant;
-                value = autolayout.minus(toItem._autolayout.width, item._autolayout.width).plus(toItem._autolayout.right);
-                stays = [toItem._autolayout.width];
 
+
+                constant = -1 * constant;
+                leftExpression = autolayout.plus(item._autolayout.left, item._autolayout.width);
+                value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
+
+                stays = [toItem._autolayout.left, toItem._autolayout.right];
+
+                if(item.name == 'action2'){
+                    console.log('-- autolayout.utils.js [Line 147]');
+                    console.log(toItem.name);
+                    console.log(toItem._autolayout.left.value);
+                    console.log(toItem._autolayout.width.value);
+                }
             break;
         }
     }

@@ -220,15 +220,6 @@ describe('Auto Layout:', function() {
 
                 {
                     item: 'action2',
-                    attribute: 'right',
-                    relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'right',
-                    constant: 0
-                },
-
-                {
-                    item: 'action2',
                     attribute: 'width',
                     relatedBy: '==',
                     constant: 50
@@ -239,6 +230,15 @@ describe('Auto Layout:', function() {
                     attribute: 'height',
                     relatedBy: '==',
                     constant: 50
+                },
+
+                {
+                    item: 'action2',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'right',
+                    constant: 0
                 },
 
 
@@ -299,13 +299,17 @@ describe('Auto Layout:', function() {
         view.addSubview(column);
         view.addSubview(content);
 
-        column.footer = footer;
         column.action1 = action1;
-        column.addSubview(footer);
         column.addSubview(action1);
+
+        column.footer = footer;
+        column.addSubview(footer);
 
         footer.action2 = action2;
         footer.addSubview(action2, 3);
+        footer.setSize = function(){
+            console.log('FOOTER SET SIZE');
+        }
 
         // footer.action3 = action3;
         // footer.addSubview(action3, 3);
@@ -325,22 +329,34 @@ describe('Auto Layout:', function() {
             expect(action1._autolayout.width.value).toBe(50);
             expect(action1._autolayout.height.value).toBe(50);
 
+            expect(footer._autolayout.left.value).toBe(0);
+            expect(footer._autolayout.right.value).toBe(0);
+            expect(footer._autolayout.width.value).toBe(200);
+            expect(footer._autolayout.height.value).toBe(50);
+
+            console.log('-- rich-autolayout-modifiers.js [Line 337]');
             console.log('(content) L:' + content._autolayout.left.value);
             console.log('(content) R:' + content._autolayout.right.value);
+            console.log('---');
 
             console.log('(column) L:' + column._autolayout.left.value);
             console.log('(column) R:' + column._autolayout.right.value);
+            console.log('---');
 
             console.log('(action1) L:' + action1._autolayout.left.value);
             console.log('(action1) R:' + action1._autolayout.right.value);
+            console.log('(action1) W:' + action1._autolayout.width.value);
+            console.log('---');
 
             console.log('(footer) L:' + footer._autolayout.left.value);
             console.log('(footer) R:' + footer._autolayout.right.value);
             console.log('(footer) W:' + footer._autolayout.width.value);
+            console.log('---');
 
             console.log('(action2) L:' + action2._autolayout.left.value);
             console.log('(action2) R:' + action2._autolayout.right.value);
             console.log('(action2) W:' + action2._autolayout.width.value);
+            console.log('---');
 
             // console.log('(action3) L:' + action3._autolayout.left.value);
             // console.log('(action3) R:' + action3._autolayout.right.value);
