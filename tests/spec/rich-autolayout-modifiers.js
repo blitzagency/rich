@@ -130,8 +130,6 @@ describe('Auto Layout:', function() {
                     item: 'box1',
                     attribute: 'height',
                     relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'height',
                     constant: 200
                 }
             ]
