@@ -169,6 +169,18 @@ describe('Auto Layout:', function() {
         region.show(box0);
 
         box0.onShow = function(){
+            console.log('(box0) L:' + box0._autolayout.left.value);
+            console.log('(box0) R:' + box0._autolayout.right.value);
+            console.log('(box0) W:' + box0._autolayout.width.value);
+            console.log('(box0) H:' + box0._autolayout.height.value);
+            console.log('---');
+
+            console.log('(box1) L:' + box1._autolayout.left.value);
+            console.log('(box1) R:' + box1._autolayout.right.value);
+            console.log('(box1) W:' + box1._autolayout.width.value);
+            console.log('(box1) H:' + box1._autolayout.height.value);
+            console.log('---');
+
             console.log('(box2) L:' + box2._autolayout.left.value);
             console.log('(box2) R:' + box2._autolayout.right.value);
             console.log('(box2) W:' + box2._autolayout.width.value);
