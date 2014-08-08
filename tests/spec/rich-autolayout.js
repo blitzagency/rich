@@ -78,7 +78,7 @@ describe('Auto Layout:', function() {
     });
 
     // the concept for this test is fundamentally wrong.
-    xit('ignores constraints over explicit size', function(done){
+    it('ignores size over constraints', function(done){
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -113,7 +113,7 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         view.onShow = function(){
-            expect(view.navigation.getSize()).toEqual([100, 200]);
+            expect(view.navigation.getSize()).toEqual([500, 400]);
             done();
         };
     });

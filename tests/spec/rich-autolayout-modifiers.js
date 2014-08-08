@@ -187,29 +187,29 @@ describe('Auto Layout:', function() {
                     constant: 0
                 },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'bottom',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'bottom',
-                //     constant: 0
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'bottom',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
+                    constant: 0
+                },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'height',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'width',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'width',
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width',
+                },
             ]
         });
 
@@ -218,52 +218,52 @@ describe('Auto Layout:', function() {
 
             constraints: [
 
-                // {
-                //     item: 'action2',
-                //     attribute: 'width',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'action2',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'action2',
-                //     attribute: 'height',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'action2',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'action2',
-                //     attribute: 'right',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'right',
-                //     constant: 0
-                // },
+                {
+                    item: 'action2',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'right',
+                    constant: 0
+                },
 
 
-                // {
-                //     item: 'action3',
-                //     attribute: 'width',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'action3',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'action3',
-                //     attribute: 'height',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'action3',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'action3',
-                //     attribute: 'right',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'right',
-                //     constant: 0
-                // },
+                {
+                    item: 'action3',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    toItem: 'action2',
+                    toAttribute: 'left',
+                    constant: 10
+                },
 
 
             ]
@@ -282,12 +282,50 @@ describe('Auto Layout:', function() {
         });
 
         var action3 = new RectangleView({
-            model: color4
+            model: color4,
+            constraints: [
+                {
+                    item: 'subaction',
+                    attribute: 'top',
+                    relatedBy: '==',
+                    constant: 0
+                },
+                // {
+                //     item: 'subaction',
+                //     attribute: 'height',
+                //     relatedBy: '==',
+                //     // toItem: 'action2',
+                //     // toAttribute: 'left',
+                //     constant: 10
+                // },
+                // {
+                //     item: 'subaction',
+                //     attribute: 'right',
+                //     relatedBy: '==',
+                //     // toItem: 'action2',
+                //     // toAttribute: 'left',
+                //     constant: 0
+                // },
+                // {
+                //     item: 'subaction',
+                //     attribute: 'bottom',
+                //     relatedBy: '==',
+                //     // toItem: 'action2',
+                //     // toAttribute: 'left',
+                //     constant: 0
+                // }
+            ]
+        });
+
+        var subaction = new RectangleView({
+            model: color2
         });
 
         action1.name = 'action1';
         action2.name = 'action2';
         action3.name = 'action3';
+        subaction.name = 'subaction';
+
 
         footer.name = 'footer';
         column.name = 'column';
@@ -302,14 +340,17 @@ describe('Auto Layout:', function() {
         column.action1 = action1;
         column.addSubview(action1);
 
-        // column.footer = footer;
-        // column.addSubview(footer);
+        column.footer = footer;
+        column.addSubview(footer);
 
-        // footer.action2 = action2;
-        // footer.addSubview(action2, 3);
+        footer.action2 = action2;
+        footer.addSubview(action2, 3);
 
-        // footer.action3 = action3;
-        // footer.addSubview(action3, 3);
+        footer.action3 = action3;
+        footer.addSubview(action3, 3);
+
+        action3.subaction = subaction;
+        action3.addSubview(subaction);
 
         region.show(view);
 
@@ -341,16 +382,16 @@ describe('Auto Layout:', function() {
             // console.log('(content) R:' + content._autolayout.right.value);
             // console.log('---');
 
-            console.log('---');
-            console.log('(column) L:' + column._autolayout.left.value);
-            console.log('(column) R:' + column._autolayout.right.value);
+            // console.log('---');
+            // console.log('(column) L:' + column._autolayout.left.value);
+            // console.log('(column) R:' + column._autolayout.right.value);
 
-            console.log('---');
+            // console.log('---');
 
-            console.log('(action1) L:' + action1._autolayout.left.value);
-            console.log('(action1) R:' + action1._autolayout.right.value);
-            console.log('(action1) W:' + action1._autolayout.width.value);
-            console.log('---');
+            // console.log('(action1) L:' + action1._autolayout.left.value);
+            // console.log('(action1) R:' + action1._autolayout.right.value);
+            // console.log('(action1) W:' + action1._autolayout.width.value);
+            // console.log('---');
 
             // console.log('(footer) L:' + footer._autolayout.left.value);
             // console.log('(footer) R:' + footer._autolayout.right.value);
@@ -366,7 +407,7 @@ describe('Auto Layout:', function() {
             // console.log('(action3) R:' + action3._autolayout.right.value);
             //console.log(footer.getSize());
             //console.log(action1._autolayout.left.value);
-            done();
+            // done();
         };
 
     });

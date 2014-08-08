@@ -16,7 +16,6 @@ exports.constraintsFromJson = function(json, view){
     // console.log(json)
 
     var item = view[json.item];
-    console.log(item.name)
     var toItem;
     var toAttribute;
     var multiplier = json.multiplier || 1;
@@ -28,7 +27,6 @@ exports.constraintsFromJson = function(json, view){
     var rightExpression;
     var strength = autolayout.weak;
     var stays = [];
-
     if(json.toItem == 'superview'){
         toItem = view;
     }else{
@@ -53,9 +51,13 @@ exports.constraintsFromJson = function(json, view){
             related = autolayout.eq;
             break;
     }
+    var itemIsAncestor = (item.superview == toItem);
+    var isSize = itemAttribute.name == 'width' || itemAttribute.name == 'height';
 
-    if(!toAttribute){
+    // console.log(itemIsAncestor)
+    if((itemIsAncestor && !isSize) || !toAttribute){
         rightExpression = constant;
+        stays = [toItem._autolayout.height, toItem._autolayout.width];
         // do we want to set a strength if they are only modifying a prop?
         // strength = autolayout.strong;
     } else {
@@ -66,10 +68,14 @@ exports.constraintsFromJson = function(json, view){
         toItem._constraintRelations[item.cid] = item;
     }
     // console.log(item.name)
-    if(item.name == 'footer'){
-        // console.log(leftExpression.toString())
-        // console.log(rightExpression.toString())
+    if(item.name == 'subaction'){
+        console.log('subaction')
+        console.log(item.superview._autolayout.height.value)
+    }
 
+    if(item.name == 'footer'){
+        console.log('footer')
+        console.log(item.superview._autolayout.height.value)
     }
     var constraint = related(
         leftExpression,
@@ -93,7 +99,7 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
     // lets get contextual. If item and toItem share the same
     // superview left, right, top and bottom are in relation
     // to each other not the walls of their superview.
-    itemsAreLeaves = (item.superview == toItem.superview);
+    var itemsAreLeaves = (item.superview == toItem.superview);
 
     if(itemsAreLeaves){
 
@@ -134,34 +140,35 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                 }
                 break;
         }
-    } else {
-        switch(toAttribute.name){
-            case 'right':
-
-
-                constant = -1 * constant;
-                leftExpression = autolayout.plus(item._autolayout.left, item._autolayout.width);
-                value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
-
-                stays = [toItem._autolayout.left, toItem._autolayout.right];
-
-                if(item.name == 'action2'){
-                    // console.log('-- autolayout.utils.js [Line 147]');
-                    // console.log(toItem.name);
-                    // console.log(toItem._autolayout.left.value);
-                    // console.log(toItem._autolayout.width.value);
-                    // console.log(toItem.superview.name)
-                    // console.log(toItem.superview._autolayout.left.value)
-                    // console.log(toItem.superview._autolayout.right.value)
-                    // console.log(toItem.superview._autolayout.width.value)
-                    // console.log(item.name);
-                    // console.log(item._autolayout.left.value);
-                    // console.log(item._autolayout.right.value);
-                    // console.log(item._autolayout.width.value);
-                }
-            break;
-        }
     }
+    // } else {
+    //     switch(toAttribute.name){
+    //         case 'right':
+
+
+    //             constant = -1 * constant;
+    //             leftExpression = autolayout.plus(item._autolayout.left, item._autolayout.width);
+    //             value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
+
+    //             stays = [toItem._autolayout.left, toItem._autolayout.right];
+
+    //             if(item.name == 'action2'){
+    //                 // console.log('-- autolayout.utils.js [Line 147]');
+    //                 // console.log(toItem.name);
+    //                 // console.log(toItem._autolayout.left.value);
+    //                 // console.log(toItem._autolayout.width.value);
+    //                 // console.log(toItem.superview.name)
+    //                 // console.log(toItem.superview._autolayout.left.value)
+    //                 // console.log(toItem.superview._autolayout.right.value)
+    //                 // console.log(toItem.superview._autolayout.width.value)
+    //                 // console.log(item.name);
+    //                 // console.log(item._autolayout.left.value);
+    //                 // console.log(item._autolayout.right.value);
+    //                 // console.log(item._autolayout.width.value);
+    //             }
+    //         break;
+    //     }
+    // }
 
     var times = autolayout.times(multiplier, value, autolayout.weak, 0);
     rightExpression = autolayout.plus(times, constant, autolayout.weak, 0);

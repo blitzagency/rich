@@ -550,6 +550,7 @@ var FamousView = marionette.View.extend({
     },
 
     setSize: function(value){
+        console.log(this.name)
         this.properties.size = value;
 
         this._initializeConstraints();
