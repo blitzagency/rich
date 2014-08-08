@@ -68,8 +68,8 @@ exports.constraintsFromJson = function(json, view){
         toItem._constraintRelations[item.cid] = item;
     }
     // console.log(item.name)
-    if(item.name == 'subaction'){
-        console.log('subaction')
+    if(item.name == 'action4'){
+        console.log('action4')
         console.log(item.superview._autolayout.width.value)
     }
 
