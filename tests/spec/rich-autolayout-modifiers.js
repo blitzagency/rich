@@ -101,7 +101,7 @@ describe('Auto Layout:', function() {
 
     });
 
-    it('generates layout modifiers', function(done){
+    it('generates complex layout modifiers', function(done){
 
         var color0 = new Rectangle({
             color: colors[0]
@@ -187,29 +187,29 @@ describe('Auto Layout:', function() {
                     constant: 0
                 },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'bottom',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'bottom',
-                //     constant: 0
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'bottom',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'bottom',
+                    constant: 0
+                },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'height',
-                //     relatedBy: '==',
-                //     constant: 50
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
 
-                // {
-                //     item: 'footer',
-                //     attribute: 'width',
-                //     relatedBy: '==',
-                //     toItem: 'superview',
-                //     toAttribute: 'width',
-                // },
+                {
+                    item: 'footer',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width',
+                },
             ]
         });
 
@@ -220,49 +220,50 @@ describe('Auto Layout:', function() {
 
                 {
                     item: 'action2',
-                    attribute: 'width',
-                    relatedBy: '==',
-                    constant: 50
-                },
-
-                {
-                    item: 'action2',
-                    attribute: 'height',
-                    relatedBy: '==',
-                    constant: 50
-                },
-
-                {
-                    item: 'action2',
-                    attribute: 'right',
-                    relatedBy: '==',
-                    toItem: 'action1',
-                    toAttribute: 'left',
-                    constant: 5
-                },
-
-                {
-                    item: 'action3',
-                    attribute: 'width',
-                    relatedBy: '==',
-                    constant: 50
-                },
-
-                {
-                    item: 'action3',
-                    attribute: 'height',
-                    relatedBy: '==',
-                    constant: 50
-                },
-
-                {
-                    item: 'action3',
                     attribute: 'right',
                     relatedBy: '==',
                     toItem: 'superview',
                     toAttribute: 'right',
                     constant: 0
                 },
+
+                {
+                    item: 'action2',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+                {
+                    item: 'action2',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 50
+                },
+
+
+                // {
+                //     item: 'action3',
+                //     attribute: 'width',
+                //     relatedBy: '==',
+                //     constant: 50
+                // },
+
+                // {
+                //     item: 'action3',
+                //     attribute: 'height',
+                //     relatedBy: '==',
+                //     constant: 50
+                // },
+
+                // {
+                //     item: 'action3',
+                //     attribute: 'right',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'right',
+                //     constant: 0
+                // },
 
 
             ]
@@ -300,20 +301,30 @@ describe('Auto Layout:', function() {
 
         column.footer = footer;
         column.action1 = action1;
-        //column.addSubview(footer);
+        column.addSubview(footer);
         column.addSubview(action1);
 
-        footer.action2 = action1;
-        footer.action3 = action2;
+        footer.action2 = action2;
         footer.addSubview(action2, 3);
-        footer.addSubview(action3, 3);
 
-
+        // footer.action3 = action3;
+        // footer.addSubview(action3, 3);
 
         region.show(view);
 
         //view.setSize([1000, 400]);
         view.onShow = function(){
+            expect(content._autolayout.left.value).toBe(200);
+            expect(content._autolayout.right.value).toBe(0);
+
+            expect(column._autolayout.right.value).toBe(800);
+            expect(column._autolayout.left.value).toBe(0);
+
+            expect(action1._autolayout.left.value).toBe(150);
+            expect(action1._autolayout.right.value).toBe(0);
+            expect(action1._autolayout.width.value).toBe(50);
+            expect(action1._autolayout.height.value).toBe(50);
+
             console.log('(content) L:' + content._autolayout.left.value);
             console.log('(content) R:' + content._autolayout.right.value);
 
@@ -323,11 +334,16 @@ describe('Auto Layout:', function() {
             console.log('(action1) L:' + action1._autolayout.left.value);
             console.log('(action1) R:' + action1._autolayout.right.value);
 
+            console.log('(footer) L:' + footer._autolayout.left.value);
+            console.log('(footer) R:' + footer._autolayout.right.value);
+            console.log('(footer) W:' + footer._autolayout.width.value);
+
             console.log('(action2) L:' + action2._autolayout.left.value);
             console.log('(action2) R:' + action2._autolayout.right.value);
+            console.log('(action2) W:' + action2._autolayout.width.value);
 
-            console.log('(action3) L:' + action3._autolayout.left.value);
-            console.log('(action3) R:' + action3._autolayout.right.value);
+            // console.log('(action3) L:' + action3._autolayout.left.value);
+            // console.log('(action3) R:' + action3._autolayout.right.value);
             //console.log(footer.getSize());
             //console.log(action1._autolayout.left.value);
             done();

@@ -132,6 +132,16 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                 }
                 break;
         }
+    } else {
+        switch(toAttribute.name){
+            case 'right':
+                leftExpression = item._autolayout.left;
+                constant = -1 * constant;
+                value = autolayout.minus(toItem._autolayout.width, item._autolayout.width).plus(toItem._autolayout.right);
+                stays = [toItem._autolayout.width];
+
+            break;
+        }
     }
 
     var times = autolayout.times(multiplier, value, autolayout.weak, 0);
