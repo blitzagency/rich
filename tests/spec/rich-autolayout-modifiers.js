@@ -134,7 +134,7 @@ describe('Auto Layout:', function() {
             solver.addConstraint(bottom);
         }
 
-        function initializeConstraints(obj){
+        function initializeRelationships(obj){
             var superview = obj.superview._autolayout;
             var solver = obj.solver;
 
@@ -254,9 +254,9 @@ describe('Auto Layout:', function() {
         initializeAutoLayout(box1);
         initializeAutoLayout(box2);
 
-        initializeConstraints(box0);
-        initializeConstraints(box1);
-        initializeConstraints(box2);
+        initializeRelationships(box0);
+        initializeRelationships(box1);
+        initializeRelationships(box2);
 
         var cn0 = [
             {
@@ -289,7 +289,6 @@ describe('Auto Layout:', function() {
 
         applyConstraints(cn0, box0, box1);
         applyConstraints(cn1, box1, box2);
-
 
         console.log('(box0) L:' + box0._autolayout.left.value);
         console.log('(box0) R:' + box0._autolayout.right.value);
