@@ -10,6 +10,9 @@ var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
+var c = require('rich/autolayout/init').cassowary;
+var autolayout = require('rich/autolayout/init');
+var layoututils = require('rich/autolayout/utils');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -101,7 +104,216 @@ describe('Auto Layout:', function() {
 
     });
 
-    it('generates complex layout modifiers', function(done){
+    it('cassowary test', function(done){
+        var w = 0;
+        var h = 0;
+        var box0;
+        var box1;
+        var box2;
+        var viewport;
+
+        function initializeAutoLayout(obj){
+            var solver = new c.SimplexSolver();
+            obj.solver = solver;
+
+            var top = autolayout.geq(obj._autolayout.top, 0, autolayout.weak, 1);
+            var right = autolayout.geq(obj._autolayout.right, 0, autolayout.weak, 1);
+            var bottom = autolayout.geq(obj._autolayout.bottom, 0, autolayout.weak, 1);
+            var left = autolayout.geq(obj._autolayout.left, 0, autolayout.weak, 1);
+            var pullLeft = autolayout.eq(obj._autolayout.left, 0, autolayout.weak, 1);
+            var pullTop = autolayout.eq(obj._autolayout.top, 0, autolayout.weak, 1);
+
+            solver.addStay(obj._autolayout.width, autolayout.weak, 0);
+            solver.addStay(obj._autolayout.height, autolayout.weak, 0);
+
+            solver.addConstraint(pullLeft);
+            solver.addConstraint(pullTop);
+            solver.addConstraint(left);
+            solver.addConstraint(top);
+            solver.addConstraint(right);
+            solver.addConstraint(bottom);
+        }
+
+        function initializeConstraints(obj){
+            var superview = obj.superview._autolayout;
+            var solver = obj.solver;
+
+            if(superview.right)
+                solver.addStay(superview.right, autolayout.weak);
+
+            if(superview.left)
+                solver.addStay(superview.left, autolayout.weak);
+
+            if(superview.width)
+                solver.addStay(superview.width, autolayout.weak);
+
+            if(superview.height)
+                solver.addStay(superview.height, autolayout.weak);
+
+            if(superview.top)
+                solver.addStay(superview.top, autolayout.weak);
+
+            if(superview.bottom)
+                solver.addStay(superview.bottom, autolayout.weak);
+
+            // No explicit size is set:
+            solver.addEditVar(obj._autolayout.width);
+            solver.addEditVar(obj._autolayout.height);
+            solver.beginEdit();
+            solver.suggestValue(obj._autolayout.width, superview.width.value);
+            solver.suggestValue(obj._autolayout.height, superview.height.value);
+            solver.resolve();
+            solver.endEdit();
+
+            solver.addConstraint(
+                autolayout.eq(
+                    autolayout.plus(obj._autolayout.width, obj._autolayout.right).plus(obj._autolayout.left),
+                    superview.width,
+                    autolayout.weak, 0)
+            );
+
+            solver.addConstraint(
+                autolayout.eq(
+                    autolayout.plus(obj._autolayout.height, obj._autolayout.bottom).plus(obj._autolayout.top),
+                    superview.height,
+                    autolayout.weak, 0)
+            );
+
+            solver.resolve();
+        }
+
+        function constraintsFromJson(list, view){
+            var data = [];
+            _.each(list, function(each){
+                data.push(layoututils.constraintsFromJson(each, view));
+            });
+
+            return data;
+        }
+
+        function applyConstraints(json, onView, toView){
+            _.each(constraintsFromJson(json, onView), function(cn){
+                _.each(cn.stays, function(stay){
+                    toView.solver.addStay(stay, autolayout.weak, 10);
+                });
+
+                toView.solver.addConstraint(cn.constraint);
+            });
+        }
+
+        viewport = {
+             _autolayout: {
+                width: autolayout.cv('width', 1000),
+                height: autolayout.cv('width', 800),
+            }
+        };
+
+        box0 = {
+            _autolayout: {
+                width: autolayout.cv('width', w),
+                height: autolayout.cv('height', h),
+                top: autolayout.cv('top', 0),
+                right: autolayout.cv('right', 0),
+                bottom: autolayout.cv('bottom', 0),
+                left: autolayout.cv('left', 0),
+            }
+        };
+
+        box1 = {
+            _autolayout: {
+                width: autolayout.cv('width', w),
+                height: autolayout.cv('height', h),
+                top: autolayout.cv('top', 0),
+                right: autolayout.cv('right', 0),
+                bottom: autolayout.cv('bottom', 0),
+                left: autolayout.cv('left', 0),
+            }
+        };
+
+        box2 = {
+            _autolayout: {
+                width: autolayout.cv('width', w),
+                height: autolayout.cv('height', h),
+                top: autolayout.cv('top', 0),
+                right: autolayout.cv('right', 0),
+                bottom: autolayout.cv('bottom', 0),
+                left: autolayout.cv('left', 0),
+            }
+        };
+
+
+
+        box0.superview = viewport;
+        box1.superview = box0;
+        box2.superview = box1;
+
+        box0.box1 = box1;
+        box1.box2 = box2;
+
+        initializeAutoLayout(box0);
+        initializeAutoLayout(box1);
+        initializeAutoLayout(box2);
+
+        initializeConstraints(box0);
+        initializeConstraints(box1);
+        initializeConstraints(box2);
+
+        var cn0 = [
+            {
+                item: 'box1',
+                attribute: 'bottom',
+                relatedBy: '==',
+                toItem: 'superview',
+                toAttribute: 'bottom',
+                constant: 0
+            },
+
+            {
+                item: 'box1',
+                attribute: 'height',
+                relatedBy: '==',
+                constant: 200
+            }
+        ];
+
+        var cn1 = [
+            {
+                item: 'box2',
+                attribute: 'bottom',
+                relatedBy: '==',
+                toItem: 'superview',
+                toAttribute: 'bottom',
+                constant: 0
+            },
+        ];
+
+        applyConstraints(cn0, box0, box1);
+        applyConstraints(cn1, box1, box2);
+
+
+        console.log('(box0) L:' + box0._autolayout.left.value);
+        console.log('(box0) R:' + box0._autolayout.right.value);
+        console.log('(box0) W:' + box0._autolayout.width.value);
+        console.log('(box0) H:' + box0._autolayout.height.value);
+        console.log('---');
+
+        console.log('(box1) L:' + box1._autolayout.left.value);
+        console.log('(box1) R:' + box1._autolayout.right.value);
+        console.log('(box1) W:' + box1._autolayout.width.value);
+        console.log('(box1) H:' + box1._autolayout.height.value);
+        console.log('---');
+
+        console.log('(box2) L:' + box2._autolayout.left.value);
+        console.log('(box2) R:' + box2._autolayout.right.value);
+        console.log('(box2) W:' + box2._autolayout.width.value);
+        console.log('(box2) H:' + box2._autolayout.height.value);
+        console.log('---');
+
+
+        done();
+    });
+
+    xit('generates complex layout modifiers', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
