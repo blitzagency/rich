@@ -104,7 +104,7 @@ describe('Auto Layout:', function() {
 
     });
 
-    it('cassowary test', function(done){
+    xit('cassowary test', function(done){
         var w = 0;
         var h = 0;
         var box0;
@@ -113,8 +113,13 @@ describe('Auto Layout:', function() {
         var viewport;
 
         function initializeAutoLayout(obj){
-            var solver = new c.SimplexSolver();
-            obj.solver = solver;
+
+        }
+
+        function initializeRelationships(obj){
+            console.log('_initializeRelationships -> ' + obj.name);
+            var solver = obj.solver = new c.SimplexSolver();
+            var superview = obj.superview._autolayout;
 
             var top = autolayout.geq(obj._autolayout.top, 0, autolayout.weak, 1);
             var right = autolayout.geq(obj._autolayout.right, 0, autolayout.weak, 1);
@@ -132,11 +137,6 @@ describe('Auto Layout:', function() {
             solver.addConstraint(top);
             solver.addConstraint(right);
             solver.addConstraint(bottom);
-        }
-
-        function initializeRelationships(obj){
-            var superview = obj.superview._autolayout;
-            var solver = obj.solver;
 
             if(superview.right)
                 solver.addStay(superview.right, autolayout.weak);
@@ -192,6 +192,7 @@ describe('Auto Layout:', function() {
         }
 
         function applyConstraints(json, onView, toView){
+            console.log('Adding constraints[' + json.length +'] for -> ' + onView.name);
             _.each(constraintsFromJson(json, onView), function(cn){
                 _.each(cn.stays, function(stay){
                     toView.solver.addStay(stay, autolayout.weak, 10);
@@ -242,6 +243,11 @@ describe('Auto Layout:', function() {
         };
 
 
+
+        viewport.name = 'regionView';
+        box0.name = 'box0';
+        box1.name = 'box1';
+        box2.name = 'box2';
 
         box0.superview = viewport;
         box1.superview = box0;
@@ -300,6 +306,8 @@ describe('Auto Layout:', function() {
         console.log('(box1) R:' + box1._autolayout.right.value);
         console.log('(box1) W:' + box1._autolayout.width.value);
         console.log('(box1) H:' + box1._autolayout.height.value);
+        console.log('(box1) T:' + box1._autolayout.top.value);
+        console.log('(box1) B:' + box1._autolayout.bottom.value);
         console.log('---');
 
         console.log('(box2) L:' + box2._autolayout.left.value);
@@ -388,6 +396,8 @@ describe('Auto Layout:', function() {
             console.log('(box1) R:' + box1._autolayout.right.value);
             console.log('(box1) W:' + box1._autolayout.width.value);
             console.log('(box1) H:' + box1._autolayout.height.value);
+            console.log('(box1) T:' + box1._autolayout.top.value);
+            console.log('(box1) B:' + box1._autolayout.bottom.value);
             console.log('---');
 
             console.log('(box2) L:' + box2._autolayout.left.value);
@@ -448,14 +458,14 @@ describe('Auto Layout:', function() {
                     constant: 0
                 },
 
-                // {
-                //     item: 'content',
-                //     attribute: 'left',
-                //     relatedBy: '==',
-                //     toItem: 'column',
-                //     toAttribute: 'right',
-                //     constant: 0
-                // },
+                {
+                    item: 'content',
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: 'column',
+                    toAttribute: 'right',
+                    constant: 0
+                },
             ]
         });
 
@@ -583,36 +593,45 @@ describe('Auto Layout:', function() {
         var action3 = new RectangleView({
             model: color4,
             constraints: [
+                // {
+                //     item: 'action4',
+                //     attribute: 'top',
+                //     relatedBy: '==',
+                //     constant: 0
+                // },
                 {
                     item: 'action4',
-                    attribute: 'top',
+                    attribute: 'height',
                     relatedBy: '==',
+                    // toItem: 'action2',
+                    // toAttribute: 'left',
+                    constant: 10
+                },
+                {
+                    item: 'action4',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    // toItem: 'action2',
+                    // toAttribute: 'left',
+                    constant: 10
+                },
+
+                {
+                    item: 'action4',
+                    attribute: 'right',
+                    relatedBy: '==',
+                    // toItem: 'action2',
+                    // toAttribute: 'left',
                     constant: 0
                 },
-                // {
-                //     item: 'action4',
-                //     attribute: 'height',
-                //     relatedBy: '==',
-                //     // toItem: 'action2',
-                //     // toAttribute: 'left',
-                //     constant: 10
-                // },
-                // {
-                //     item: 'action4',
-                //     attribute: 'right',
-                //     relatedBy: '==',
-                //     // toItem: 'action2',
-                //     // toAttribute: 'left',
-                //     constant: 0
-                // },
-                // {
-                //     item: 'action4',
-                //     attribute: 'bottom',
-                //     relatedBy: '==',
-                //     // toItem: 'action2',
-                //     // toAttribute: 'left',
-                //     constant: 0
-                // }
+                {
+                    item: 'action4',
+                    attribute: 'bottom',
+                    relatedBy: '==',
+                    // toItem: 'action2',
+                    // toAttribute: 'left',
+                    constant: 0
+                }
             ]
         });
 
@@ -634,7 +653,7 @@ describe('Auto Layout:', function() {
         view.column = column;
         view.content = content;
         view.addSubview(column);
-        // view.addSubview(content);
+        view.addSubview(content);
 
         column.action1 = action1;
         column.addSubview(action1);
@@ -676,37 +695,37 @@ describe('Auto Layout:', function() {
             // expect(action2._autolayout.right.value).toBe(0);
             // expect(action2._autolayout.width.value).toBe(50);
 
-            // console.log('-- rich-autolayout-modifiers.js [Line 337]');
-            // console.log('(content) L:' + content._autolayout.left.value);
-            // console.log('(content) R:' + content._autolayout.right.value);
-            // console.log('---');
+            console.log('-- rich-autolayout-modifiers.js [Line 337]');
+            console.log('(content) L:' + content._autolayout.left.value);
+            console.log('(content) R:' + content._autolayout.right.value);
+            console.log('---');
 
-            // console.log('---');
-            // console.log('(column) L:' + column._autolayout.left.value);
-            // console.log('(column) R:' + column._autolayout.right.value);
+            console.log('---');
+            console.log('(column) L:' + column._autolayout.left.value);
+            console.log('(column) R:' + column._autolayout.right.value);
 
-            // console.log('---');
+            console.log('---');
 
-            // console.log('(action1) L:' + action1._autolayout.left.value);
-            // console.log('(action1) R:' + action1._autolayout.right.value);
-            // console.log('(action1) W:' + action1._autolayout.width.value);
-            // console.log('---');
+            console.log('(action1) L:' + action1._autolayout.left.value);
+            console.log('(action1) R:' + action1._autolayout.right.value);
+            console.log('(action1) W:' + action1._autolayout.width.value);
+            console.log('---');
 
-            // console.log('(footer) L:' + footer._autolayout.left.value);
-            // console.log('(footer) R:' + footer._autolayout.right.value);
-            // console.log('(footer) W:' + footer._autolayout.width.value);
-            // console.log('---');
+            console.log('(footer) L:' + footer._autolayout.left.value);
+            console.log('(footer) R:' + footer._autolayout.right.value);
+            console.log('(footer) W:' + footer._autolayout.width.value);
+            console.log('---');
 
-            // console.log('(action2) L:' + action2._autolayout.left.value);
-            // console.log('(action2) R:' + action2._autolayout.right.value);
-            // console.log('(action2) W:' + action2._autolayout.width.value);
-            // console.log('---');
+            console.log('(action2) L:' + action2._autolayout.left.value);
+            console.log('(action2) R:' + action2._autolayout.right.value);
+            console.log('(action2) W:' + action2._autolayout.width.value);
+            console.log('---');
 
-            // console.log('(action3) L:' + action3._autolayout.left.value);
-            // console.log('(action3) R:' + action3._autolayout.right.value);
+            console.log('(action3) L:' + action3._autolayout.left.value);
+            console.log('(action3) R:' + action3._autolayout.right.value);
             //console.log(footer.getSize());
             //console.log(action1._autolayout.left.value);
-            // done();
+            done();
         };
 
     });
