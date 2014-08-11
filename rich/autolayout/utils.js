@@ -67,16 +67,7 @@ exports.constraintsFromJson = function(json, view){
         stays = result.stays;
         toItem._constraintRelations[item.cid] = item;
     }
-    // console.log(item.name)
-    if(item.name == 'action4'){
-        console.log('action4')
-        console.log(item.superview._autolayout.width.value);
-    }
 
-    if(item.name == 'footer'){
-        console.log('footer')
-        console.log(item.superview._autolayout.width.value);
-    }
     var constraint = related(
         leftExpression,
         rightExpression,
