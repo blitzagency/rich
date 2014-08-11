@@ -1,5 +1,6 @@
 define(function (require, exports, module) {
 
+var backbone = require('backbone');
 var autolayout = require('./init');
 var c = autolayout.cassowary;
 
@@ -54,18 +55,25 @@ exports.constraintsFromJson = function(json, view){
     var itemIsAncestor = (item.superview == toItem);
     var isSize = itemAttribute.name == 'width' || itemAttribute.name == 'height';
 
-    // console.log(itemIsAncestor)
     if((itemIsAncestor && !isSize) || !toAttribute){
         rightExpression = constant;
-        stays = [toItem._autolayout.height, toItem._autolayout.width];
-        // do we want to set a strength if they are only modifying a prop?
-        // strength = autolayout.strong;
     } else {
         var result = buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, constant);
         rightExpression = result.rightExpression;
         leftExpression = result.leftExpression;
         stays = result.stays;
-        toItem._constraintRelations[item.cid] = item;
+    }
+
+    var history = toItem._constraintRelations.get(json.item);
+
+    if(!history){
+        history = new backbone.Model();
+        toItem._constraintRelations.set(json.item, history);
+    }
+
+    if(toAttribute){
+        var val = history.get(toAttribute.name) || 1;
+        history.set(toAttribute.name, val++);
     }
 
     var constraint = related(

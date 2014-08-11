@@ -104,7 +104,7 @@ var FamousView = marionette.View.extend({
             h = this.properties.size[1] || 0;
         }
 
-        this._constraintRelations = {};
+        this._constraintRelations = new backbone.Model({});
         this._autolayout.width = autolayout.cv('width', w);
         this._autolayout.height = autolayout.cv('height', h);
         this._autolayout.top = autolayout.cv('top', 0);
@@ -204,12 +204,90 @@ var FamousView = marionette.View.extend({
             child._initializeRelationships();
         });
 
+        var changes = {};
+
         _.each(this.constraints, function(json){
             constraints.push(constraintsFromJson(json, this));
+
+            var item = this[json.item];
+            var relations = item._constraintRelations;
+
+            if(relations.hasChanged()){
+                changes[json.item] || (changes[json.item] = {});
+
+                var host = changes[json.item];
+
+                _.each(relations.changed, function(value){
+                    _.extend(host, value.changed);
+                });
+
+                // force the reset of the changed attributes
+                relations.changed = {};
+            }
+
         }, this);
 
+
         this.addConstraints(constraints);
+
+        // do we need to go back and update any dependencies
+        if(!_.isEmpty(changes)){
+            _.each(changes, function(value, key){
+
+                var target = this[key]._constraintRelations;
+                var variables = [];
+                var values = [];
+                //console.log(target.keys());
+
+                // create the companion attrs:
+                if(_.has(value, 'right') || _.has(value, 'left')){
+                    //variables = companions.concat(['left', 'right']);
+
+                    variables = variables.concat([
+                        this[key]._autolayout.left,
+                        this[key]._autolayout.right]);
+
+                    values = values.concat([
+                        this[key]._autolayout.left.value,
+                        this[key]._autolayout.right.value]);
+                }
+
+                if(_.has(value, 'top') || _.has(value, 'bottom')){
+                    variables = variables.concat([
+                        this[key]._autolayout.top,
+                        this[key]._autolayout.bottom]);
+
+                    values = values.concat([
+                        this[key]._autolayout.top.value,
+                        this[key]._autolayout.bottom.value]);
+                }
+
+                _.each(target.keys(), function(key){
+                    var target = this[key];
+                    target.updateVariables(variables, values);
+                }, this);
+
+            }, this);
+        }
         this._constraintsInitialized = true;
+    },
+
+    updateVariables: function(variables, values){
+
+        var solver = this._solver;
+
+        _.each(variables, function(each, index){
+            solver.addEditVar(each);
+        });
+
+        solver.beginEdit();
+
+        _.each(variables, function(each, index){
+            solver.suggestValue(each, values[index]);
+        });
+
+        solver.resolve();
+        solver.endEdit();
     },
 
     addConstraints: function(constraints){
@@ -223,8 +301,8 @@ var FamousView = marionette.View.extend({
                     solver.addStay(stay, autolayout.weak, 10);
                 }, this);
             }
-
             solver.addConstraint(each.constraint);
+            //each.item._updateConstraintVariables();
         };
 
         _.each(constraints, action, this);
@@ -252,15 +330,15 @@ var FamousView = marionette.View.extend({
         }
 
         this._solver.addConstraint(options.constraint);
-        this._updateConstraintVariables();
+        //this._updateConstraintVariables();
     },
 
     _updateConstraintVariables: function(){
         //console.log('_updateConstraintVariables -> ' + this.name);
         var vars = this._autolayout;
 
-        this.children.each(function(value){
-        //_.each(this._constraintRelations, function(value){
+        // this.children.each(function(value){
+        _.each(this._constraintRelations, function(value){
             //console.log(this.name, value.name)
             if(!value._solver) return;
             var solver = value._solver;
@@ -272,16 +350,17 @@ var FamousView = marionette.View.extend({
             var valueBottom = vars.bottom.value;
             var valueLeft = vars.left.value;
 
-            solver.addEditVar(vars.width);
-            solver.addEditVar(vars.height);
+
+            // solver.addEditVar(vars.width);
+            // solver.addEditVar(vars.height);
             solver.addEditVar(vars.top);
             solver.addEditVar(vars.right);
             solver.addEditVar(vars.bottom);
             solver.addEditVar(vars.left);
 
             solver.beginEdit();
-            solver.suggestValue(vars.width, valueWidth);
-            solver.suggestValue(vars.height, valueHeight);
+            // solver.suggestValue(vars.width, valueWidth);
+            // solver.suggestValue(vars.height, valueHeight);
             solver.suggestValue(vars.top, valueTop);
             solver.suggestValue(vars.right, valueRight);
             solver.suggestValue(vars.bottom, valueBottom);
@@ -485,7 +564,6 @@ var FamousView = marionette.View.extend({
 
     addSubview: function(view, zIndex){
         view.superview = this;
-        //view._initializeRelationships();
 
         function setZIndex(value){
             view.zIndex = value;

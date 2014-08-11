@@ -514,7 +514,7 @@ describe('Auto Layout:', function() {
 
     });
 
-    xit('adds constraints based on sibling out of sequence', function(done){
+    it('adds constraints based on sibling out of sequence', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -563,6 +563,9 @@ describe('Auto Layout:', function() {
         view.button = new RectangleView({
             model:model,
         });
+
+        view.navigation.name = 'navigation';
+        view.button.name = 'button';
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
