@@ -320,7 +320,7 @@ describe('Auto Layout:', function() {
         done();
     });
 
-    it('generates complex layout modifiers', function(done){
+    xit('generates complex layout modifiers', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -673,6 +673,47 @@ describe('Auto Layout:', function() {
         region.show(view);
 
         //view.setSize([1000, 400]);
+        function logValues(){
+            console.log('-- rich-autolayout-modifiers.js [Line 677]');
+            console.log('(content) L:' + content._autolayout.left.value);
+            console.log('(content) R:' + content._autolayout.right.value);
+
+            console.log('---');
+
+            console.log('(column) L:' + column._autolayout.left.value);
+            console.log('(column) R:' + column._autolayout.right.value);
+
+            console.log('---');
+
+            console.log('(footer) L:' + footer._autolayout.left.value);
+            console.log('(footer) R:' + footer._autolayout.right.value);
+            console.log('(footer) W:' + footer._autolayout.width.value);
+
+            console.log('---');
+
+            console.log('(action1) L:' + action1._autolayout.left.value);
+            console.log('(action1) R:' + action1._autolayout.right.value);
+            console.log('(action1) W:' + action1._autolayout.width.value);
+
+            console.log('---');
+
+            console.log('(action2) L:' + action2._autolayout.left.value);
+            console.log('(action2) R:' + action2._autolayout.right.value);
+            console.log('(action2) W:' + action2._autolayout.width.value);
+            console.log('---');
+
+            console.log('(action3) L:' + action3._autolayout.left.value);
+            console.log('(action3) R:' + action3._autolayout.right.value);
+
+            console.log('---');
+
+            console.log('(action4) L:' + action4._autolayout.left.value);
+            console.log('(action4) R:' + action4._autolayout.right.value);
+            console.log('(action4) T:' + action4._autolayout.top.value);
+            console.log('(action4) W:' + action4._autolayout.width.value);
+            console.log('(action4) H:' + action4._autolayout.height.value);
+        }
+
         view.onShow = function(){
             // expect(content._autolayout.left.value).toBe(200);
             // expect(content._autolayout.right.value).toBe(0);
@@ -695,40 +736,14 @@ describe('Auto Layout:', function() {
             // expect(action2._autolayout.right.value).toBe(0);
             // expect(action2._autolayout.width.value).toBe(50);
 
-            console.log('-- rich-autolayout-modifiers.js [Line 337]');
-            console.log('(content) L:' + content._autolayout.left.value);
-            console.log('(content) R:' + content._autolayout.right.value);
-            console.log('---');
 
-            console.log('---');
-            console.log('(column) L:' + column._autolayout.left.value);
-            console.log('(column) R:' + column._autolayout.right.value);
+            logValues();
+            //$('#famous-context').css({width: '1000px', height: '400px'});
 
-            console.log('---');
+            region.context.setSize([1000, 400]);
+            region.invalidateLayout();
+            logValues();
 
-            console.log('(action1) L:' + action1._autolayout.left.value);
-            console.log('(action1) R:' + action1._autolayout.right.value);
-            console.log('(action1) W:' + action1._autolayout.width.value);
-            console.log('---');
-
-            console.log('(footer) L:' + footer._autolayout.left.value);
-            console.log('(footer) R:' + footer._autolayout.right.value);
-            console.log('(footer) W:' + footer._autolayout.width.value);
-            console.log('---');
-
-            console.log('(action2) L:' + action2._autolayout.left.value);
-            console.log('(action2) R:' + action2._autolayout.right.value);
-            console.log('(action2) W:' + action2._autolayout.width.value);
-            console.log('---');
-
-            console.log('(action3) L:' + action3._autolayout.left.value);
-            console.log('(action3) R:' + action3._autolayout.right.value);
-
-            console.log('(action4) L:' + action4._autolayout.left.value);
-            console.log('(action4) R:' + action4._autolayout.right.value);
-            console.log('(action4) T:' + action4._autolayout.top.value);
-            console.log('(action4) W:' + action4._autolayout.width.value);
-            console.log('(action4) H:' + action4._autolayout.height.value);
             //console.log(footer.getSize());
             //console.log(action1._autolayout.left.value);
             done();

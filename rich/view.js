@@ -296,18 +296,18 @@ var FamousView = marionette.View.extend({
 
         var action = function(each){
             var solver = each.solver;
+
             if(each.stays){
                 _.each(each.stays, function(stay){
                     solver.addStay(stay, autolayout.weak, 10);
                 }, this);
             }
+
             solver.addConstraint(each.constraint);
-            //each.item._updateConstraintVariables();
         };
 
         _.each(constraints, action, this);
 
-        // TODO: InvalidateLayout
     },
 
     addConstraintFromJson: function(json){
@@ -437,14 +437,33 @@ var FamousView = marionette.View.extend({
     },
 
     invalidateLayout: function(){
-        var superviewSize = this.superview.getSize();
-        // TODO need to recalculate the constraints.
 
-        this._updateConstraintVariables();
+        var superviewSize = this.superview.getSize();
+
+        if (!this.properties.size){
+
+            var variables = [this._autolayout.width, this._autolayout.height];
+            var values = superviewSize;
+            console.log(values);
+            var relations = this._constraintRelations;
+
+            this.updateVariables(variables, values);
+
+            _.each(relations.keys(), function(key){
+                 //this[key].updateVariables(variables, values);
+                 if(this[key]){
+                    this[key].updateVariables(variables, values);
+                 }
+
+                 //console.log(this[key] ? key : 'None - ' + this.superview.name);
+            }, this);
+        }
+
 
         this.children.each(function(subview){
             subview.invalidateLayout();
         });
+
     },
 
     invalidateView: function(){
@@ -658,15 +677,19 @@ var FamousView = marionette.View.extend({
         this.properties.size = value;
         var vars = this._autolayout;
 
-        if(this._solver){
-            this._solver.addEditVar(vars.width);
-            this._solver.addEditVar(vars.height);
 
-            this._solver.beginEdit();
-            this._solver.suggestValue(vars.width, value[0]);
-            this._solver.suggestValue(vars.height, value[1]);
-            this._solver.resolve();
-            this._solver.endEdit();
+        if(this._solver){
+            var variables = [vars.width, vars.height];
+            var values = value;
+            this.updateVariables(variables, values);
+            // this._solver.addEditVar(vars.width);
+            // this._solver.addEditVar(vars.height);
+
+            // this._solver.beginEdit();
+            // this._solver.suggestValue(vars.width, value[0]);
+            // this._solver.suggestValue(vars.height, value[1]);
+            // this._solver.resolve();
+            // this._solver.endEdit();
         } else {
             vars.width.value = value[0];
             vars.height.value = value[1];
