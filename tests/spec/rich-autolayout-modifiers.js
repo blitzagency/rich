@@ -760,7 +760,8 @@ describe('Auto Layout:', function() {
             region.context.setSize([1000, 400]);
             region.invalidateLayout();
             logValues();
-            done();
+            action4.invalidateView();
+            // done();
         };
 
     });

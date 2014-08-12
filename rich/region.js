@@ -141,15 +141,15 @@ var FamousRegion = marionette.Region.extend({
         var root = new RenderNode();
         var relative = root;
         var context = this.context;
-
+        // relative = this.applyModifiers([this._autolayoutModifier], root);
         if(this.modifier){
             var modifiers = _.result(this, 'modifier');
             relative = this.applyModifiers(modifiers, root);
 
             this._modifier = modifiers;
         }
-
         relative.add(this.view);
+
         return root;
     },
 
