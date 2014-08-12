@@ -3,8 +3,22 @@ define(function (require, exports, module) {
 var backbone = require('backbone');
 var autolayout = require('./init');
 var c = autolayout.cassowary;
+var vfl = require('./vfl');
 
 
+
+function getRelation(relation){
+    switch(constraint.relation){
+        case 'equal':
+            return '==';
+        case 'greaterOrEqual':
+            return '>=';
+        case 'lessOrEqual':
+            return '<=';
+        default:
+            return '==';
+    }
+}
 
 exports.constraintsFromJson = function(json, view){
     // item: 'navigation',
@@ -179,5 +193,96 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
         stays: stays
     };
 }
+
+exports.VFLToJSON = function(str){
+    var response = [];
+    var parsed = vfl.parse(str);
+    var template, i, j, out, constraints;
+    var cascadeLimit = parsed.cascade.length - 2;
+    var output = {
+        item: null,
+        attribute: null,
+        relatedBy: null,
+        toItem: 'superview',
+        toAttribute: null,
+        multiplier: 1,
+        constant: 0,
+    };
+
+    var orientation = parsed.orientation;
+    var innerAttribute = 'left';
+    var outterAttribute = 'right';
+    if(orientation != 'horizontal'){
+        innerAttribute = 'top';
+        outterAttribute = 'bottom';
+    }
+
+    for (i = 0; i < cascadeLimit; i += 2) {
+        template = {
+            element:parsed.cascade[i].view,
+            toElement: parsed.cascade[i + 2].view
+        };
+        constraints = parsed.cascade[i + 1];
+        out = _.clone(output);
+
+        for (j = 0; j < constraints.length; j++) {
+            constraint = _.extend({}, template, constraints[j]);
+            if(constraint.constant == 'default'){
+                console.log('handle default space');
+            }
+            out.relatedBy = getRelation(constraint.relation);
+        }
+        if(_.isNull(constraint.element)){
+            // left/top
+            out.attribute = innerAttribute;
+            out.item = constraint.toElement;
+            out.toAttribute = innerAttribute;
+        }else if(_.isNull(constraint.toElement)){
+            // right/bottom
+            out.attribute = outterAttribute;
+            out.toAttribute = outterAttribute;
+            out.item = constraint.element;
+        }else{
+            // related to something else...
+            out.toItem = constraint.element;
+            out.item = constraint.toElement;
+            out.attribute = innerAttribute;
+            out.toAttribute = outterAttribute;
+        }
+        out.constant = constraint.constant;
+        response.push(out);
+
+
+    }
+    for (i = 0; i < cascadeLimit; i += 2) {
+        constraints = parsed.cascade[i].constraints;
+        if (!constraints || !constraints.length) {
+            continue;
+        }
+        template = {
+            element: parsed.cascade[i].view
+        };
+        for (j = 0; j < constraints.length; j++) {
+            constraint = _.extend({}, template, constraints[j]);
+        }
+
+        out = _.clone(output);
+
+        out.item = template.element;
+        out.attribute = parsed.orientation == 'vertical' ? 'height' : 'width';
+        out.constant = constraint.constant;
+        out.relatedBy = getRelation(constraint.relation);
+        if(constraint.view){
+            out.toItem = constraint.view;
+            out.toAttribute = out.attribute;
+        }else{
+            delete out.toItem;
+            delete out.toAttribute;
+        }
+        response.push(out);
+    }
+    return response;
+};
+
 
 });
