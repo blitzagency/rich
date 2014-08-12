@@ -92,7 +92,8 @@ var FamousRegion = marionette.Region.extend({
     },
 
     contextDidResize: function(){
-        var size = this.getSize();
+        var size = this.context.getSize();
+        //console.log('RESIZING', size);
         this._autolayout.width.value = size[0];
         this._autolayout.height.value = size[1];
         this.view.setSize(size);

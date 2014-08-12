@@ -210,7 +210,7 @@ var FamousView = marionette.View.extend({
 
         var changes = {};
 
-        _.each(this.constraints, function(json){
+        _.each(_.result(this, 'constraints'), function(json){
             constraints.push(constraintsFromJson(json, this));
 
             var item = this[json.item];
@@ -804,6 +804,7 @@ var FamousView = marionette.View.extend({
         this.children.each(function(subview){
             subview.invalidateLayout();
         });
+
     },
 
     invalidateView: function(){
