@@ -43,7 +43,7 @@ describe('View Subview:', function() {
     });
 
 
-    it('handles invalidate on multiple modifiers', function(done){
+    xit('handles invalidate on multiple modifiers', function(done){
 
         // collection view
         var model = new Rectangle({
@@ -121,6 +121,47 @@ describe('View Subview:', function() {
             parentView.invalidateView();
             done();
         });
+    });
+
+    it('builds correct spec based on view with child', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            modifier: new Modifier()
+        });
+
+        // var subview2 = new RectangleView({
+        //     model: red,
+        //     modifier: new Modifier()
+        // });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        // subview2.name = 'subview2';
+
+
+        view.addSubview(subview1);
+        // view.addSubview(subview2);
+
+        region.show(view);
+
+        render().then(function(){
+            subview1.invalidateView();
+            var spec = view.render();
+            console.log(spec)
+            done();
+        })
     });
 
 

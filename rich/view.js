@@ -548,9 +548,9 @@ var FamousView = marionette.View.extend({
         var relative = root;
         var context = this.context;
 
+        relative = this.applyModifiers([this._autolayoutModifier], root);
         if(this.modifier){
             var modifiers = _.result(this, 'modifier');
-            relative = this.applyModifiers([this._autolayoutModifier], root);
             relative = this.applyModifiers(modifiers, relative);
 
             this._modifier = modifiers;
@@ -620,12 +620,40 @@ var FamousView = marionette.View.extend({
         // might not be worth it, might be worth it.
         // we'd need to keep that index up to date, so it
         // might be more housekeeping than is worth it.
+        var modLength = this._getModifierLength();
+        var arr;
 
         if(this._spec === null) this._spec = [];
 
         var spec = view._spec;
 
-        var arr = this._spec.target || this._spec;
+        var childSpecStartPoint = this._spec;
+
+        while(modLength){
+            modLength --;
+            childSpecStartPoint = childSpecStartPoint.target;
+        }
+
+        if(_.isArray(childSpecStartPoint)){
+            arr = childSpecStartPoint;
+        }else{
+            // in this case your going to have to reach down the number
+            // of modifiers that this view has, and replace that target
+            // with the responce from the views's spec.
+            modLength = this._getModifierLength();
+            var node = this._spec;
+            while(modLength){
+                modLength --;
+                if(modLength == 0){
+                    node.target = view._spec;
+                    this.triggerRichInvalidate();
+                    return;
+                }
+                node = node.target;
+            }
+        }
+
+
         var famousId = view.getFamousId();
 
         // this is a view without a renderable
@@ -640,18 +668,24 @@ var FamousView = marionette.View.extend({
             return;
         }
 
+        var viewModifierLen = view._getModifierLength();
+
         for(var i=1; i < arr.length; i++){
             var obj = arr[i];
             var id;
-
+            var depth = viewModifierLen;
+            while(depth){
+                obj = obj.target;
+                depth --;
+            }
+            // console.log(obj)
             if(_.isNumber(obj)){
                 id = obj;
-            } else if (_.isNumber(obj.target)){
-                id = obj.target;
-            } else if(_.isArray(obj.target)) {
-                id = obj.target[0];
+            }else if(_.isArray(obj)){
+                id = obj[0];
             } else {
                 console.log(obj);
+                debugger;
                 throw new Error('An unexpected error occured '+
                                 'when updating render spec.');
             }
@@ -663,6 +697,17 @@ var FamousView = marionette.View.extend({
         }
 
         this.triggerRichInvalidate();
+    },
+
+    _getModifierLength: function(){
+        var modifiersLen = 0;
+        if(_.isArray(this._modifier)){
+            modifiersLen = this._modifier.length;
+        }else if(this._modifier){
+            modifiersLen = 1;
+        }
+        modifiersLen += this._autolayoutModifier ? 1 : 0;
+        return modifiersLen;
     },
 
     removeSubview: function(view){
