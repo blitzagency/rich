@@ -9,6 +9,7 @@ var Modifier = require('famous/core/Modifier');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
+var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
 var c = require('rich/autolayout/init').cassowary;
 var autolayout = require('rich/autolayout/init');
@@ -746,22 +747,33 @@ describe('Auto Layout:', function() {
 
             //$('#famous-context').css({width: '1000px', height: '400px'});
 
-            //logValues();
-            // render(1000).then(function(){
-            //     $('#famous-context').css({width: '1000px', height: '400px'});
-            //     console.log($('#famous-context').css('height'));
+            // logValues();
+
+
+            // logValues();
+
+            // wait(3000).then(function(){
             //     region.context.setSize([1000, 400]);
-            //     region.invalidateLayout();
-            //     logValues();
-            //     done();
+            //     region.contextDidResize();
             // });
 
-            logValues();
-            region.context.setSize([1000, 400]);
-            region.invalidateLayout();
-            logValues();
-            done();
+
+            // wait(3000).then(function(){
+            //      logValues();
+            //      //done();
+            // });
+
         };
+
+        // wait(3000).then(function(){
+        //         //$('#famous-context').css({width: '1000px', height: '400px'});
+        //         //console.log($('#famous-context').css('height'));
+        //         // region.context.setSize([1000, 400]);
+        //         // region.invalidateLayout();
+        //         // logValues();
+        //         console.log('+++++++++++++');
+        //         done();
+        //     });
 
     });
 

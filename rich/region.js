@@ -76,7 +76,7 @@ var FamousRegion = marionette.Region.extend({
         // this *should* hold true.
         if(target == this.context){
             target.add(this);
-            var action = _.throttle(this.superviewDidResize.bind(this), 100);
+            var action = _.throttle(this.contextDidResize.bind(this), 100);
             this.context.on('resize', action);
         }
 
@@ -91,16 +91,16 @@ var FamousRegion = marionette.Region.extend({
         this._autolayout.height = autolayout.cv('height', size[1]);
     },
 
-    superviewDidResize: function(){
-        this.invalidateLayout();
-    },
-
-    invalidateLayout: function(){
-
+    contextDidResize: function(){
         var size = this.getSize();
         this._autolayout.width.value = size[0];
         this._autolayout.height.value = size[1];
         this.view.setSize(size);
+        this.invalidateLayout();
+    },
+
+    invalidateLayout: function(){
+        this.root = null;
     },
 
     getSize: function(){
