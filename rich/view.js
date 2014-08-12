@@ -717,6 +717,7 @@ var FamousView = marionette.View.extend({
         }
 
         this.invalidateLayout();
+        this.invalidateLayout();
 
         // if(this.root){
         //     this.invalidateView();
