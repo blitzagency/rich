@@ -118,8 +118,11 @@ var FamousView = marionette.View.extend({
         });
 
         this._autolayoutModifier.sizeFrom(function(){
+            if(this.name == 'footer'){
+                console.log('Setting footer modifier to: ' + [al.width.value, al.height.value]);
+            }
             return [al.width.value, al.height.value];
-        });
+        }.bind(this));
 
     },
 
@@ -151,12 +154,6 @@ var FamousView = marionette.View.extend({
         solver.addConstraint(right);
         solver.addConstraint(bottom);
 
-        if(superview.right)
-            solver.addStay(superview.right, autolayout.weak);
-
-        if(superview.left)
-            solver.addStay(superview.left, autolayout.weak);
-
         if(superview.width)
             solver.addStay(superview.width, autolayout.weak);
 
@@ -166,8 +163,14 @@ var FamousView = marionette.View.extend({
         if(superview.top)
             solver.addStay(superview.top, autolayout.weak);
 
+        if(superview.right)
+            solver.addStay(superview.right, autolayout.weak);
+
         if(superview.bottom)
             solver.addStay(superview.bottom, autolayout.weak);
+
+        if(superview.left)
+            solver.addStay(superview.left, autolayout.weak);
 
 
         if(!this.properties.size){
@@ -288,6 +291,47 @@ var FamousView = marionette.View.extend({
 
         solver.resolve();
         solver.endEdit();
+    },
+
+    updateSuperviewVariables: function(){
+        if(!this.superview) return;
+
+        var variables = [];
+        var values = [];
+
+        var superview = this.superview._autolayout;
+
+        if(superview.width){
+            variables.push(superview.width);
+            values.push(superview.width.value);
+        }
+
+        if(superview.height){
+            variables.push(superview.height);
+            values.push(superview.height.value);
+        }
+
+        if(superview.top){
+            variables.push(superview.top);
+            values.push(superview.top.value);
+        }
+
+        if(superview.right){
+            variables.push(superview.right);
+            values.push(superview.right.value);
+        }
+
+        if(superview.bottom){
+            variables.push(superview.bottom);
+            values.push(superview.bottom.value);
+        }
+
+        if(superview.left){
+            variables.push(superview.left);
+            values.push(superview.left.value);
+        }
+
+        this.updateVariables(variables, values);
     },
 
     addConstraints: function(constraints){
@@ -438,31 +482,16 @@ var FamousView = marionette.View.extend({
 
     invalidateLayout: function(){
 
-        var superviewSize = this.superview.getSize();
-
-        if (!this.properties.size){
-
-            var variables = [this._autolayout.width, this._autolayout.height];
-            var values = superviewSize;
-            console.log(values);
-            var relations = this._constraintRelations;
-
-            this.updateVariables(variables, values);
-
-            _.each(relations.keys(), function(key){
-                 //this[key].updateVariables(variables, values);
-                 if(this[key]){
-                    this[key].updateVariables(variables, values);
-                 }
-
-                 //console.log(this[key] ? key : 'None - ' + this.superview.name);
-            }, this);
-        }
-
+        if(!this._relationshipsInitialized) return;
+        this.updateSuperviewVariables();
 
         this.children.each(function(subview){
             subview.invalidateLayout();
         });
+
+        // if(this.root){
+        //     this.invalidateView();
+        // }
 
     },
 
@@ -673,33 +702,25 @@ var FamousView = marionette.View.extend({
     },
 
     setSize: function(value){
-        // TODO: We shouldn't need this anymore.
+        // TODO: We shouldn't need this anymore. (properties.size
+        // since it's in the _autolayout, will need to factor it out);
+
         this.properties.size = value;
         var vars = this._autolayout;
 
-
         if(this._solver){
             var variables = [vars.width, vars.height];
-            var values = value;
-            this.updateVariables(variables, values);
-            // this._solver.addEditVar(vars.width);
-            // this._solver.addEditVar(vars.height);
-
-            // this._solver.beginEdit();
-            // this._solver.suggestValue(vars.width, value[0]);
-            // this._solver.suggestValue(vars.height, value[1]);
-            // this._solver.resolve();
-            // this._solver.endEdit();
+            this.updateVariables(variables, value);
         } else {
             vars.width.value = value[0];
             vars.height.value = value[1];
         }
 
-        //this._updateConstraintVariables();
+        this.invalidateLayout();
 
-        if(this.root){
-            this.invalidateView();
-        }
+        // if(this.root){
+        //     this.invalidateView();
+        // }
     },
 
     getSize: function(){

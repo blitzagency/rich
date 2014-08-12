@@ -677,17 +677,23 @@ describe('Auto Layout:', function() {
             console.log('-- rich-autolayout-modifiers.js [Line 677]');
             console.log('(content) L:' + content._autolayout.left.value);
             console.log('(content) R:' + content._autolayout.right.value);
+            console.log('(content) W:' + content._autolayout.width.value);
+            console.log('(content) H:' + content._autolayout.height.value);
 
             console.log('---');
 
             console.log('(column) L:' + column._autolayout.left.value);
             console.log('(column) R:' + column._autolayout.right.value);
+            console.log('(column) W:' + column._autolayout.width.value);
+            console.log('(column) H:' + column._autolayout.height.value);
 
             console.log('---');
 
             console.log('(footer) L:' + footer._autolayout.left.value);
             console.log('(footer) R:' + footer._autolayout.right.value);
             console.log('(footer) W:' + footer._autolayout.width.value);
+            console.log('(footer) H:' + footer._autolayout.height.value);
+            console.log('(footer) T:' + footer._autolayout.top.value);
 
             console.log('---');
 
@@ -737,15 +743,23 @@ describe('Auto Layout:', function() {
             // expect(action2._autolayout.width.value).toBe(50);
 
 
-            logValues();
+
             //$('#famous-context').css({width: '1000px', height: '400px'});
 
+            //logValues();
+            // render(1000).then(function(){
+            //     $('#famous-context').css({width: '1000px', height: '400px'});
+            //     console.log($('#famous-context').css('height'));
+            //     region.context.setSize([1000, 400]);
+            //     region.invalidateLayout();
+            //     logValues();
+            //     done();
+            // });
+
+            logValues();
             region.context.setSize([1000, 400]);
             region.invalidateLayout();
             logValues();
-
-            //console.log(footer.getSize());
-            //console.log(action1._autolayout.left.value);
             done();
         };
 

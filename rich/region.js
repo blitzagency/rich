@@ -96,8 +96,10 @@ var FamousRegion = marionette.Region.extend({
     },
 
     invalidateLayout: function(){
+
         var size = this.getSize();
-        console.log(size);
+        this._autolayout.width.value = size[0];
+        this._autolayout.height.value = size[1];
         this.view.setSize(size);
         this.view.invalidateLayout();
     },
@@ -153,6 +155,7 @@ var FamousRegion = marionette.Region.extend({
     },
 
     _viewDidChange: function(){
+        console.log('VIEW DID CHANGE')
         this.view.root = null;
         this.root = null;
         this.trigger(events.INVALIDATE, this);
