@@ -138,7 +138,94 @@ describe('View Subview:', function() {
 
         var subview1 = new RectangleView({
             model: red,
+            // modifier: new Modifier()
+        });
+
+        // var subview2 = new RectangleView({
+        //     model: red,
+        //     modifier: new Modifier()
+        // });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        // subview2.name = 'subview2';
+
+
+        view.addSubview(subview1);
+        // view.addSubview(subview2);
+
+        region.show(view);
+
+        render().then(function(){
+            var spec = view.render();
+            // target 1 = view's constraint modifier
+            // target 2 = subviews constraint modifier
+            // target 3 = subviews modifier
+            expect(spec.target.target.target).toBe(0);
+            done();
+        });
+    });
+
+    it('builds correct spec based on view with multiple children', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
             modifier: new Modifier()
+        });
+
+        var subview2 = new RectangleView({
+            model: blue,
+            modifier: new Modifier()
+        });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        subview2.name = 'subview2';
+
+
+        view.addSubview(subview1);
+        view.addSubview(subview2);
+
+        region.show(view);
+
+        render().then(function(){
+            var spec = view.render();
+
+            //        Modivier  Constraint  Modifier
+            //             V         V      V
+            expect(spec.target[0].target.target).toBe(1);
+            expect(spec.target[1].target.target).toBe(2);
+            done();
+        });
+    });
+
+    it('builds correct spec after invalidate based on view with child', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            // modifier: new Modifier()
         });
 
         // var subview2 = new RectangleView({
@@ -159,10 +246,202 @@ describe('View Subview:', function() {
         render().then(function(){
             subview1.invalidateView();
             var spec = view.render();
-            console.log(spec)
+            // target 1 = view's constraint modifier
+            // target 2 = subviews constraint modifier
+            // target 3 = subviews modifier
+            expect(spec.target.target.target).toBe(subview1.getFamousId());
             done();
-        })
+        });
     });
+
+    it('builds correct spec after invalidate based on view with multiple children', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            modifier: new Modifier()
+        });
+
+        var subview2 = new RectangleView({
+            model: blue,
+            modifier: new Modifier()
+        });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        subview2.name = 'subview2';
+
+
+        view.addSubview(subview1);
+        view.addSubview(subview2);
+
+        region.show(view);
+
+        render().then(function(){
+            subview1.invalidateView();
+            subview2.invalidateView();
+            var spec = view.render();
+
+            //        Modivier  Constraint  Modifier
+            //             V         V      V
+            expect(spec.target[0].target.target).toBe(subview1.getFamousId());
+            expect(spec.target[1].target.target).toBe(subview2.getFamousId());
+            done();
+        });
+    });
+
+    it('builds correct spec after render, based on view with multiple children', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            modifier: new Modifier()
+        });
+
+        var subview2 = new RectangleView({
+            model: blue,
+            modifier: new Modifier()
+        });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        subview2.name = 'subview2';
+
+        view.addSubview(subview1);
+        region.show(view);
+
+
+        render().then(function(){
+            var spec = view.render();
+            expect(spec.target.target.target).toBe(subview1.getFamousId());
+            view.addSubview(subview2);
+
+            render().then(function(){
+                var spec = view.render();
+                //        Modivier  Constraint  Modifier
+                //             V         V      V
+                expect(spec.target[0].target.target).toBe(subview1.getFamousId());
+                expect(spec.target[1].target.target).toBe(subview2.getFamousId());
+                done();
+            });
+        });
+    });
+
+    it('builds correct spec after render, based on child with multiple modifiers', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            modifier: new Modifier()
+        });
+
+
+        var subview2 = new RectangleView({
+            model: blue,
+            modifier: [new Modifier(), new Modifier(), new Modifier()]
+        });
+
+        view.name = 'view';
+        subview1.name = 'subview1';
+        subview2.name = 'subview2';
+
+        view.addSubview(subview1);
+        region.show(view);
+
+
+        render().then(function(){
+            var spec = view.render();
+            expect(spec.target.target.target).toBe(subview1.getFamousId());
+            view.addSubview(subview2);
+
+            render().then(function(){
+                var spec = view.render();
+                expect(spec.target[0].target.target).toBe(subview1.getFamousId());
+                expect(spec.target[1].target.target.target.target).toBe(subview2.getFamousId());
+                done();
+            });
+        });
+    });
+
+    it('builds correct spec after render, based on child and parent with multiple modifiers', function(done){
+
+        var blue = new Rectangle({
+            color: 'blue'
+        });
+        var red = new Rectangle({
+            color: 'red'
+        });
+
+
+        var view = new rich.View();
+
+
+        var subview1 = new RectangleView({
+            model: red,
+            modifier: [new Modifier(), new Modifier(), new Modifier()]
+        });
+
+
+        var subview2 = new RectangleView({
+            model: blue,
+            modifier: [new Modifier(), new Modifier(), new Modifier()]
+        });
+
+        var subview3 = new RectangleView({
+            model: blue,
+            modifier: [new Modifier(), new Modifier(), new Modifier()]
+        });
+
+        subview1.addSubview(subview2);
+        view.addSubview(subview1);
+        region.show(view);
+
+
+        render().then(function(){
+            subview2.addSubview(subview3);
+
+            render().then(function(){
+                var spec = view.render();
+                var firstArr = spec.target.target.target.target.target;
+                expect(firstArr[0]).toBe(subview1.getFamousId());
+                expect(firstArr[1].target.target.target.target[0]).toBe(subview2.getFamousId());
+                expect(firstArr[1].target.target.target.target[1].target.target.target.target).toBe(subview3.getFamousId());
+                done();
+            });
+        });
+    });
+
+
 
 
 }); // eof describe

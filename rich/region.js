@@ -156,7 +156,7 @@ var FamousRegion = marionette.Region.extend({
     },
 
     _viewDidChange: function(){
-        console.log('VIEW DID CHANGE')
+        // console.log('VIEW DID CHANGE')
         this.view.root = null;
         this.root = null;
         this.trigger(events.INVALIDATE, this);
