@@ -380,6 +380,8 @@ describe('Visual Format Language:', function() {
         var box0 = new RectangleView({
             model: color0,
             constraints: [
+                '|-20-[box1]',
+
                 {
                     item: 'box1',
                     attribute: 'height',
@@ -388,7 +390,7 @@ describe('Visual Format Language:', function() {
                 },
 
                 'V:[box1]|',
-                '|-20-[box1]'
+
             ]
         });
 
