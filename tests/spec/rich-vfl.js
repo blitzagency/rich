@@ -387,7 +387,8 @@ describe('Visual Format Language:', function() {
                     constant: 200
                 },
 
-                'V:[box1]|'
+                'V:[box1]|',
+                '|-20-[box1]'
             ]
         });
 
@@ -410,9 +411,9 @@ describe('Visual Format Language:', function() {
             expect(box0._autolayout.width.value).toBe(1000);
             expect(box0._autolayout.height.value).toBe(800);
 
-            expect(box1._autolayout.left.value).toBe(0);
+            expect(box1._autolayout.left.value).toBe(20);
             expect(box1._autolayout.right.value).toBe(0);
-            expect(box1._autolayout.width.value).toBe(1000);
+            expect(box1._autolayout.width.value).toBe(980);
             expect(box1._autolayout.height.value).toBe(200);
             expect(box1._autolayout.top.value).toBe(600);
             expect(box1._autolayout.bottom.value).toBe(0);
