@@ -653,8 +653,10 @@ var FamousView = marionette.View.extend({
                 id = obj;
             }else if(_.isArray(obj)){
                 id = obj[0];
-            } else {
-                console.log(obj);
+            } else if(_.isObject(obj)){
+                // these aren't the droids your looking for
+                break;
+            }else{
                 debugger;
                 throw new Error('An unexpected error occured '+
                                 'when updating render spec.');
