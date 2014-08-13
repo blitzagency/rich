@@ -72,7 +72,7 @@ var FamousView = marionette.View.extend({
         // we only add 'context' for a convenience
 
         var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
-        var richOptions = ['constraints', 'context', 'modifier', 'nestedSubviews'];
+        var richOptions = ['layoutAnimation', 'constraints', 'context', 'modifier', 'nestedSubviews'];
         var propertyOptions = ['size'];
         var styleOptions = ['zIndex'];
 
@@ -145,6 +145,8 @@ var FamousView = marionette.View.extend({
 
     _mapAutolayout: function(){
         _.each(CONSTRAINT_PROPS, function(prop){
+            // this isn't a literal return because we are in an _.each, it'll just kick out this loop
+            if(this._autolayoutTransitionables[prop].get() == this._autolayout[prop].value) return;
             var animation = this.getAutolayoutAnimationForProperty(prop);
             if(this._hasSetInitialProp && animation && animation.duration){
                 var mod = this._prepareModification(animation.duration, false);
@@ -160,6 +162,9 @@ var FamousView = marionette.View.extend({
     },
 
     getAutolayoutAnimationForProperty: function(property){
+        if(this.layoutAnimation){
+            return this.layoutAnimation;
+        }
         return null;
     },
 

@@ -358,7 +358,6 @@ describe('Auto Layout:', function() {
 
         var box1 = new RectangleView({
             model: color1,
-
             constraints: [
                 {
                     item: 'box2',
@@ -372,7 +371,7 @@ describe('Auto Layout:', function() {
         });
 
         var box2 = new RectangleView({
-            model: color2
+            model: color2,
         });
 
         box0.name = 'box0';
@@ -414,6 +413,10 @@ describe('Auto Layout:', function() {
 
     it('generates complex layout modifiers', function(done){
 
+        var layoutAnimation = {
+            duration: 500
+        }
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -443,6 +446,7 @@ describe('Auto Layout:', function() {
         });
 
         var view = new rich.View({
+            layoutAnimation: layoutAnimation,
             constraints: [
                 {
                     item: 'column',
@@ -473,7 +477,7 @@ describe('Auto Layout:', function() {
 
         var column = new RectangleView({
             model: color0,
-
+            layoutAnimation: layoutAnimation,
             constraints: [
                 {
                     item: 'action1',
@@ -526,7 +530,7 @@ describe('Auto Layout:', function() {
 
         var footer = new RectangleView({
             model: color1,
-
+            layoutAnimation: layoutAnimation,
             constraints: [
 
                 {
@@ -581,7 +585,8 @@ describe('Auto Layout:', function() {
         });
 
         var content = new RectangleView({
-            model: gray
+            model: gray,
+            layoutAnimation: layoutAnimation
         });
 
         var action1 = new RectangleView({
@@ -594,6 +599,7 @@ describe('Auto Layout:', function() {
 
         var action3 = new RectangleView({
             model: color4,
+            layoutAnimation: layoutAnimation,
             constraints: [
                 // {
                 //     item: 'action4',
