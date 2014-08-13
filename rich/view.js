@@ -143,7 +143,7 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeRelationships: function(){
-        if(this._relationshipsInitialized) return;
+        if(this._relationshipsInitialized || !this.superview) return;
 
         this._relationshipsInitialized = true;
         // console.log('_initializeRelationships -> ' + this.name);
