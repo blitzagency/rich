@@ -217,7 +217,9 @@ exports.VFLToJSON = function(str){
         outterAttribute = 'bottom';
     }
 
+    // first run through everything and handle the left/right's
     for (i = 0; i < cascadeLimit; i += 2) {
+        // store things here temporarily
         template = {
             element:parsed.cascade[i].view,
             toElement: parsed.cascade[i + 2].view
@@ -254,6 +256,8 @@ exports.VFLToJSON = function(str){
 
 
     }
+
+    // handle the parts like foo(100) (width)
     for (i = 0; i < cascadeLimit; i += 2) {
         constraints = parsed.cascade[i].constraints;
         if (!constraints || !constraints.length) {
