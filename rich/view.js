@@ -6,11 +6,8 @@ var marionette = require('marionette');
 var backbone = require('backbone');
 var RenderNode = require('famous/core/RenderNode');
 var ContainerSurface = require('famous/surfaces/ContainerSurface');
-var Surface = require('famous/core/Surface');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
-var Entity = require('famous/core/Entity');
-var Context = require('famous/core/Context');
 var Engine = require('famous/core/Engine');
 var events = require('./events');
 var autolayout = require('./autolayout/init');
@@ -755,6 +752,7 @@ var FamousView = marionette.View.extend({
     },
 
 });
+
 exports.FamousView = FamousView;
 
 });
