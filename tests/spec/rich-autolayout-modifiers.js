@@ -722,6 +722,11 @@ describe('Auto Layout:', function() {
             console.log('(action4) H:' + action4._autolayout.height.value);
         }
 
+        wait(1000).then(function(){
+            region.context.setSize([500, 400]);
+            region.contextDidResize();
+        });
+
         view.onShow = function(){
             //$('body').css({'width': '100%'});
             //$('body').css({'height': '100%'});

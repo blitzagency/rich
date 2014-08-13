@@ -9,10 +9,14 @@ var ContainerSurface = require('famous/surfaces/ContainerSurface');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var Engine = require('famous/core/Engine');
+var Transitionable = require("famous/transitions/Transitionable");
 var events = require('./events');
 var autolayout = require('./autolayout/init');
 var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
 var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
+
+var CONSTRAINT_PROPS = ['width', 'height', 'top', 'right', 'bottom', 'left'];
+
 
 var FamousView = marionette.View.extend({
 
@@ -114,14 +118,38 @@ var FamousView = marionette.View.extend({
 
         this._initializeAutolayoutDefaults();
 
+        // setup the autolayout modifier to move w/ a transitionable
+        this._autolayoutTransitionables = {};
+
+        _.each(CONSTRAINT_PROPS, function(prop){
+            this._autolayoutTransitionables[prop] = new Transitionable(this._autolayout[prop]);
+        }, this);
+
         this._autolayoutModifier.transformFrom(function(){
-            return Transform.translate(this._autolayout.left.value, this._autolayout.top.value, 0);
+            // return Transform.translate(this._autolayout.left.value, this._autolayout.top.value, 0);
+            return Transform.translate(this._autolayoutTransitionables.left.get(),
+                                       this._autolayoutTransitionables.top.get(),
+                                       0);
         }.bind(this));
 
         this._autolayoutModifier.sizeFrom(function(){
-            return [this._autolayout.width.value, this._autolayout.height.value];
+            // return [this._autolayout.width.value, this._autolayout.height.value];
+            return [
+                this._autolayoutTransitionables.width.get(),
+                this._autolayoutTransitionables.height.get()
+            ];
         }.bind(this));
 
+    },
+
+    _mapAutolayout: function(){
+        var animation = {
+            duration:500
+        };
+        var mod = this._prepareModification(animation.duration, false);
+        _.each(CONSTRAINT_PROPS, function(prop){
+            this._autolayoutTransitionables[prop].set(this._autolayout[prop].value, animation, mod.callback);
+        }, this);
     },
 
     _initializeAutolayoutDefaults: function(w, h){
@@ -289,6 +317,7 @@ var FamousView = marionette.View.extend({
             }, this);
         }
         this._constraintsInitialized = true;
+        this._mapAutolayout();
     },
 
     updateVariables: function(variables, values){
@@ -307,6 +336,7 @@ var FamousView = marionette.View.extend({
 
         solver.resolve();
         solver.endEdit();
+        this._mapAutolayout();
     },
 
     addConstraints: function(constraints){
