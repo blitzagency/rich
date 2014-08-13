@@ -24,7 +24,7 @@ describe('Auto Layout:', function() {
 
     beforeEach(function() {
         loadFixtures('famous.html');
-        $('#jasmine-fixtures').css({height: '100%'})
+        $('#jasmine-fixtures').css({height: '100%'});
 
         region = new rich.Region({
             el: '#famous-context'

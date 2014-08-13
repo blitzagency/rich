@@ -15,6 +15,7 @@ var Engine = require('famous/core/Engine');
 var events = require('./events');
 var autolayout = require('./autolayout/init');
 var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
+var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
 
 var FamousView = marionette.View.extend({
 
@@ -82,6 +83,8 @@ var FamousView = marionette.View.extend({
 
         this.properties.size = _.result(this.properties, 'size') || _.result(this, 'size');
         this.properties.properties.zIndex = this.zIndex;
+
+        this._convertVFLConstraints();
         this._initializeAutolayout();
         this.initialize.apply(this, arguments);
 
@@ -92,10 +95,25 @@ var FamousView = marionette.View.extend({
 
     },
 
+    _convertVFLConstraints: function(){
+        var results;
+        var constraints = this.constraints;
+
+        _.each(_.result(this, 'constraints'), function(vfl, index){
+
+            if(!_.isString(vfl)) return;
+            results = VFLToJSON(vfl);
+
+            var args = [index, 1].concat(results);
+            Array.prototype.splice.apply(constraints, args);
+        });
+    },
+
     _initializeAutolayout: function(){
 
         this._autolayout = {};
         this._autolayoutModifier = new Modifier();
+
 
         this._initializeAutolayoutDefaults();
 
