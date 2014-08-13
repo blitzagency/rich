@@ -161,7 +161,7 @@ describe('View Subview:', function() {
             // target 1 = view's constraint modifier
             // target 2 = subviews constraint modifier
             // target 3 = subviews modifier
-            expect(spec.target.target.target).toBe(0);
+            expect(spec.target.target.target).toBe(subview1.getFamousId());
             done();
         });
     });
@@ -204,8 +204,9 @@ describe('View Subview:', function() {
 
             //        Modivier  Constraint  Modifier
             //             V         V      V
-            expect(spec.target[0].target.target).toBe(1);
-            expect(spec.target[1].target.target).toBe(2);
+            expect(spec.target[0].target.target).toBe(subview1.getFamousId());
+            expect(spec.target[1].target.target).toBe(subview2.getFamousId());
+
             done();
         });
     });

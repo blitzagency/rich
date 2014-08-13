@@ -10,7 +10,10 @@ function getViewSize(view){
     var fragment = document.createDocumentFragment();
     var div = document.createElement('div');
 
-    div.setAttribute('class', className);
+    if(className){
+        div.setAttribute('class', className);
+    }
+
     div.setAttribute('style', 'visibility:hidden; position:absolute;');
 
     div.innerHTML = view.renderHTML();
