@@ -74,8 +74,13 @@ exports.constraintsFromJson = function(json, view){
     }
     var itemIsAncestor = (item.superview == toItem);
     var isSize = itemAttribute.name == 'width' || itemAttribute.name == 'height';
+    var askingForParentsSize = toAttribute.name == 'width' || toAttribute.name == 'height';
 
-    if((itemIsAncestor && !isSize) || !toAttribute){
+
+    if((itemIsAncestor && !askingForParentsSize) || !toAttribute){
+        // enter this block if you are asking to relate to your parents
+        // left/right/top/bottom, as those in relative space will
+        // always be 0's
         rightExpression = constant;
     } else {
         var result = buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, constant);

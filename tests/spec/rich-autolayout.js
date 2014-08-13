@@ -949,5 +949,43 @@ describe('Auto Layout:', function() {
     });
 
 
+
+    it('adds left constraint based on parents width', function(done){
+        var model = new Rectangle();
+        var view = new RectangleView({
+            model: model,
+            constraints: [
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width',
+                    multiplier: 0.25
+                },
+            ]
+        });
+
+        view.navigation = new RectangleView({
+            model:model,
+        });
+
+        view.addSubview(view.navigation);
+        region.show(view);
+
+        view.onShow = function(){
+            // console.log(view._autolayout.width.value)
+            // console.log(view.navigation._autolayout.left.value)
+            // console.log(view.navigation._autolayout.right.value)
+            // console.log('----')
+            // console.log('should be 250')
+            expect(view.navigation._autolayout.left.value).toBe(250);
+
+            done();
+        };
+
+    });
+
+
 }); // eof describe
 }); // eof define
