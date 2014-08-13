@@ -42,16 +42,16 @@ exports.constraintsFromJson = function(json, view){
     var rightExpression;
     var strength = autolayout.weak;
     var stays = [];
+
     if(json.toItem == 'superview'){
         toItem = view;
-    }else{
+    } else {
+
         if(_.isUndefined(json.toItem)){
             toItem = view;
         } else {
             toItem = _.isString(json.toItem) ? view[json.toItem] : json.toItem;
         }
-
-        //toItem = view[json.toItem] || view;
     }
 
     toAttribute = toItem._autolayout[json.toAttribute] || false;
