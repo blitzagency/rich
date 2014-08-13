@@ -65,7 +65,7 @@ describe('Visual Format Language:', function() {
                 "constant": 50
             }
         ];
-        expect(json).toEqual(output);
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
         // console.log(JSON.stringify(json, null, '\t'));
 
     });
@@ -105,7 +105,7 @@ describe('Visual Format Language:', function() {
                 "constant": 50
             }
         ];
-        expect(json).toEqual(output);
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
 
 
     });
@@ -145,7 +145,7 @@ describe('Visual Format Language:', function() {
 
         // console.log(vfl)
         // console.log(JSON.stringify(json, null, '\t'));
-        expect(json).toEqual(output);
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
     });
 
 
@@ -183,7 +183,7 @@ describe('Visual Format Language:', function() {
 
         // console.log(vfl)
         // console.log(JSON.stringify(json, null, '\t'));
-        expect(json).toEqual(output);
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
     });
 
 
@@ -221,7 +221,7 @@ describe('Visual Format Language:', function() {
 
         // console.log(vfl)
         // console.log(JSON.stringify(json, null, '\t'));
-        expect(json).toEqual(output);
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
     });
 
 
@@ -434,7 +434,7 @@ describe('Visual Format Language:', function() {
 
     //     // console.log(vfl)
     //     console.log(JSON.stringify(json, null, '\t'));
-    //     // expect(json).toEqual(output);
+    //     // expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
     // });
 
 }); // eof describe
