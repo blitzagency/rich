@@ -15,7 +15,8 @@ var autolayout = require('./autolayout/init');
 var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
 var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
 
-var CONSTRAINT_PROPS = ['width', 'height', 'top', 'right', 'bottom', 'left'];
+// only the props we need for the modifier
+var CONSTRAINT_PROPS = ['width', 'height', 'top', 'left'];
 
 
 var FamousView = marionette.View.extend({
@@ -143,13 +144,23 @@ var FamousView = marionette.View.extend({
     },
 
     _mapAutolayout: function(){
-        var animation = {
-            duration:500
-        };
-        var mod = this._prepareModification(animation.duration, false);
         _.each(CONSTRAINT_PROPS, function(prop){
-            this._autolayoutTransitionables[prop].set(this._autolayout[prop].value, animation, mod.callback);
+            var animation = this.getAutolayoutAnimationForProperty(prop);
+            if(this._hasSetInitialProp && animation && animation.duration){
+                var mod = this._prepareModification(animation.duration, false);
+                this._autolayoutTransitionables[prop].halt();
+                this._autolayoutTransitionables[prop].set(this._autolayout[prop].value, animation, mod.callback);
+            }else{
+                this._autolayoutTransitionables[prop].set(this._autolayout[prop].value);
+            }
         }, this);
+        if(!this._hasSetInitialProp){
+            this._hasSetInitialProp = true;
+        }
+    },
+
+    getAutolayoutAnimationForProperty: function(property){
+        return null;
     },
 
     _initializeAutolayoutDefaults: function(w, h){
