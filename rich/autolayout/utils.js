@@ -30,7 +30,7 @@ exports.constraintsFromJson = function(json, view){
     // constant: 0
     // console.log(json)
 
-    var item = view[json.item];
+    var item = _.isString(json.item) ? view[json.item] : json.item;
     var toItem;
     var toAttribute;
     var multiplier = json.multiplier || 1;
@@ -45,7 +45,13 @@ exports.constraintsFromJson = function(json, view){
     if(json.toItem == 'superview'){
         toItem = view;
     }else{
-        toItem = view[json.toItem] || view;
+        if(_.isUndefined(json.toItem)){
+            toItem = view;
+        } else {
+            toItem = _.isString(json.toItem) ? view[json.toItem] : json.toItem;
+        }
+
+        //toItem = view[json.toItem] || view;
     }
 
     toAttribute = toItem._autolayout[json.toAttribute] || false;
