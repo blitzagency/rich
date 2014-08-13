@@ -28,11 +28,25 @@ var RectangleView = rich.ItemView.extend({
         }
 
     },
+
     serializeData: function(){
+
+        var suggestedSize = this.model.get('size');
+
+        if(!suggestedSize){
+            suggestedSize = [0, 0];
+        }
+
+        var size = {};
+
+        size.x = suggestedSize[0] > 0 ? suggestedSize[0] + 'px' : '100%';
+        size.y = suggestedSize[1] > 0 ? suggestedSize[1] + 'px' : '100%';
+
         var obj = {
-            size: this.getSize(),
+            size: size,
             color: this.model.get('color')
         };
+
         return obj;
     },
 });
