@@ -737,8 +737,10 @@ describe('Auto Layout:', function() {
             //$('body').css({'width': '100%'});
             //$('body').css({'height': '100%'});
 
-            console.log($('body').css('height'));
-            console.log($('#famous-context').css('height'));
+            // console.log($('body').css('height'));
+            // console.log($('#famous-context').css('height'));
+            logValues();
+            done();
 
             // expect(content._autolayout.left.value).toBe(200);
             // expect(content._autolayout.right.value).toBe(0);

@@ -270,15 +270,21 @@ var FamousView = marionette.View.extend({
         var changes = {};
 
         _.each(_.result(this, 'constraints'), function(json){
+            // creating a constraint from JSON will create a
+            // _constraintRelations model on the toItem that
+            // includes the toAttribute this constraint depends
+            // on. The _constraintRelations model is in the form of:
+            // { viewCid: {attrName: int}}
             constraints.push(constraintsFromJson(json, this));
 
-            var item = this[json.item];
+            var key = _.isString(json.item) ? this[json.item].cid : json.item.cid;
+            var item = this.children.findByCid(key) //this[json.item];
             var relations = item._constraintRelations;
 
             if(relations.hasChanged()){
-                changes[json.item] || (changes[json.item] = {});
+                changes[key] || (changes[key] = {});
 
-                var host = changes[json.item];
+                var host = changes[key];
 
                 _.each(relations.changed, function(value){
                     _.extend(host, value.changed);
@@ -295,39 +301,39 @@ var FamousView = marionette.View.extend({
 
         // do we need to go back and update any dependencies
         if(!_.isEmpty(changes)){
-            _.each(changes, function(value, key){
 
-                var target = this[key]._constraintRelations;
+            _.each(changes, function(value, key){
+                var view = this.children.findByCid(key);
+                var target = view._constraintRelations;
+
                 var variables = [];
                 var values = [];
-                //console.log(target.keys());
 
                 // create the companion attrs:
                 if(_.has(value, 'right') || _.has(value, 'left')){
-                    //variables = companions.concat(['left', 'right']);
 
                     variables = variables.concat([
-                        this[key]._autolayout.left,
-                        this[key]._autolayout.right]);
+                        view._autolayout.left,
+                        view._autolayout.right]);
 
                     values = values.concat([
-                        this[key]._autolayout.left.value,
-                        this[key]._autolayout.right.value]);
+                        view._autolayout.left.value,
+                        view._autolayout.right.value]);
                 }
 
                 if(_.has(value, 'top') || _.has(value, 'bottom')){
                     variables = variables.concat([
-                        this[key]._autolayout.top,
-                        this[key]._autolayout.bottom]);
+                        view._autolayout.top,
+                        view._autolayout.bottom]);
 
                     values = values.concat([
-                        this[key]._autolayout.top.value,
-                        this[key]._autolayout.bottom.value]);
+                        view._autolayout.top.value,
+                        view._autolayout.bottom.value]);
                 }
 
                 _.each(target.keys(), function(key){
-                    var target = this[key];
-                    target.updateVariables(variables, values);
+                    var view = this.children.findByCid(key);
+                    view.updateVariables(variables, values);
                 }, this);
 
             }, this);

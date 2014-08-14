@@ -89,11 +89,12 @@ exports.constraintsFromJson = function(json, view){
         stays = result.stays;
     }
 
-    var history = toItem._constraintRelations.get(json.item);
+    var historyKey = item.cid;
+    var history = toItem._constraintRelations.get(historyKey);
 
     if(!history){
         history = new backbone.Model();
-        toItem._constraintRelations.set(json.item, history);
+        toItem._constraintRelations.set(historyKey, history);
     }
 
     if(toAttribute){
