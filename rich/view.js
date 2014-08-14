@@ -88,7 +88,7 @@ var FamousView = marionette.View.extend({
         this.properties.properties.zIndex = this.zIndex;
 
         this._constraints = [];
-        //this._convertVFLConstraints();
+
         this._initializeAutolayout();
         this.initialize.apply(this, arguments);
 
@@ -98,20 +98,6 @@ var FamousView = marionette.View.extend({
         /* <<< END marionette.View() override */
 
     },
-
-    // _convertVFLConstraints: function(){
-    //     var results;
-    //     var constraints = this.constraints;
-
-    //     _.each(_.result(this, 'constraints'), function(vfl, index){
-
-    //         if(!_.isString(vfl)) return;
-    //         results = VFLToJSON(vfl);
-
-    //         var args = [index, 1].concat(results);
-    //         Array.prototype.splice.apply(constraints, args);
-    //     });
-    // },
 
     _initializeAutolayout: function(){
 

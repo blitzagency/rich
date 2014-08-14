@@ -24,7 +24,7 @@ function hashJSONConstraints(json, view){
 }
 
 function serializeConstraintJSON(json, view){
-    // vfl? lets call it serialized and move on.
+    // vfl? lets call it serialized and move on for now.
     if(_.isString(json)) return json;
 
     var item = _.isString(json.item) ? view[json.item] : json.item;
