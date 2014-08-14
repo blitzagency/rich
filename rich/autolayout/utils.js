@@ -6,6 +6,47 @@ var c = autolayout.cassowary;
 var vfl = require('./vfl');
 
 
+function hashJSONConstraints(json, view){
+    var data = [];
+
+    for(var i = 0; i < json.length; i++){
+        var each = json[i];
+        data.push(serializeConstraintJSON(each));
+    }
+
+    data.sort();
+
+    // we could ACTUALLY hash this, but it would require a dependency on a hash
+    // lib, for now we are just leaving it. adding a hash lib here should
+    // break nothing if it's required.
+    var hash = data.join('|');
+
+    return hash;
+}
+
+function serializeConstraintJSON(json, view){
+    var item = _.isString(json.item) ? view[json.item] : json.item;
+
+    var attribute = json.attribute || '';
+    var relatedBy = json.relatedBy;
+    var toAttribute = json.toAttribute || null;
+    var constant = json.constant || 0;
+    var multiplier = json.multiplier || 1;
+    var toItem;
+
+    if(json.toItem === undefined){
+        toItem = null;
+    } else {
+        if(json.toItem == 'superview'){
+            toItem = item.superview.cid;
+        } else {
+            toItem = _.isString(json.toItem) ? view[json.toItem].cid : json.toItem.cid;
+        }
+    }
+
+    return [item.cid, attribute, relatedBy, toItem, toAttribute, constant, multiplier].join(':');
+}
+
 
 function getRelation(relation){
     switch(constraint.relation){
@@ -300,5 +341,8 @@ exports.VFLToJSON = function(str){
     return response;
 };
 
+
+exports.serializeConstraintJSON = serializeConstraintJSON;
+exports.hashJSONConstraints = hashJSONConstraints;
 
 });
