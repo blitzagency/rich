@@ -406,6 +406,10 @@ var FamousView = marionette.View.extend({
         }
 
         this._resolveConstraintDependencies(changes);
+
+        // if(this.root){
+        //     this.invalidateLayout();
+        // }
     },
 
     addConstraint: function(constraint){
@@ -423,11 +427,11 @@ var FamousView = marionette.View.extend({
             return;
         }
 
-        var obj = constraintsFromJson(each, this);
+        var obj = constraintsFromJson(constraint, this);
         var solver = obj.solver;
 
-        this._processAffectedRelationships(each, changes);
-        this._constraints.push(each);
+        this._processAffectedRelationships(constraint, changes);
+        this._constraints.push(constraint);
 
         if(obj.stays){
             _.each(obj.stays, addStay(solver));
@@ -435,6 +439,7 @@ var FamousView = marionette.View.extend({
 
         solver.addConstraint(obj.constraint);
         this._resolveConstraintDependencies(changes);
+
     },
 
     _prepareModification: function(duration, requireModifier){

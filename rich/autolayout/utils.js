@@ -79,12 +79,12 @@ exports.constraintsFromJson = function(json, view){
     var multiplier = json.multiplier || 1;
     var constant = json.constant || 0;
     var itemAttribute = item._autolayout[json.attribute];
-    var leafs = false;
     var related;
     var leftExpression = itemAttribute;
     var rightExpression;
     var strength = autolayout.weak;
     var stays = [];
+    var priority = json.priority || 2;
 
     if(json.toItem == 'superview'){
         toItem = view;
@@ -149,7 +149,7 @@ exports.constraintsFromJson = function(json, view){
         leftExpression,
         rightExpression,
         strength,
-        2
+        priority
     );
 
     return {

@@ -10,7 +10,7 @@ var Transform = require('famous/core/Transform');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
-var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
+var render = require('tests/utils/time').render;
 
 describe('View + Constraints:', function() {
 
@@ -73,16 +73,34 @@ describe('View + Constraints:', function() {
             expect(box0._autolayout.width.value).toBe(1000);
             expect(box0._autolayout.height.value).toBe(800);
 
-            console.log(box1._autolayout.left.value);
-            console.log(box1._autolayout.right.value);
-            console.log(box1._autolayout.width.value);
+            // console.log(box1._autolayout.left.value);
+            // console.log(box1._autolayout.right.value);
+            // console.log(box1._autolayout.width.value);
             console.log(box1._autolayout.height.value);
-            console.log(box1._autolayout.top.value);
-            console.log(box1._autolayout.bottom.value);
+            // console.log(box1._autolayout.top.value);
+            // console.log(box1._autolayout.bottom.value);
 
-            box0.addConstraint('V:[box1(200)]');
+            // box0.addConstraint({
+            //     item: box1,
+            //     attribute: 'height',
+            //     relatedBy: '==',
+            //     constant: 200
+            // });
+
+            debugger;
+            box0.addConstraint('V:[box1(200@20)]');
+
+            // box0.addConstraints([{
+            //     item: box1,
+            //     attribute: 'height',
+            //     relatedBy: '==',
+            //     constant: 200
+            // }]);
+
+
+
             render().then(function(){
-                console.log('+++' + box1._autolayout.height.value);
+                console.log('+++ ' + box1._autolayout.height.value);
                 done();
             });
 
@@ -92,7 +110,7 @@ describe('View + Constraints:', function() {
             // expect(box1._autolayout.height.value).toBe(0);
             // expect(box1._autolayout.top.value).toBe(800);
             // expect(box1._autolayout.bottom.value).toBe(0);
-            done();
+            //done();
         };
 
     });
