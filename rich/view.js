@@ -783,39 +783,39 @@ var FamousView = marionette.View.extend({
     // matching element, and re-assign it to `el`. Otherwise, create
     // an element from the `id`, `className` and `tagName` properties.
     _ensureElement: function(renderable, context) {
-      if (!this.el) {
-        // this wrongly assumes it will always have a
-        // .commit function. Will need to poribably rethink this.
+        if (!this.el) {
+            // this wrongly assumes it will always have a
+            // .commit function. Will need to poribably rethink this.
 
-        if(!renderable._currTarget){
-            renderable.setup(context._allocator);
+            if(!renderable._currentTarget){
+                renderable.setup(context._allocator);
+            }
+
+            var $el = $(renderable._currentTarget);
+
+            if (this.className){
+                var className = _.result(this, 'className');
+                $el.addClass(className);
+                renderable.addClass(className);
+            }
+
+            var attrs = _.extend({}, _.result(this, 'attributes'));
+            if (this.id) attrs.id = _.result(this, 'id');
+
+            // var $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
+            $el.attr(attrs);
+            this.setElement($el, false);
+        } else {
+            this.setElement(_.result(this, 'el'), false);
         }
 
-        var $el = $(renderable._currTarget);
-
-        if (this.className){
-            var className = _.result(this, 'className');
-            $el.addClass(className);
-            renderable.addClass(className);
-        }
-
-        var attrs = _.extend({}, _.result(this, 'attributes'));
-        if (this.id) attrs.id = _.result(this, 'id');
-
-        // var $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
-        $el.attr(attrs);
-        this.setElement($el, false);
-      } else {
-        this.setElement(_.result(this, 'el'), false);
-      }
-
-      // this is a new event for rich.
-      // a FamousView with nestedSubviews will have
-      // an $el, but a FamousView that does not have
-      // nestedSubviews enabled will not have an $el.
-      // onElement is what you want if you need to know about
-      // weather or not an element is available.
-      this.triggerMethod('element', this);
+        // this is a new event for rich.
+        // a FamousView with nestedSubviews will have
+        // an $el, but a FamousView that does not have
+        // nestedSubviews enabled will not have an $el.
+        // onElement is what you want if you need to know about
+        // weather or not an element is available.
+        this.triggerMethod('element', this);
     },
 
     invalidateLayout: function(){
