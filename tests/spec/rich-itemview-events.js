@@ -6,13 +6,13 @@ var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
-var Rectangle = require('app/shared/models/rectangle').Rectangle;
-var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
+var EventsView = require('app/shared/views/events-view').EventsView;
 var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
 
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('ItemView Events:', function() {
     var region;
@@ -35,11 +35,26 @@ describe('ItemView Events:', function() {
     });
 
 
-    it('bindings work', function(){
-        var model = new Rectangle();
-        var view = new RectangleView({model: model});
+    it('bindings work', function(done){
+
+        var clickSpy = jasmine.createSpy('clickSpy');
+
+        var ClickableRect = EventsView.extend({
+            events: {
+                'click button': 'gotClicked'
+            },
+            gotClicked: clickSpy
+        });
+
+        var view = new ClickableRect();
         region.show(view);
-        console.log('called')
+
+        view.onShow = function(){
+            view.$el.find('button').trigger('click');
+            expect(clickSpy).toHaveBeenCalled();
+            done();
+        }
+
     });
 
 
