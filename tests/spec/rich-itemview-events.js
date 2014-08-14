@@ -35,6 +35,7 @@ describe('ItemView Events:', function() {
     });
 
 
+
     it('bindings work', function(done){
 
         var clickSpy = jasmine.createSpy('clickSpy');
