@@ -378,6 +378,10 @@ describe('Auto Layout:', function() {
         box1.name = 'box1';
         box2.name = 'box2';
 
+        console.log('box0: ', box0.cid);
+        console.log('box1: ', box1.cid);
+        console.log('box2: ', box2.cid);
+
         box0.box1 = box1;
         box0.addSubview(box1);
 
@@ -729,8 +733,8 @@ describe('Auto Layout:', function() {
         }
 
         wait(1000).then(function(){
-            region.context.setSize([500, 400]);
-            region.contextDidResize();
+            //region.context.setSize([500, 400]);
+            //region.contextDidResize();
         });
 
         view.onShow = function(){
@@ -739,7 +743,7 @@ describe('Auto Layout:', function() {
 
             // console.log($('body').css('height'));
             // console.log($('#famous-context').css('height'));
-            logValues();
+            //logValues();
             done();
 
             // expect(content._autolayout.left.value).toBe(200);

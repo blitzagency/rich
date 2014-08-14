@@ -67,10 +67,12 @@ describe('Auto Layout:', function() {
         var view = new RectangleView({
             model: model,
         });
+
         view.navigation = new rich.View({});
         view.addSubview(view.navigation);
 
         region.show(view);
+
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([1000, 800]);
             done();

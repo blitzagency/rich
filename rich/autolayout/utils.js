@@ -11,7 +11,7 @@ function hashJSONConstraints(json, view){
 
     for(var i = 0; i < json.length; i++){
         var each = json[i];
-        data.push(serializeConstraintJSON(each));
+        data.push(serializeConstraintJSON(each, view));
     }
 
     data.sort();
@@ -20,7 +20,6 @@ function hashJSONConstraints(json, view){
     // lib, for now we are just leaving it. adding a hash lib here should
     // break nothing if it's required.
     var hash = data.join('|');
-
     return hash;
 }
 

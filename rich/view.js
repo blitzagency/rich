@@ -13,6 +13,7 @@ var Transitionable = require("famous/transitions/Transitionable");
 var events = require('./events');
 var autolayout = require('./autolayout/init');
 var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
+var hashJSONConstraints = require('rich/autolayout/utils').hashJSONConstraints;
 var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
 
 // only the props we need for the modifier
@@ -86,7 +87,8 @@ var FamousView = marionette.View.extend({
         this.properties.size = _.result(this.properties, 'size') || _.result(this, 'size');
         this.properties.properties.zIndex = this.zIndex;
 
-        this._convertVFLConstraints();
+        this._constraints = [];
+        //this._convertVFLConstraints();
         this._initializeAutolayout();
         this.initialize.apply(this, arguments);
 
@@ -97,19 +99,19 @@ var FamousView = marionette.View.extend({
 
     },
 
-    _convertVFLConstraints: function(){
-        var results;
-        var constraints = this.constraints;
+    // _convertVFLConstraints: function(){
+    //     var results;
+    //     var constraints = this.constraints;
 
-        _.each(_.result(this, 'constraints'), function(vfl, index){
+    //     _.each(_.result(this, 'constraints'), function(vfl, index){
 
-            if(!_.isString(vfl)) return;
-            results = VFLToJSON(vfl);
+    //         if(!_.isString(vfl)) return;
+    //         results = VFLToJSON(vfl);
 
-            var args = [index, 1].concat(results);
-            Array.prototype.splice.apply(constraints, args);
-        });
-    },
+    //         var args = [index, 1].concat(results);
+    //         Array.prototype.splice.apply(constraints, args);
+    //     });
+    // },
 
     _initializeAutolayout: function(){
 
@@ -259,55 +261,88 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeConstraints: function(){
-        var constraints = [];
+        var constraints = _.result(this, 'constraints');
+        var processedConstraints = [];
+        var wantsInitialize;
 
         this._initializeRelationships();
+
+        if(constraints === undefined) return;
+
+        var key = hashJSONConstraints(constraints, this);
+        var shouldClearConstraints = key != this._currentConstraintKey;
+
+        if(shouldClearConstraints) {
+            this._currentConstraintKey = key;
+            wantsInitialize = constraints;
+        } else {
+            wantsInitialize = this._constraints;
+        }
+
+        this._constraints = [];
 
         this.children.each(function(child){
             child._initializeRelationships();
         });
 
-        var changes = {};
+        this.addConstraints(wantsInitialize);
 
-        _.each(_.result(this, 'constraints'), function(json){
-            // creating a constraint from JSON will create a
-            // _constraintRelations model on the toItem that
-            // includes the toAttribute this constraint depends
-            // on. The _constraintRelations model is in the form of:
-            // { viewCid: {attrName: int}}
-            constraints.push(constraintsFromJson(json, this));
+        this._constraintsInitialized = true;
+        this._mapAutolayout();
+    },
 
-            var key = _.isString(json.item) ? this[json.item].cid : json.item.cid;
-            var item = this.children.findByCid(key) //this[json.item];
-            var relations = item._constraintRelations;
+    updateVariables: function(variables, values){
 
-            if(relations.hasChanged()){
-                changes[key] || (changes[key] = {});
+        var solver = this._solver;
 
-                var host = changes[key];
+        _.each(variables, function(each, index){
+            solver.addEditVar(each);
+        });
 
-                _.each(relations.changed, function(value){
-                    _.extend(host, value.changed);
-                });
+        solver.beginEdit();
 
-                // force the reset of the changed attributes
-                relations.changed = {};
-            }
+        _.each(variables, function(each, index){
+            solver.suggestValue(each, values[index]);
+        });
 
-        }, this);
+        solver.resolve();
+        solver.endEdit();
+        this._mapAutolayout();
+    },
 
+    _processAffectedRelationships: function(json, changes){
+        var key = _.isString(json.item) ? this[json.item].cid : json.item.cid;
+        var item = this.children.findByCid(key); //this[json.item];
+        var relations = item._constraintRelations;
 
-        this.addConstraints(constraints);
+        if(relations.hasChanged()){
+            changes[key] || (changes[key] = {});
 
-        // do we need to go back and update any dependencies
+            var host = changes[key];
+
+            _.each(relations.changed, function(value){
+                _.extend(host, value.changed);
+            });
+
+            // force the reset of the changed attributes
+            relations.changed = {};
+        }
+    },
+
+    _resolveConstraintDependencies: function(changes){
+        var view;
+        var target;
+        var variables;
+        var values;
+
         if(!_.isEmpty(changes)){
 
             _.each(changes, function(value, key){
-                var view = this.children.findByCid(key);
-                var target = view._constraintRelations;
+                view = this.children.findByCid(key);
+                target = view._constraintRelations;
 
-                var variables = [];
-                var values = [];
+                variables = [];
+                values = [];
 
                 // create the companion attrs:
                 if(_.has(value, 'right') || _.has(value, 'left')){
@@ -332,64 +367,88 @@ var FamousView = marionette.View.extend({
                 }
 
                 _.each(target.keys(), function(key){
-                    var view = this.children.findByCid(key);
-                    view.updateVariables(variables, values);
+                    var each = this.children.findByCid(key);
+                    each.updateVariables(variables, values);
                 }, this);
 
             }, this);
         }
-        this._constraintsInitialized = true;
-        this._mapAutolayout();
-    },
-
-    updateVariables: function(variables, values){
-
-        var solver = this._solver;
-
-        _.each(variables, function(each, index){
-            solver.addEditVar(each);
-        });
-
-        solver.beginEdit();
-
-        _.each(variables, function(each, index){
-            solver.suggestValue(each, values[index]);
-        });
-
-        solver.resolve();
-        solver.endEdit();
-        this._mapAutolayout();
     },
 
     addConstraints: function(constraints){
-        //console.log('Adding constraints[' + constraints.length +']for -> ' + this.name);
-        var solver = this._solver;
 
-        var action = function(each){
-            var solver = each.solver;
+        var i;
+        var each;
+        var result;
+        var items = constraints.slice(0);
+        var changes = {};
 
-            if(each.stays){
-                _.each(each.stays, function(stay){
-                    solver.addStay(stay, autolayout.weak, 10);
-                }, this);
-            }
-
-            solver.addConstraint(each.constraint);
+        var addStay = function(solver){
+            return function(stay){
+                solver.addStay(stay, autolayout.weak, 10);
+            };
         };
 
-        _.each(constraints, action, this);
+        // first we deal with any VFL items
+        // converting them to JSON and merging them
+        // back into the items array
+        for(i = 0; i < items.length; i++){
+            each = items[i];
 
-    },
-
-    addConstraint: function(options){
-
-        if(options.stays){
-            _.each(options.stays, function(stay){
-                this._solver.addStay(stay, autolayout.weak, 10);
-            }, this);
+            if(_.isString(each)){
+                result = VFLToJSON(each);
+                var args = [i, 1].concat(result);
+                Array.prototype.splice.apply(items, args);
+            }
         }
 
-        this._solver.addConstraint(options.constraint);
+        // everything should be JSON by this point.
+        for(i = 0; i < items.length; i++){
+            each = items[i];
+
+            var obj = constraintsFromJson(each, this);
+            var solver = obj.solver;
+
+            this._processAffectedRelationships(each, changes);
+            this._constraints.push(each);
+
+            if(obj.stays){
+                _.each(obj.stays, addStay(solver));
+            }
+
+            solver.addConstraint(obj.constraint);
+        }
+
+        this._resolveConstraintDependencies(changes);
+    },
+
+    addConstraint: function(constraint){
+        var changes = {};
+
+        var addStay = function(solver){
+            return function(stay){
+                solver.addStay(stay, autolayout.weak, 10);
+            };
+        };
+
+        if(_.isString(constraint)){
+            var result = VFLToJSON(constraint);
+            this.addConstraints(result);
+            return;
+        }
+
+        var obj = constraintsFromJson(each, this);
+        var solver = obj.solver;
+
+        this._processAffectedRelationships(each, changes);
+        this._constraints.push(each);
+
+        if(obj.stays){
+            _.each(obj.stays, addStay(solver));
+        }
+
+        solver.addConstraint(obj.constraint);
+        this._resolveConstraintDependencies(changes);
     },
 
     _prepareModification: function(duration, requireModifier){
@@ -712,13 +771,14 @@ var FamousView = marionette.View.extend({
         this.properties.size = value;
         var vars = this._autolayout;
 
-        if(this._solver){
-            var variables = [vars.width, vars.height];
-            this.updateVariables(variables, value);
-        } else {
-            vars.width.value = value[0];
-            vars.height.value = value[1];
-        }
+        // if(this._solver){
+        //     var variables = [vars.width, vars.height];
+        //     this.updateVariables(variables, value);
+        // } else {
+        //     console.log('HERE', value);
+        //     vars.width.value = value[0];
+        //     vars.height.value = value[1];
+        // }
 
         this.invalidateLayout();
     },
