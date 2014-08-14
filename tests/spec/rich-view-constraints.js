@@ -87,8 +87,7 @@ describe('View + Constraints:', function() {
             //     constant: 200
             // });
 
-            debugger;
-            box0.addConstraint('V:[box1(200@20)]');
+            box0.addConstraint('V:[box1(200)]');
 
             // box0.addConstraints([{
             //     item: box1,

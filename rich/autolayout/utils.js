@@ -210,34 +210,6 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
                 break;
         }
     }
-    // } else {
-    //     switch(toAttribute.name){
-    //         case 'right':
-
-
-    //             constant = -1 * constant;
-    //             leftExpression = autolayout.plus(item._autolayout.left, item._autolayout.width);
-    //             value = autolayout.plus(toItem._autolayout.left, toItem._autolayout.width);
-
-    //             stays = [toItem._autolayout.left, toItem._autolayout.right];
-
-    //             if(item.name == 'action2'){
-    //                 // console.log('-- autolayout.utils.js [Line 147]');
-    //                 // console.log(toItem.name);
-    //                 // console.log(toItem._autolayout.left.value);
-    //                 // console.log(toItem._autolayout.width.value);
-    //                 // console.log(toItem.superview.name)
-    //                 // console.log(toItem.superview._autolayout.left.value)
-    //                 // console.log(toItem.superview._autolayout.right.value)
-    //                 // console.log(toItem.superview._autolayout.width.value)
-    //                 // console.log(item.name);
-    //                 // console.log(item._autolayout.left.value);
-    //                 // console.log(item._autolayout.right.value);
-    //                 // console.log(item._autolayout.width.value);
-    //             }
-    //         break;
-    //     }
-    // }
 
     var times = autolayout.times(multiplier, value, autolayout.weak, 0);
     rightExpression = autolayout.plus(times, constant, autolayout.weak, 0);
@@ -252,21 +224,22 @@ function buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, c
 exports.VFLToJSON = function(str){
     var response = [];
     var parsed = vfl.parse(str);
-    var template, i, j, out, constraints;
+    var template;
+    var i;
+    var j;
+    var out;
+    var constraints;
+
+    if(parsed.cascade.length == 1){
+        return [processVFLWidthHeight(parsed.orientation, parsed.cascade[0])];
+    }
+
     var cascadeLimit = parsed.cascade.length - 2;
-    var output = {
-        item: null,
-        attribute: null,
-        relatedBy: null,
-        toItem: 'superview',
-        toAttribute: null,
-        multiplier: 1,
-        constant: 0,
-    };
 
     var orientation = parsed.orientation;
     var innerAttribute = 'left';
     var outterAttribute = 'right';
+
     if(orientation != 'horizontal'){
         innerAttribute = 'top';
         outterAttribute = 'bottom';
@@ -279,8 +252,10 @@ exports.VFLToJSON = function(str){
             element:parsed.cascade[i].view,
             toElement: parsed.cascade[i + 2].view
         };
+
         constraints = parsed.cascade[i + 1];
-        out = _.clone(output);
+
+        out = VFLOutput();
 
         for (j = 0; j < constraints.length; j++) {
             constraint = _.extend({}, template, constraints[j]);
@@ -294,12 +269,12 @@ exports.VFLToJSON = function(str){
             out.attribute = innerAttribute;
             out.item = constraint.toElement;
             out.toAttribute = innerAttribute;
-        }else if(_.isNull(constraint.toElement)){
+        } else if(_.isNull(constraint.toElement)){
             // right/bottom
             out.attribute = outterAttribute;
             out.toAttribute = outterAttribute;
             out.item = constraint.element;
-        }else{
+        } else {
             // related to something else...
             out.toItem = constraint.element;
             out.item = constraint.toElement;
@@ -308,40 +283,62 @@ exports.VFLToJSON = function(str){
         }
         out.constant = constraint.constant;
         response.push(out);
-
-
     }
 
     // handle the parts like foo(100) (width)
     for (i = 0; i < cascadeLimit; i += 2) {
-        constraints = parsed.cascade[i].constraints;
-        if (!constraints || !constraints.length) {
-            continue;
-        }
-        template = {
-            element: parsed.cascade[i].view
-        };
-        for (j = 0; j < constraints.length; j++) {
-            constraint = _.extend({}, template, constraints[j]);
-        }
-
-        out = _.clone(output);
-
-        out.item = template.element;
-        out.attribute = parsed.orientation == 'vertical' ? 'height' : 'width';
-        out.constant = constraint.constant;
-        out.relatedBy = getRelation(constraint.relation);
-        if(constraint.view){
-            out.toItem = constraint.view;
-            out.toAttribute = out.attribute;
-        }else{
-            delete out.toItem;
-            delete out.toAttribute;
-        }
+        out = processVFLWidthHeight(parsed.orientation, parsed.cascade[i]);
+        if(!out) continue;
         response.push(out);
     }
     return response;
 };
+
+function VFLOutput(){
+    return {
+        item: null,
+        attribute: null,
+        relatedBy: null,
+        toItem: 'superview',
+        toAttribute: null,
+        multiplier: 1,
+        constant: 0,
+    };
+}
+
+function processVFLWidthHeight(orientation, obj){
+    var constraints = obj.constraints;
+
+    if (!constraints || !constraints.length) {
+        return;
+    }
+
+    var template = {
+        element: obj.view
+    };
+
+    for (j = 0; j < constraints.length; j++) {
+        constraint = _.extend({}, template, constraints[j]);
+    }
+
+    var out = VFLOutput();
+
+    out.item = template.element;
+    out.attribute = orientation == 'vertical' ? 'height' : 'width';
+    out.constant = constraint.constant;
+    out.relatedBy = getRelation(constraint.relation);
+
+    if(constraint.view){
+        out.toItem = constraint.view;
+        out.toAttribute = out.attribute;
+    } else {
+        delete out.toItem;
+        delete out.toAttribute;
+    }
+
+    return out;
+
+}
 
 
 exports.serializeConstraintJSON = serializeConstraintJSON;
