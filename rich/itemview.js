@@ -2,6 +2,7 @@ define(function (require, exports, module) {
     var marionette  = require('marionette');
     var Surface = require('famous/core/Surface');
     var FamousView = require('./view').FamousView;
+    var $ = require('jquery');
 
 
     var obj = {};
@@ -29,17 +30,14 @@ define(function (require, exports, module) {
         renderHTML: function(){
             var data = this.serializeData();
             data = this.mixinTemplateHelpers(data);
-
             var template = this.getTemplate();
             var html = marionette.Renderer.render(template, data);
-
             return html;
         },
 
 
         _deploy: function(target){
             var context = this.context;
-
             if(this.nestedSubviews){
                 context = this.container.context;
             }

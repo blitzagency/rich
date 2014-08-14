@@ -45,7 +45,8 @@ define(function(require, exports, module) {
         containerType: 'div',
         containerClass: 'famous-container',
         fpsCap: undefined,
-        runLoop: true
+        runLoop: true,
+        appMode: true
     };
     var optionsManager = new OptionsManager(options);
 
@@ -116,10 +117,22 @@ define(function(require, exports, module) {
     window.addEventListener('resize', handleResize, false);
     handleResize();
 
-    // prevent scrolling via browser
-    window.addEventListener('touchmove', function(event) {
-        event.preventDefault();
-    }, true);
+    /**
+     * Initialize famous for app mode
+     *
+     * @static
+     * @private
+     * @method initialize
+     */
+    function initialize() {
+        // prevent scrolling via browser
+        window.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+        }, true);
+        document.body.classList.add('famous-root');
+        document.documentElement.classList.add('famous-root');
+    }
+    var initialized = false;
 
     /**
      * Add event handler object to set of downstream handlers.
@@ -268,6 +281,8 @@ define(function(require, exports, module) {
      * @return {Context} new Context within el
      */
     Engine.createContext = function createContext(el) {
+        if (!initialized && options.appMode) initialize();
+
         var needMountContainer = false;
         if (!el) {
             el = document.createElement(options.containerType);
@@ -297,6 +312,31 @@ define(function(require, exports, module) {
     Engine.registerContext = function registerContext(context) {
         contexts.push(context);
         return context;
+    };
+
+    /**
+     * Returns a list of all contexts.
+     *
+     * @static
+     * @method getContexts
+     * @return {Array} contexts that are updated on each tick
+     */
+    Engine.getContexts = function getContexts() {
+        return contexts;
+    };
+
+    /**
+     * Removes a context from the run loop. Note: this does not do any
+     *     cleanup.
+     *
+     * @static
+     * @method deregisterContext
+     *
+     * @param {Context} context Context to deregister
+     */
+    Engine.deregisterContext = function deregisterContext(context) {
+        var i = contexts.indexOf(context);
+        if (i >= 0) contexts.splice(i, 1);
     };
 
     /**
