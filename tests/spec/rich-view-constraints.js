@@ -12,7 +12,7 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var render = require('tests/utils/time').render;
 var css = require('tests/utils/css');
-
+var constraints = require('rich/autolayout/constraints');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
