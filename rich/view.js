@@ -836,6 +836,8 @@ var FamousView = marionette.View.extend({
             subview.invalidateLayout();
         });
 
+        this.triggerRichInvalidate();
+
     },
 
     invalidateView: function(){

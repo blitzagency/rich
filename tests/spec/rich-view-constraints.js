@@ -51,9 +51,9 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
-            constraints: [
-            'V:[box1(200)]'
-            ]
+            // constraints: [
+            // 'V:[box1(200)]'
+            // ]
         });
 
         var box1 = new RectangleView({
@@ -89,7 +89,8 @@ describe('View + Constraints:', function() {
             //     constant: 200
             // });
 
-            //box0.addConstraint('V:[box1(200)]');
+
+            box0.addConstraint('V:[box1(200)]');
 
             // box0.addConstraints([{
             //     item: box1,
