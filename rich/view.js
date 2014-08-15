@@ -113,7 +113,7 @@ var FamousView = marionette.View.extend({
         this._autolayoutTransitionables = {};
 
         _.each(CONSTRAINT_PROPS, function(prop){
-            this._autolayoutTransitionables[prop] = new Transitionable(this._autolayout[prop]);
+            this._autolayoutTransitionables[prop] = new Transitionable(this._autolayout[prop].value);
         }, this);
 
         this._autolayoutModifier.transformFrom(function(){
@@ -254,8 +254,11 @@ var FamousView = marionette.View.extend({
 
         this._initializeRelationships();
 
-        if(constraints === undefined && this._constraints.length === 0)
+        if(constraints === undefined && this._constraints.length === 0){
+            this._mapAutolayout();
             return;
+        }
+
 
         var key = hashJSONConstraints(constraints, this);
         var shouldClearConstraints = key != this._currentConstraintKey;

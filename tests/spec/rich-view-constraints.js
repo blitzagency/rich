@@ -46,12 +46,14 @@ describe('View + Constraints:', function() {
         });
 
         var color1 = new Rectangle({
-            color: colors[1]
+            color: 'red'
         });
 
         var box0 = new RectangleView({
             model: color0,
-            constraints: []
+            constraints: [
+            'V:[box1(200)]'
+            ]
         });
 
         var box1 = new RectangleView({
@@ -87,7 +89,7 @@ describe('View + Constraints:', function() {
             //     constant: 200
             // });
 
-            box0.addConstraint('V:[box1(200)]');
+            //box0.addConstraint('V:[box1(200)]');
 
             // box0.addConstraints([{
             //     item: box1,
@@ -100,7 +102,7 @@ describe('View + Constraints:', function() {
 
             render().then(function(){
                 console.log('+++ ' + box1._autolayout.height.value);
-                done();
+                //done();
             });
 
             // expect(box1._autolayout.left.value).toBe(0);
