@@ -414,9 +414,10 @@ var FamousView = marionette.View.extend({
 
         this._resolveConstraintDependencies(changes);
 
-        // if(this.root){
-        //     this.invalidateLayout();
-        // }
+        if(this.root){
+            this.invalidateLayout();
+            this.triggerRichInvalidate();
+        }
     },
 
     addConstraint: function(constraint){
@@ -446,6 +447,11 @@ var FamousView = marionette.View.extend({
 
         solver.addConstraint(obj.constraint);
         this._resolveConstraintDependencies(changes);
+
+        if(this.root){
+            this.invalidateLayout();
+            this.triggerRichInvalidate();
+        }
 
     },
 
@@ -827,9 +833,6 @@ var FamousView = marionette.View.extend({
 
     invalidateLayout: function(){
 
-        this.root = null;
-        this._spec = null;
-
         this._constraintsInitialized = false;
         this._relationshipsInitialized = false;
         this._initializeAutolayoutDefaults();
@@ -838,7 +841,9 @@ var FamousView = marionette.View.extend({
             subview.invalidateLayout();
         });
 
-        //this.triggerRichInvalidate();
+        if(this.root){
+            this.root = null;
+        }
 
     },
 

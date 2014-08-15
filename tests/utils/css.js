@@ -27,8 +27,17 @@ function getZIndex($el){
     return parseInt(computed.getPropertyValue('z-index'), 10);
 }
 
+function getSize($el){
+    var computed = getComputedStyle($el);
+    var width = computed.getPropertyValue('width');
+    var height = computed.getPropertyValue('height');
+
+    return [parseInt(width, 10), parseInt(height, 10)];
+}
+
 exports.getComputedStyle = getComputedStyle;
 exports.getTransformMatrix = getTransformMatrix;
 exports.getZIndex = getZIndex;
+exports.getSize = getSize;
 
 });

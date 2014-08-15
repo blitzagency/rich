@@ -11,6 +11,7 @@ var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var render = require('tests/utils/time').render;
+var css = require('tests/utils/css');
 
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
@@ -43,7 +44,7 @@ describe('View + Constraints:', function() {
     });
 
 
-    it('updates layout after adding constraint', function(done){
+    it('updates layout after adding constraint with JSON', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -54,9 +55,6 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
-            // constraints: [
-            // 'V:[box1(200)]'
-            // ]
         });
 
         var box1 = new RectangleView({
@@ -78,46 +76,77 @@ describe('View + Constraints:', function() {
             expect(box0._autolayout.width.value).toBe(1000);
             expect(box0._autolayout.height.value).toBe(800);
 
-            // console.log(box1._autolayout.left.value);
-            // console.log(box1._autolayout.right.value);
-            // console.log(box1._autolayout.width.value);
-            console.log(box1._autolayout.height.value);
-            // console.log(box1._autolayout.top.value);
-            // console.log(box1._autolayout.bottom.value);
+            expect(box1._autolayout.left.value).toBe(0);
+            expect(box1._autolayout.right.value).toBe(0);
+            expect(box1._autolayout.width.value).toBe(1000);
+            expect(box1._autolayout.height.value).toBe(800);
 
-            // box0.addConstraint({
-            //     item: box1,
-            //     attribute: 'height',
-            //     relatedBy: '==',
-            //     constant: 200
-            // });
+            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
 
+            box0.addConstraint({
+                item: box1,
+                attribute: 'height',
+                relatedBy: '==',
+                constant: 200
+            });
+
+            render().then(function(){
+                expect(box1._autolayout.height.value).toBe(200);
+                expect(box1._autolayout.bottom.value).toBe(600);
+                expect(css.getSize(box1.$el)).toEqual([1000, 200]);
+                done();
+            });
+        };
+    });
+
+    it('updates layout after adding constraint with VFL', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        box0.name = 'box0';
+        box1.name = 'box1';
+
+        box0.box1 = box1;
+        box0.addSubview(box1);
+
+        region.show(box0);
+
+        box0.onShow = function(){
+
+            expect(box0._autolayout.left.value).toBe(0);
+            expect(box0._autolayout.right.value).toBe(0);
+            expect(box0._autolayout.width.value).toBe(1000);
+            expect(box0._autolayout.height.value).toBe(800);
+
+            expect(box1._autolayout.left.value).toBe(0);
+            expect(box1._autolayout.right.value).toBe(0);
+            expect(box1._autolayout.width.value).toBe(1000);
+            expect(box1._autolayout.height.value).toBe(800);
+
+            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
 
             box0.addConstraint('V:[box1(200)]');
 
-            // box0.addConstraints([{
-            //     item: box1,
-            //     attribute: 'height',
-            //     relatedBy: '==',
-            //     constant: 200
-            // }]);
-
-
-
             render().then(function(){
-                console.log('+++ ' + box1._autolayout.height.value);
-                //done();
+                expect(box1._autolayout.height.value).toBe(200);
+                expect(box1._autolayout.bottom.value).toBe(600);
+                expect(css.getSize(box1.$el)).toEqual([1000, 200]);
+                done();
             });
-
-            // expect(box1._autolayout.left.value).toBe(0);
-            // expect(box1._autolayout.right.value).toBe(0);
-            // expect(box1._autolayout.width.value).toBe(1000);
-            // expect(box1._autolayout.height.value).toBe(0);
-            // expect(box1._autolayout.top.value).toBe(800);
-            // expect(box1._autolayout.bottom.value).toBe(0);
-            //done();
         };
-
     });
 
 }); // eof describe
