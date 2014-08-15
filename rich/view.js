@@ -254,7 +254,8 @@ var FamousView = marionette.View.extend({
 
         this._initializeRelationships();
 
-        if(constraints === undefined) return;
+        if(constraints === undefined && this._constraints.length === 0)
+            return;
 
         var key = hashJSONConstraints(constraints, this);
         var shouldClearConstraints = key != this._currentConstraintKey;
