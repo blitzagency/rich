@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     var Transitionable = require("famous/transitions/Transitionable");
     var events = require('../events');
     var SimplePlugin = require('./scroll-drivers/simple').SimplePlugin;
-    var BouncePlugin = require('./scroll-drivers/bounce').BouncePlugin;
+
 
     GenericSync.register({
         "touch": TouchSync,
@@ -57,8 +57,8 @@ define(function(require, exports, module) {
             this._scrollHandler = new EventHandler();
 
             // set up the scroll plugin
-            var ScrollPlugin = options.scrollPlugin || BouncePlugin;
-            this._plugin = new BouncePlugin(this);
+            var ScrollPlugin = options.scrollPlugin || SimplePlugin;
+            this._plugin = new ScrollPlugin(this);
 
             // options
             this.direction = options.direction;
