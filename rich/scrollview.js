@@ -242,10 +242,10 @@ define(function (require, exports, module) {
                 }else{
                     // add a spring
                     this._particle.setVelocity(0);
-                    // this._physicsEngine.attach([this._spring], this._particle);
+                    this._physicsEngine.attach([this._spring], this._particle);
                     this._hasSpring = true;
                     this._scrollableView.setNeedsDisplay(true);
-                    // this._scrollableView.on(events.RENDER, this._onSpringRender);
+                    this._scrollableView.on(events.RENDER, this._onSpringRender);
                 }
                 this._positionY.set(ySpringPos);
                 this._positionX.set(xSpringPos);
@@ -254,8 +254,8 @@ define(function (require, exports, module) {
                     this._physicsEngine.detachAll();
                     this._particle.setVelocity(0);
                     this._hasSpring = false;
-                    // this._scrollableView.setNeedsDisplay(false);
-                    // this._scrollableView.off(events.RENDER, this._onSpringRender);
+                    this._scrollableView.setNeedsDisplay(false);
+                    this._scrollableView.off(events.RENDER, this._onSpringRender);
                 }
             }
         },

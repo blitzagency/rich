@@ -684,6 +684,12 @@ var FamousView = marionette.View.extend({
             while(modLength){
                 modLength --;
                 if(modLength == 0){
+                    if(_.isNumber(node.target)){
+                        // you were given an event from a sub view of a
+                        // containerview...do nothing, the sub view already took
+                        // care of it
+                        return;
+                    }
                     node.target = view._spec;
                     this.triggerRichInvalidate();
                     return;

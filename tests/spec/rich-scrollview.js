@@ -38,11 +38,14 @@ describe('Layout:', function() {
             model: model
         });
         var scrollView = new scroll.ScrollView({
-            contentSize: [2000, 2200],
+            contentSize: [800, 4000],
             direction: scroll.DIRECTION_Y
         });
-
+        scrollView.name = 'scrollView;';
+        scrollView._scrollableView.name = '_scrollableView';
+        view.name = 'longview';
         scrollView.addSubview(view);
+
         region.show(scrollView);
 
 
