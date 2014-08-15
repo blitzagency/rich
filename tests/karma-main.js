@@ -3,15 +3,15 @@ var tests = [
     // Load mocks and vendor init
     //'tests/mocks/init',
 
-    // 'tests/spec/rich-autolayout',
-    // 'tests/spec/rich-autolayout-modifiers',
+    'tests/spec/rich-autolayout',
+    'tests/spec/rich-autolayout-modifiers',
     // 'tests/spec/rich-autolayout-utils',
     // 'tests/spec/rich-itemview-events',
     // 'tests/spec/rich-layout',
     // 'tests/spec/rich-region',
     // 'tests/spec/rich-vfl',
     // 'tests/spec/rich-view-className',
-    'tests/spec/rich-view-constraints',
+    // 'tests/spec/rich-view-constraints',
     // 'tests/spec/rich-view-core',
     // 'tests/spec/rich-view-size',
     // 'tests/spec/rich-view-subviews',

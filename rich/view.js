@@ -249,8 +249,9 @@ var FamousView = marionette.View.extend({
 
     _initializeConstraints: function(){
         var constraints = _.result(this, 'constraints');
-        var processedConstraints = [];
         var wantsInitialize;
+        var shouldClearConstraints = false;
+        var key;
 
         this._initializeRelationships();
 
@@ -259,9 +260,10 @@ var FamousView = marionette.View.extend({
             return;
         }
 
-
-        var key = hashJSONConstraints(constraints, this);
-        var shouldClearConstraints = key != this._currentConstraintKey;
+        if(constraints){
+            key = hashJSONConstraints(constraints, this);
+            shouldClearConstraints = key != this._currentConstraintKey;
+        }
 
         if(shouldClearConstraints) {
             this._currentConstraintKey = key;
