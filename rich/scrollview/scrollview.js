@@ -11,7 +11,7 @@ define(function(require, exports, module) {
     var EventHandler = require('famous/core/EventHandler');
     var Transitionable = require("famous/transitions/Transitionable");
     var events = require('../events');
-    var SimplePlugin = require('./scroll-drivers/simple').SimplePlugin;
+    var SimpleDriver = require('./scroll-drivers/simple').SimpleDriver;
 
 
     GenericSync.register({
@@ -56,9 +56,9 @@ define(function(require, exports, module) {
             FamousView.prototype.constructor.apply(this, arguments);
             this._scrollHandler = new EventHandler();
 
-            // set up the scroll plugin
-            var ScrollPlugin = options.scrollPlugin || SimplePlugin;
-            this._plugin = new ScrollPlugin(this);
+            // set up the scroll driver
+            var ScrollDriver = options.scrollDriver || SimpleDriver;
+            this._driver = new ScrollDriver(this);
 
             // options
             this.direction = options.direction;
@@ -326,7 +326,7 @@ define(function(require, exports, module) {
         },
 
         _onScrollUpdate: function(data) {
-            // this._plugin.onScrollUpdate(data);
+            // this._driver.onScrollUpdate(data);
             if(this._scrollAnimationCallback){
                 this._scrollAnimationCallback();
             }
@@ -380,10 +380,10 @@ define(function(require, exports, module) {
             }
 
 
-            // we check with the plugin to see if it wants to limit the position of the
+            // we check with the driver to see if it wants to limit the position of the
             // scroll when we are updating via scroll
-            this.setScrollPosition(gotoPosX, gotoPosY, null, this._plugin.shouldLimitPastBounds());
-            this._plugin.updateLimits(isPastLimits, anchorPoint);
+            this.setScrollPosition(gotoPosX, gotoPosY, null, this._driver.shouldLimitPastBounds());
+            this._driver.updateLimits(isPastLimits, anchorPoint);
             this.triggerScrollUpdate();
         },
 

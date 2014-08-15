@@ -7,7 +7,7 @@ var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
 var scroll = require('rich/scrollview/scrollview');
-var BouncePlugin = require('rich/scrollview/scroll-drivers/bounce').BouncePlugin;
+var BounceDriver = require('rich/scrollview/scroll-drivers/bounce').BounceDriver;
 var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
@@ -35,7 +35,7 @@ describe('Layout:', function() {
     });
 
 
-    it('basic plugin scrolls to a scrolled position', function(done){
+    it('basic driver scrolls to a scrolled position', function(done){
         var model = new Rectangle();
         var view = new LongView({
             model: model
@@ -63,7 +63,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('basic plugin animates to a scrolled position', function(done){
+    it('basic driver animates to a scrolled position', function(done){
         var model = new Rectangle();
         var view = new LongView({
             model: model
@@ -109,7 +109,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce plugin scrolls to a scrolled position', function(done){
+    it('bounce driver scrolls to a scrolled position', function(done){
         var model = new Rectangle();
         var view = new LongView({
             model: model
@@ -117,7 +117,7 @@ describe('Layout:', function() {
         var scrollView = new scroll.ScrollView({
             contentSize: [800, 4000],
             direction: scroll.DIRECTION_Y,
-            scrollPlugin: BouncePlugin
+            scrollDriver: BounceDriver
         });
         scrollView.name = 'scrollView;';
         scrollView._scrollableView.name = '_scrollableView';
@@ -138,7 +138,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce plugin animates to a scrolled position', function(done){
+    it('bounce driver animates to a scrolled position', function(done){
         var model = new Rectangle();
         var view = new LongView({
             model: model
@@ -146,7 +146,7 @@ describe('Layout:', function() {
         var scrollView = new scroll.ScrollView({
             contentSize: [800, 4000],
             direction: scroll.DIRECTION_Y,
-            scrollPlugin: BouncePlugin
+            scrollDriver: BounceDriver
         });
         scrollView.name = 'scrollView;';
         scrollView._scrollableView.name = '_scrollableView';

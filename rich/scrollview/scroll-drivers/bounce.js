@@ -8,10 +8,10 @@ var TouchSync = require('famous/inputs/TouchSync');
 var ScrollSync = require('famous/inputs/ScrollSync');
 var MouseSync = require('famous/inputs/MouseSync');
 var events = require('../../events');
-var SimplePlugin = require('./simple').SimplePlugin;
+var SimpleDriver = require('./simple').SimpleDriver;
 var GenericSync = require('famous/inputs/GenericSync');
 
-var BouncePlugin = SimplePlugin.extend({
+var BounceDriver = SimpleDriver.extend({
     _hasSpring: false,
     initialize: function(scrollView) {
         this.scrollView = scrollView;
@@ -75,6 +75,6 @@ var BouncePlugin = SimplePlugin.extend({
     },
 });
 
-exports.BouncePlugin = BouncePlugin;
+exports.BounceDriver = BounceDriver;
 
 });

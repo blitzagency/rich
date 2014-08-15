@@ -4,7 +4,7 @@ var marionette = require('marionette');
 var PhysicsEngine = require('famous/physics/PhysicsEngine');
 
 
-var SimplePlugin = marionette.Controller.extend({
+var SimpleDriver = marionette.Controller.extend({
 
     initialize: function(scrollView) {
         this.scrollView = scrollView;
@@ -25,6 +25,6 @@ var SimplePlugin = marionette.Controller.extend({
     },
 });
 
-exports.SimplePlugin = SimplePlugin;
+exports.SimpleDriver = SimpleDriver;
 
 });
