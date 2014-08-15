@@ -5,7 +5,7 @@ var ColorfulCell = require('./colorful-cell').ColorfulCell;
 var HorizontalCollection = require('./horizontal-collection').HorizontalCollection;
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
-var scroll = require('rich/scrollview');
+var scroll = require('rich/scrollview/scrollview');
 
 
 var VerticalCollection = rich.CollectionView.extend({

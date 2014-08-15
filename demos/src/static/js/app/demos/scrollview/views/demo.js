@@ -3,7 +3,7 @@ define(function (require, exports, module) {
 var rich = require('rich');
 var app = require('app/famous/core');
 var backbone = require('backbone');
-var scroll = require('rich/scrollview');
+var scroll = require('rich/scrollview/scrollview');
 var VerticalCollection = require('app/demos/scrollview/views/vertical-collection').VerticalCollection;
 var SubviewDemo = require('app/demos/subviews/views/demo').SubviewDemo;
 
