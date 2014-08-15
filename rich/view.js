@@ -102,11 +102,13 @@ var FamousView = marionette.View.extend({
     _initializeAutolayout: function(){
 
         this._autolayout = {};
-        this._autolayoutModifier = new Modifier();
-
 
         this._initializeAutolayoutDefaults();
+        this._initializeAutolayoutModifier();
+    },
 
+    _initializeAutolayoutModifier: function(){
+        this._autolayoutModifier = new Modifier();
         // setup the autolayout modifier to move w/ a transitionable
         this._autolayoutTransitionables = {};
 
@@ -128,7 +130,6 @@ var FamousView = marionette.View.extend({
                 this._autolayoutTransitionables.height.get()
             ];
         }.bind(this));
-
     },
 
     _mapAutolayout: function(){
