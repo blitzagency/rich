@@ -6,7 +6,7 @@ var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
-var scroll = require('rich/scrollview');
+var scroll = require('rich/scrollview/scrollview');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var LongView = require('app/shared/views/long-view').LongView;
 
