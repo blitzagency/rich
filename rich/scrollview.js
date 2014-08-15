@@ -9,7 +9,7 @@ define(function (require, exports, module) {
             // this.setNeedsDisplay(true);
             options || (options = {});
 
-            // this._scrollableView = new FamousScrollview();
+            this._scrollableView = new FamousScrollview();
 
             rich.View.prototype.constructor.apply(this, arguments);
 
