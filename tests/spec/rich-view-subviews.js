@@ -14,7 +14,7 @@ var matrix = require('tests/utils/matrix');
 var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
-var scroll = require('rich/scrollview');
+var scroll = require('rich/scrollview/scrollview');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 

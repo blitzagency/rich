@@ -501,7 +501,7 @@ var FamousView = marionette.View.extend({
 
     render: function(){
 
-        if(this.root === null || this.needsDisplay()){
+        if(this.root === null || this.needsDisplay() || true){
             if(!this._constraintsInitialized){
                 this._initializeConstraints();
             }
@@ -673,6 +673,12 @@ var FamousView = marionette.View.extend({
             while(modLength){
                 modLength --;
                 if(modLength == 0){
+                    if(_.isNumber(node.target)){
+                        // you were given an event from a sub view of a
+                        // containerview...do nothing, the sub view already took
+                        // care of it
+                        return;
+                    }
                     node.target = view._spec;
                     this.triggerRichInvalidate();
                     return;
