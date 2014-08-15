@@ -8,7 +8,7 @@ var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
 var Scrollview = require('rich/scrollview').Scrollview;
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
-var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
+var LongView = require('app/shared/views/long-view').LongView;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -34,7 +34,7 @@ describe('Layout:', function() {
 
     it('scrolls', function(done){
         var model = new Rectangle();
-        var view = new RectangleView({
+        var view = new LongView({
             model: model
         });
 
@@ -43,7 +43,7 @@ describe('Layout:', function() {
         region.show(scrollview);
 
 
-        done()
+        // done()
     });
 
 }); // eof describe
