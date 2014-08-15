@@ -5,9 +5,9 @@ var tests = [
 
     'tests/spec/rich-scrollview',
     // 'tests/spec/rich-autolayout',
-    //'tests/spec/rich-autolayout-modifiers',
-    // 'tests/spec/rich-itemview-events',
+    // 'tests/spec/rich-autolayout-modifiers',
     // 'tests/spec/rich-autolayout-utils',
+    // 'tests/spec/rich-itemview-events',
     // 'tests/spec/rich-layout',
     // 'tests/spec/rich-region',
     // 'tests/spec/rich-vfl',

@@ -12,6 +12,9 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var render = require('tests/utils/time').render;
 
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 describe('View + Constraints:', function() {
 
     var region;
@@ -51,9 +54,9 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
-            constraints: [
-            'V:[box1(200)]'
-            ]
+            // constraints: [
+            // 'V:[box1(200)]'
+            // ]
         });
 
         var box1 = new RectangleView({
@@ -89,7 +92,8 @@ describe('View + Constraints:', function() {
             //     constant: 200
             // });
 
-            //box0.addConstraint('V:[box1(200)]');
+
+            box0.addConstraint('V:[box1(200)]');
 
             // box0.addConstraints([{
             //     item: box1,
