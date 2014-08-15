@@ -6,7 +6,7 @@ var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
-var Scrollview = require('rich/scrollview').Scrollview;
+var scroll = require('rich/scrollview');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var LongView = require('app/shared/views/long-view').LongView;
 
@@ -37,10 +37,13 @@ describe('Layout:', function() {
         var view = new LongView({
             model: model
         });
+        var scrollView = new scroll.ScrollView({
+            contentSize: [2000, 2200],
+            direction: scroll.DIRECTION_Y
+        });
 
-        var scrollview = new Scrollview();
-        scrollview.addSubview(view);
-        region.show(scrollview);
+        scrollView.addSubview(view);
+        region.show(scrollView);
 
 
         // done()
