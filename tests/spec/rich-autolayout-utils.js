@@ -8,6 +8,7 @@ var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var utils = require('rich/autolayout/utils');
+var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
 
 
 describe('Auto Layout + Utils:', function() {
@@ -210,25 +211,24 @@ describe('Auto Layout + Utils:', function() {
         view0.view1 = view1;
         view0.addSubview(view1);
 
-        var json = [
-            {
+        var c1 = constraintWithJSON({
                 item: view1,
                 attribute: 'width',
                 relatedBy: '==',
                 constant: 100
-            },
+            });
 
-            { // no multiplier
-                item: view1,
-                attribute: 'left',
-                relatedBy: '==',
-                toItem: view0,
-                toAttribute: 'left',
-                constant: 20
-            },
-        ];
+        var c2 = constraintWithJSON({
+            // no multiplier
+            item: view1,
+            attribute: 'left',
+            relatedBy: '==',
+            toItem: view0,
+            toAttribute: 'left',
+            constant: 20
+        });
 
-        var data = utils.hashJSONConstraints(json, view0);
+        var data = utils.hashConstraints([c1, c2], view0);
 
         //'view#:left:==:view#:left:20:1|view#:width:==:::100:1'
         var result = view1.cid + ':left:==:' +

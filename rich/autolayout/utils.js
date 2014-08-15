@@ -6,12 +6,12 @@ var c = autolayout.cassowary;
 var vfl = require('./vfl');
 
 
-function hashJSONConstraints(json, view){
+function hashConstraints(json, view){
     var data = [];
 
     for(var i = 0; i < json.length; i++){
         var each = json[i];
-        data.push(serializeConstraintJSON(each, view));
+        data.push(serializeConstraintJSON(each.attributes, view));
     }
 
     data.sort();
@@ -36,13 +36,15 @@ function serializeConstraintJSON(json, view){
     var multiplier = json.multiplier || 1;
     var toItem;
 
-    if(json.toItem === undefined){
-        toItem = null;
-    } else {
-        if(json.toItem == 'superview'){
-            toItem = item.superview.cid;
+    if(json.toItem !== null){
+        if(json.toItem === undefined){
+            toItem = null;
         } else {
-            toItem = _.isString(json.toItem) ? view[json.toItem].cid : json.toItem.cid;
+            if(json.toItem == 'superview'){
+                toItem = item.superview.cid;
+            } else {
+                toItem = _.isString(json.toItem) ? view[json.toItem].cid : json.toItem.cid;
+            }
         }
     }
 
@@ -90,7 +92,7 @@ exports.constraintsFromJson = function(json, view){
         toItem = view;
     } else {
 
-        if(_.isUndefined(json.toItem)){
+        if(json.toItem === null || json.toItem === undefined){
             toItem = view;
         } else {
             toItem = _.isString(json.toItem) ? view[json.toItem] : json.toItem;
@@ -115,6 +117,7 @@ exports.constraintsFromJson = function(json, view){
             related = autolayout.eq;
             break;
     }
+
     var itemIsAncestor = (item.superview == toItem);
     var isSize = itemAttribute.name == 'width' || itemAttribute.name == 'height';
     var askingForParentsSize = toAttribute.name == 'width' || toAttribute.name == 'height';
@@ -342,6 +345,6 @@ function processVFLWidthHeight(orientation, obj){
 
 
 exports.serializeConstraintJSON = serializeConstraintJSON;
-exports.hashJSONConstraints = hashJSONConstraints;
+exports.hashConstraints = hashConstraints;
 
 });

@@ -12,9 +12,9 @@ var Engine = require('famous/core/Engine');
 var Transitionable = require("famous/transitions/Transitionable");
 var events = require('./events');
 var autolayout = require('./autolayout/init');
-var constraintsFromJson = require('./autolayout/utils').constraintsFromJson;
-var hashJSONConstraints = require('rich/autolayout/utils').hashJSONConstraints;
-var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
+var hashConstraints = require('rich/autolayout/utils').hashConstraints;
+var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
+var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
 
 // only the props we need for the modifier
 var CONSTRAINT_PROPS = ['width', 'height', 'top', 'left'];
@@ -261,7 +261,20 @@ var FamousView = marionette.View.extend({
         }
 
         if(constraints){
-            key = hashJSONConstraints(constraints, this);
+            var tmp = [];
+
+            for(var i = 0; i < constraints.length; i++){
+                var each = constraints[i];
+
+                if(_.isString(each)){
+                    tmp = tmp.concat(constraintsWithVFL(each));
+                } else {
+                    tmp.push(constraintWithJSON(each));
+                }
+            }
+
+            constraints = tmp;
+            key = hashConstraints(constraints, this);
             shouldClearConstraints = key != this._currentConstraintKey;
         }
 
@@ -373,7 +386,6 @@ var FamousView = marionette.View.extend({
         var i;
         var each;
         var result;
-        var items = constraints.slice(0);
         var changes = {};
 
         var addStay = function(solver){
@@ -382,34 +394,18 @@ var FamousView = marionette.View.extend({
             };
         };
 
-        // first we deal with any VFL items
-        // converting them to JSON and merging them
-        // back into the items array
-        for(i = 0; i < items.length; i++){
-            each = items[i];
+        for(i = 0; i < constraints.length; i++){
+            each = constraints[i];
+            each.prepare(this);
 
-            if(_.isString(each)){
-                result = VFLToJSON(each);
-                var args = [i, 1].concat(result);
-                Array.prototype.splice.apply(items, args);
-            }
-        }
-
-        // everything should be JSON by this point.
-        for(i = 0; i < items.length; i++){
-            each = items[i];
-
-            var obj = constraintsFromJson(each, this);
-            var solver = obj.solver;
-
-            this._processAffectedRelationships(each, changes);
+            this._processAffectedRelationships(each.attributes, changes);
             this._constraints.push(each);
 
-            if(obj.stays){
-                _.each(obj.stays, addStay(solver));
+            if(each._stays){
+                _.each(each._stays, addStay(each._solver));
             }
 
-            solver.addConstraint(obj.constraint);
+            each._solver.addConstraint(each._constraint);
         }
 
         this._resolveConstraintDependencies(changes);
@@ -429,23 +425,16 @@ var FamousView = marionette.View.extend({
             };
         };
 
-        if(_.isString(constraint)){
-            var result = VFLToJSON(constraint);
-            this.addConstraints(result);
-            return;
-        }
+        constraint.prepare(this);
 
-        var obj = constraintsFromJson(constraint, this);
-        var solver = obj.solver;
-
-        this._processAffectedRelationships(constraint, changes);
+        this._processAffectedRelationships(constraint.attributes, changes);
         this._constraints.push(constraint);
 
-        if(obj.stays){
-            _.each(obj.stays, addStay(solver));
+        if(constraint._stays){
+            _.each(constraint._stays, addStay(constraint._solver));
         }
 
-        solver.addConstraint(obj.constraint);
+        constraint._solver.addConstraint(constraint._constraint);
         this._resolveConstraintDependencies(changes);
 
         if(this.root){

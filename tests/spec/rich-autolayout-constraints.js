@@ -1,6 +1,9 @@
 define(function(require, exports, module) {
 
+var constraints = require('rich/autolayout/constraints');
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 
 describe('Auto Layout + Constraints:', function() {
 

@@ -21,6 +21,10 @@ define(function (require, exports, module) {
     }
 
     var Constraint = backbone.Model.extend({
+        _constraint: null,
+        _stays: null,
+        _solver: null,
+
         defaults: {
             item: null,
             attribute: null,
@@ -34,6 +38,13 @@ define(function (require, exports, module) {
 
         constructor: function(){
             backbone.Model.prototype.constructor.apply(this, arguments);
+        },
+
+        prepare: function(view){
+            var obj = utils.constraintsFromJson(this.attributes, view);
+            this._constraint = obj.constraint;
+            this._stays = obj.stays;
+            this._solver = obj.solver;
         }
     });
 
