@@ -40,6 +40,26 @@ describe('Visual Format Language:', function() {
     });
 
 
+    it('converts single to JSON', function(){
+
+        var vfl = 'V:[purpleBox(200)]';
+        var json = VFLToJSON(vfl);
+
+        var output = [
+            {
+                "item": "purpleBox",
+                "attribute": "height",
+                "relatedBy": "==",
+                "multiplier": 1,
+                "constant": 200
+            },
+        ];
+
+        expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
+        // console.log(JSON.stringify(json, null, '\t'));
+
+    });
+
     it('converts simple to JSON', function(){
 
         var vfl = '|-50-[purpleBox]-50-|';
@@ -426,7 +446,7 @@ describe('Visual Format Language:', function() {
 
 
     //
-    // // it('converts crazy to JSON', function(){
+    // // xit('converts crazy to JSON', function(){
     //     var vfl = '';
     //     var json = VFLToJSON(vfl);
 

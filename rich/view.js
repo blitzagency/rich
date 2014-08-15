@@ -102,16 +102,18 @@ var FamousView = marionette.View.extend({
     _initializeAutolayout: function(){
 
         this._autolayout = {};
-        this._autolayoutModifier = new Modifier();
-
 
         this._initializeAutolayoutDefaults();
+        this._initializeAutolayoutModifier();
+    },
 
+    _initializeAutolayoutModifier: function(){
+        this._autolayoutModifier = new Modifier();
         // setup the autolayout modifier to move w/ a transitionable
         this._autolayoutTransitionables = {};
 
         _.each(CONSTRAINT_PROPS, function(prop){
-            this._autolayoutTransitionables[prop] = new Transitionable(this._autolayout[prop]);
+            this._autolayoutTransitionables[prop] = new Transitionable(this._autolayout[prop].value);
         }, this);
 
         this._autolayoutModifier.transformFrom(function(){
@@ -128,7 +130,6 @@ var FamousView = marionette.View.extend({
                 this._autolayoutTransitionables.height.get()
             ];
         }.bind(this));
-
     },
 
     _mapAutolayout: function(){
@@ -253,7 +254,11 @@ var FamousView = marionette.View.extend({
 
         this._initializeRelationships();
 
-        if(constraints === undefined) return;
+        if(constraints === undefined && this._constraints.length === 0){
+            this._mapAutolayout();
+            return;
+        }
+
 
         var key = hashJSONConstraints(constraints, this);
         var shouldClearConstraints = key != this._currentConstraintKey;
@@ -406,6 +411,10 @@ var FamousView = marionette.View.extend({
         }
 
         this._resolveConstraintDependencies(changes);
+
+        // if(this.root){
+        //     this.invalidateLayout();
+        // }
     },
 
     addConstraint: function(constraint){
@@ -423,11 +432,11 @@ var FamousView = marionette.View.extend({
             return;
         }
 
-        var obj = constraintsFromJson(each, this);
+        var obj = constraintsFromJson(constraint, this);
         var solver = obj.solver;
 
-        this._processAffectedRelationships(each, changes);
-        this._constraints.push(each);
+        this._processAffectedRelationships(constraint, changes);
+        this._constraints.push(constraint);
 
         if(obj.stays){
             _.each(obj.stays, addStay(solver));
@@ -435,6 +444,7 @@ var FamousView = marionette.View.extend({
 
         solver.addConstraint(obj.constraint);
         this._resolveConstraintDependencies(changes);
+
     },
 
     _prepareModification: function(duration, requireModifier){
