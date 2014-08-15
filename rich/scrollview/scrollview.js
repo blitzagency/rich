@@ -167,7 +167,6 @@ define(function(require, exports, module) {
                 x = xLimited;
                 y = yLimited;
             }
-
             // don't let the scroll position be anything crazy
 
             if (transition) {
@@ -190,7 +189,8 @@ define(function(require, exports, module) {
             var self = this;
 
             var tick = function() {
-                self.trigger('scroll:update', self.getScrollPosition());
+                console.log('called')
+                self.triggerScrollUpdate();
                 self.invalidateView();
                 self._scrollableView.invalidateView();
             };
@@ -252,7 +252,6 @@ define(function(require, exports, module) {
             var self = this;
             _.each(events, function(type) {
                 this.$el.on(type, function(e) {
-                    self._interacted = true;
                     self._scrollHandler.emit(type, e.originalEvent);
                 });
             }, this);
@@ -369,16 +368,14 @@ define(function(require, exports, module) {
                 isPastLimits = true;
             }
 
-            // this gets rid of the flutter when you're already going out of bounds
-            if(this._hasSpring && isPastLimits){
-                return;
-            }
 
             // we check with the plugin to see if it wants to limit the position of the
             // scroll when we are updating via scroll
-            this.setScrollPosition(gotoPosX, gotoPosY, this._plugin.shouldLimitPastBounds());
-            this._plugin.updateLimits(isPastLimits, outOfBoundsX, outofBoundsY, anchorPoint);
-            this.trigger('scroll:update', this.getScrollPosition());
+            if(!this._plugin._hasSpring){
+                this.setScrollPosition(gotoPosX, gotoPosY, this._plugin.shouldLimitPastBounds());
+            }
+            this._plugin.updateLimits(isPastLimits, anchorPoint);
+            this.triggerScrollUpdate();
         },
 
     });

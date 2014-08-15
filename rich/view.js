@@ -512,7 +512,7 @@ var FamousView = marionette.View.extend({
 
     render: function(){
 
-        if(this.root === null || this.needsDisplay()){
+        if(this.root === null || this.needsDisplay() || true){
             if(!this._constraintsInitialized){
                 this._initializeConstraints();
             }
