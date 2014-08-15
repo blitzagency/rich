@@ -44,10 +44,7 @@ define(function(require, exports, module) {
 
 
             // transitionables setup
-            var self = this;
-            this._particle.positionFrom(function() {
-                return [self._positionX.get(), self._positionY.get()];
-            });
+            this.bindParticle();
 
             // scrollable wrapper
             this._scrollableView = new FamousView({
@@ -81,6 +78,17 @@ define(function(require, exports, module) {
             }
 
             this.listenTo(this._scrollableView, events.RENDER, this._onFamousRender);
+        },
+
+        bindParticle: function(){
+            var self = this;
+            this._particle.positionFrom(function() {
+                return [self._positionX.get(), self._positionY.get()];
+            });
+        },
+
+        unbindParticle: function(){
+            this._particle.positionFrom(null);
         },
 
         wantsSetPerspective: function() {
@@ -158,7 +166,7 @@ define(function(require, exports, module) {
             return [x, y];
         },
 
-        setScrollPosition: function(x, y, limit, transition) {
+        setScrollPosition: function(x, y, transition, limit) {
             limit = _.isUndefined(limit) ? true : limit;
             if (limit) {
                 var pos = this._cleanScrollPosition(x, y);
@@ -171,6 +179,7 @@ define(function(require, exports, module) {
 
             if (transition) {
                 var obj = this._prepareScrollModification(transition.duration);
+                this._scrollAnimationCallback = obj.callback;
                 this._positionY.set(y, transition, obj.callback);
                 return obj.deferred;
             } else {
@@ -189,7 +198,6 @@ define(function(require, exports, module) {
             var self = this;
 
             var tick = function() {
-                console.log('called')
                 self.triggerScrollUpdate();
                 self.invalidateView();
                 self._scrollableView.invalidateView();
@@ -224,7 +232,7 @@ define(function(require, exports, module) {
         },
 
         update: function() {
-            this.setScrollPosition(this._positionX.get(), this._positionY.get(), true);
+            this.setScrollPosition(this._positionX.get(), this._positionY.get(), null, true);
         },
 
         _onFamousRender: function() {
@@ -319,6 +327,9 @@ define(function(require, exports, module) {
 
         _onScrollUpdate: function(data) {
             // this._plugin.onScrollUpdate(data);
+            if(this._scrollAnimationCallback){
+                this._scrollAnimationCallback();
+            }
             var delta = data.delta;
             this._setScrollDirection(delta);
 
@@ -371,9 +382,7 @@ define(function(require, exports, module) {
 
             // we check with the plugin to see if it wants to limit the position of the
             // scroll when we are updating via scroll
-            if(!this._plugin._hasSpring){
-                this.setScrollPosition(gotoPosX, gotoPosY, this._plugin.shouldLimitPastBounds());
-            }
+            this.setScrollPosition(gotoPosX, gotoPosY, null, this._plugin.shouldLimitPastBounds());
             this._plugin.updateLimits(isPastLimits, anchorPoint);
             this.triggerScrollUpdate();
         },

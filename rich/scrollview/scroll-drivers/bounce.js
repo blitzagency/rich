@@ -21,20 +21,18 @@ define(function(require, exports, module) {
             });
 
             // for later...add friction and drag when scrolling (throw?)
-            this._friction = new Drag({
-                forceFunction: Drag.FORCE_FUNCTIONS.LINEAR,
-                strength: 0.0001
-            });
+            // this._friction = new Drag({
+            //     forceFunction: Drag.FORCE_FUNCTIONS.LINEAR,
+            //     strength: 0.0001
+            // });
 
-            this._drag = new Drag({
-                forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC,
-                strength: 0.0001
-            });
+            // this._drag = new Drag({
+            //     forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC,
+            //     strength: 0.0001
+            // });
 
             this._physicsEngine = new PhysicsEngine();
             this._physicsEngine.addBody(this.scrollView._particle);
-            // this.listenTo(this.scrollView, 'scroll:update', this.scrollVerify);
-
         },
 
         shouldLimitPastBounds: function(){
@@ -53,21 +51,21 @@ define(function(require, exports, module) {
                     // update spring
                 } else {
                     // add a spring
-                    this._tmp = this.scrollView._particle._positionGetter;
-                    this.scrollView._particle._positionGetter = null;
+                    this.scrollView.unbindParticle();
                     this.scrollView._particle.setVelocity(0);
                     this._physicsEngine.attach([this._spring], this.scrollView._particle);
                     this._hasSpring = true;
                     this.scrollView._scrollableView.setNeedsDisplay(true);
                     this.scrollView._scrollableView.on(events.RENDER, this.scrollView.triggerScrollUpdate);
                 }
+
                 this.scrollView._positionX.set(anchorPoint[0]);
                 this.scrollView._positionY.set(anchorPoint[1]);
 
             } else {
                 if (this._hasSpring) {
                     this._physicsEngine.detachAll();
-                    this.scrollView._particle._positionGetter = this._tmp;
+                    this.scrollView.bindParticle();
                     this.scrollView._particle.setVelocity(0);
                     this._hasSpring = false;
                     this.scrollView._scrollableView.setNeedsDisplay(false);

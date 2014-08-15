@@ -7,6 +7,8 @@ var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
 var scroll = require('rich/scrollview/scrollview');
+var render = require('tests/utils/time').render;
+var wait = require('tests/utils/time').wait;
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var LongView = require('app/shared/views/long-view').LongView;
 
@@ -32,7 +34,7 @@ describe('Layout:', function() {
     });
 
 
-    it('scrolls', function(done){
+    it('scrolls to a scrolled position', function(done){
         var model = new Rectangle();
         var view = new LongView({
             model: model
@@ -47,6 +49,64 @@ describe('Layout:', function() {
         scrollView.addSubview(view);
 
         region.show(scrollView);
+        var initPos = scrollView._particle.getPosition();
+        render().then(function(){
+            scrollView.setScrollPosition(0, -500);
+        });
+        var position = scrollView._particle.getPosition();
+        wait(100).then(function(){
+            expect(initPos).toEqual([0, 0, 0]);
+            expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
+            done();
+        });
+    });
+
+    it('animates to a scrolled position', function(done){
+        var model = new Rectangle();
+        var view = new LongView({
+            model: model
+        });
+        var scrollView = new scroll.ScrollView({
+            contentSize: [800, 4000],
+            direction: scroll.DIRECTION_Y
+        });
+        scrollView.name = 'scrollView;';
+        scrollView._scrollableView.name = '_scrollableView';
+        view.name = 'longview';
+        scrollView.addSubview(view);
+
+        region.show(scrollView);
+
+        render().then(function(){
+            scrollView.setScrollPosition(0, -500, {
+                duration: 500
+            });
+
+            var position = scrollView._particle.getPosition();
+            wait(100).then(function(){
+                expect(position).not.toBe(scrollView._particle.getPosition());
+                position = scrollView._particle.getPosition();
+            });
+
+            wait(300).then(function(){
+                expect(position).not.toBe(scrollView._particle.getPosition());
+                position = scrollView._particle.getPosition();
+            });
+
+            wait(500).then(function(){
+                expect(position).not.toBe(scrollView._particle.getPosition());
+                position = scrollView._particle.getPosition();
+            });
+
+            wait(500).then(function(){
+                expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
+                done();
+            });
+
+
+        });
+
+
 
 
         // done()
