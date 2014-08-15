@@ -12,6 +12,9 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var render = require('tests/utils/time').render;
 
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+
 describe('View + Constraints:', function() {
 
     var region;
