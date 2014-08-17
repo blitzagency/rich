@@ -89,6 +89,7 @@ var FamousView = marionette.View.extend({
         this.properties.properties.zIndex = this.zIndex;
 
         this._constraints = [];
+        this._constraintsIndex = {};
 
         this._initializeAutolayout();
         this.initialize.apply(this, arguments);
@@ -180,6 +181,7 @@ var FamousView = marionette.View.extend({
         if(this._relationshipsInitialized || !this.superview) return;
 
         this._relationshipsInitialized = true;
+        // console.log('_initializeRelationships -> ' + this.name);
         var solver = this._solver = new autolayout.cassowary.SimplexSolver();
 
         var vars = this._autolayout;
@@ -250,8 +252,6 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeConstraints: function(){
-
-
         var constraints = _.result(this, 'constraints');
         var wantsInitialize;
         var shouldClearConstraints = false;
@@ -291,12 +291,15 @@ var FamousView = marionette.View.extend({
         }
 
         this._constraints = [];
+        this._constraintsIndex = {};
 
         this.children.each(function(child){
             child._initializeRelationships();
         });
 
         this.addConstraints(wantsInitialize);
+
+        this._constraintsInitialized = true;
         this._mapAutolayout();
     },
 
@@ -402,6 +405,8 @@ var FamousView = marionette.View.extend({
             each.prepare(this);
 
             this._processAffectedRelationships(each.attributes, changes);
+
+            this._constraintsIndex[each.cid] = this._constraints.length;
             this._constraints.push(each);
 
             if(each._stays){
@@ -431,6 +436,8 @@ var FamousView = marionette.View.extend({
         constraint.prepare(this);
 
         this._processAffectedRelationships(constraint.attributes, changes);
+
+        this._constraintsIndex[constraint.cid] = this._constraints.length;
         this._constraints.push(constraint);
 
         if(constraint._stays){
@@ -445,6 +452,78 @@ var FamousView = marionette.View.extend({
             this.triggerRichInvalidate();
         }
 
+    },
+
+    removeConstraints: function(constraints){
+        for(var i = 0; i < constraints.length; i++){
+
+            var constraint = constraints[i];
+            var index = this._constraintsIndex[constraint.cid];
+            var target;
+
+            if(index === undefined) continue;
+            target = this._constraints.splice(index, 1)[0];
+            target._solver.removeConstraint(target._constraint);
+
+            // a new solver is going to be created currently.
+            // we can get fancier with this since we have the stays
+            // and the constraint. Currently cassowary does not have a
+            // removeStay, but Stay's are just StayConstraints IIRC
+            // (will need) to check. We could just ensure our stays are
+            // added as StayConstraints, would require some refactoring.
+
+            target._constraint = null;
+            target._solver = null;
+            target._stays = null;
+
+            // bookkeeping - very costly bookkeeping
+            // not happy with this at all, need to look into
+            // building a tree out of that data maybe to make these
+            // easier to remove without this overhead.
+            delete this._constraintsIndex[constraint.cid];
+            for(var j = index; j < this._constraints.length; j++){
+                var each = this._constraints[j];
+                this._constraintsIndex[each.cid] = j;
+            }
+        }
+
+        if(this.root){
+            this.invalidateLayout();
+            this.triggerRichInvalidate();
+        }
+    },
+
+    removeConstraint: function(constraint){
+        var index = this._constraintsIndex[constraint.cid];
+        var target;
+
+        if(index === undefined) return;
+
+        target = this._constraints.splice(index, 1)[0];
+        target._solver.removeConstraint(target._constraint);
+
+        // a new solver is going to be created currently.
+        // we can get fancier with this since we have the stays
+        // and the constraint. Currently cassowary does not have a
+        // removeStay, but Stay's are just StayConstraints IIRC
+        // (will need) to check. We could just ensure our stays are
+        // added as StayConstraints, would require some refactoring.
+
+        target._constraint = null;
+        target._solver = null;
+        target._stays = null;
+
+        // bookkeeping
+        delete this._constraintsIndex[constraint.cid];
+        for(var i = index; i < this._constraints; i++){
+            var each = this._constraints[i];
+            this._constraintsIndex[each.cid] = i;
+        }
+
+        if(this.root){
+            this.invalidateLayout();
+            this.triggerRichInvalidate();
+        }
     },
 
     _prepareModification: function(duration, requireModifier){
@@ -504,7 +583,7 @@ var FamousView = marionette.View.extend({
 
     render: function(){
 
-        if(this.root === null || this.needsDisplay() || true){
+        if(this.root === null || this.needsDisplay()){
             if(!this._constraintsInitialized){
                 this._initializeConstraints();
             }
