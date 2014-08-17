@@ -31,6 +31,7 @@ var FamousView = marionette.View.extend({
     subviews: null,
     root: null,
     context: null,
+    _isRoot: false,
     _spec: null,
     _needsDisplay: false,
 
@@ -180,7 +181,6 @@ var FamousView = marionette.View.extend({
         if(this._relationshipsInitialized || !this.superview) return;
 
         this._relationshipsInitialized = true;
-        // console.log('_initializeRelationships -> ' + this.name);
         var solver = this._solver = new autolayout.cassowary.SimplexSolver();
 
         var vars = this._autolayout;
@@ -233,6 +233,8 @@ var FamousView = marionette.View.extend({
             solver.endEdit();
         }
 
+        if(this.superview._isRoot) return;
+
         solver.addConstraint(
             autolayout.eq(
                 autolayout.plus(vars.width, vars.right).plus(vars.left),
@@ -249,11 +251,14 @@ var FamousView = marionette.View.extend({
     },
 
     _initializeConstraints: function(){
+
+
         var constraints = _.result(this, 'constraints');
         var wantsInitialize;
         var shouldClearConstraints = false;
         var key;
 
+        this._constraintsInitialized = true;
         this._initializeRelationships();
 
         if(constraints === undefined && this._constraints.length === 0){
@@ -294,8 +299,6 @@ var FamousView = marionette.View.extend({
         });
 
         this.addConstraints(wantsInitialize);
-
-        this._constraintsInitialized = true;
         this._mapAutolayout();
     },
 

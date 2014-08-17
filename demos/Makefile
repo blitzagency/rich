@@ -35,7 +35,7 @@ clean:
 .PHONY: serve
 serve:
 	open http://localhost:8000/demos/src/;
-	cd ../; python -m SimpleHTTPServer;
+	cd ../; simplehttpserver
 
 .PHONY: watch
 watch:

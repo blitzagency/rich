@@ -1,29 +1,30 @@
 define(function (require, exports, module) {
-    var itemview = require('./itemview');
+    var application = require('./application');
     var view = require('./view');
+    var itemview = require('./itemview');
     var layouts = require('./layoutviews');
     var collectionview = require('./collections-views');
     var collectionlayout = require('./collections-layouts');
     var utils = require('./utils');
     var regions = require('./region');
 
-    var views = {
-        View: view.FamousView,
+    // var views = {
+    //     View: view.FamousView,
 
-        layouts: {
-            LayoutView: layouts.FamousLayoutView
-        },
+    //     layouts: {
+    //         LayoutView: layouts.FamousLayoutView
+    //     },
 
-        items: {
-            ItemView: itemview.FamousItemView
-        },
+    //     items: {
+    //         ItemView: itemview.FamousItemView
+    //     },
 
-        collections: {
-            CollectionView: collectionview.FamousCollectionView,
-            horizontalLayout: collectionlayout.horizontalLayout,
-            verticalLayout: collectionlayout.verticalLayout
-        }
-    };
+    //     collections: {
+    //         CollectionView: collectionview.FamousCollectionView,
+    //         horizontalLayout: collectionlayout.horizontalLayout,
+    //         verticalLayout: collectionlayout.verticalLayout
+    //     }
+    // };
 
     // shortcuts
     exports.View = view.FamousView;
@@ -35,5 +36,5 @@ define(function (require, exports, module) {
 
     // fully qualified
     exports.utils = utils;
-    exports.views  = views;
+    //exports.views  = views;
 });
