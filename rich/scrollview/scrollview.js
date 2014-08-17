@@ -127,7 +127,7 @@ define(function(require, exports, module) {
             return _.result(this, 'contentSize');
         },
 
-        onShow: function() {
+        onContext: function() {
             // had to put this here to not get a backbone error...not sure why
             // it can't go in onRender but w/e
             FamousView.prototype.addSubview.apply(this, [this._scrollableView]);
