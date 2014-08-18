@@ -3,7 +3,7 @@ var _ = require('underscore');
 var Engine = require('famous/core/Engine');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
-
+var View = require('rich/view').FamousView;
 
 function initializeRootView(options){
 

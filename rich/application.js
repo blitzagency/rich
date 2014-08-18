@@ -1,8 +1,6 @@
 define(function (require, exports, module) {
     var _ = require('underscore');
     var marionette = require('marionette');
-    var View = require('rich/view').FamousView;
-    var Engine = require('famous/core/Engine');
     var utils = require('rich/utils');
 
     _.extend(marionette.Application.prototype, {

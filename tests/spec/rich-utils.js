@@ -9,6 +9,7 @@ var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
+var utils = require('rich/utils');
 
 describe('Utils:', function() {
 
@@ -22,6 +23,7 @@ describe('Utils:', function() {
         expect(view).not.toBe(undefined);
 
     });
+
 
     it('initializes root view with selector', function(){
         loadFixtures('famous.html');
@@ -38,7 +40,7 @@ describe('Utils:', function() {
 
     it('modifierWithTransform with array', function(){
 
-        var modifier = rich.utils.modifierWithTransform({
+        var modifier = utils.modifierWithTransform({
             transform: [10, 10, 10]
         });
 
@@ -49,7 +51,7 @@ describe('Utils:', function() {
 
     it('modifierWithTransform with func', function(){
 
-        var modifier = rich.utils.modifierWithTransform({
+        var modifier = utils.modifierWithTransform({
             transform: function(){return Transform.translate(10, 10, 10);}
         });
 
@@ -60,7 +62,7 @@ describe('Utils:', function() {
 
     it('modifierWithSize', function(){
 
-        var modifier = rich.utils.modifierWithSize({
+        var modifier = utils.modifierWithSize({
             size: [10, 10]
         });
 
@@ -71,7 +73,7 @@ describe('Utils:', function() {
 
     it('modifierWithOpacity', function(){
 
-        var modifier = rich.utils.modifierWithOpacity({
+        var modifier = utils.modifierWithOpacity({
             opacity: 1
         });
 
@@ -82,7 +84,7 @@ describe('Utils:', function() {
 
     it('modifierWithOrigin', function(){
 
-        var modifier = rich.utils.modifierWithOrigin({
+        var modifier = utils.modifierWithOrigin({
             origin: [0, 0]
         });
 
@@ -93,7 +95,7 @@ describe('Utils:', function() {
 
     it('modifierWithAlign', function(){
 
-        var modifier = rich.utils.modifierWithAlign({
+        var modifier = utils.modifierWithAlign({
             align: 50
         });
 
@@ -106,7 +108,7 @@ describe('Utils:', function() {
         var context = Engine.createContext();
         var handler = jasmine.createSpy('handler');
 
-        rich.utils.postrenderOnce(handler);
+        utils.postrenderOnce(handler);
 
         setTimeout(function(){
             expect(handler.calls.count()).toBe(1);
@@ -121,7 +123,7 @@ describe('Utils:', function() {
 
         var view = new RectangleView({model: model});
 
-        var size = rich.utils.getViewSize(view);
+        var size = utils.getViewSize(view);
         expect(size[0]).toBe(300);
         expect(size[1]).toBe(500);
     });
