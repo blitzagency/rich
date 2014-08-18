@@ -5,6 +5,47 @@ var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 
 
+function initializeRootView(options){
+
+    var $el;
+    var context;
+    var contentView;
+    var constraints = options.constraints || null;
+
+    if(typeof options.el == 'string'){
+        $el = $(options.el);
+    }
+
+    context = Engine.createContext($el[0]);
+    contentView = new View({
+        context: context,
+        constraints: constraints,
+        size: context.getSize()
+    });
+
+    contentView.name = 'contentView';
+    contentView.superview = {_isRoot: true, _autolayout: {}};
+
+    context.add(contentView);
+
+    var resizeHandler = function(){
+        var size = context.getSize();
+
+        var variables = [
+            contentView._autolayout.width,
+            contentView._autolayout.height
+        ];
+
+        contentView.updateVariables(variables, size);
+        contentView.invalidateLayout();
+    };
+
+    context.on('resize', resizeHandler);
+
+    return contentView;
+}
+
+
 function getViewSize(view){
     var className = _.result(view, 'className');
     var fragment = document.createDocumentFragment();
@@ -133,6 +174,7 @@ function modifierWithConfig(config){
 
 exports.getViewSize = getViewSize;
 exports.postrenderOnce = postrenderOnce;
+exports.initializeRootView = initializeRootView;
 exports.modifierWithTransform = modifierWithTransform;
 exports.modifierWithSize = modifierWithSize;
 exports.modifierWithOpacity = modifierWithOpacity;

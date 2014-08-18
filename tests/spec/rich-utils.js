@@ -12,6 +12,30 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 
 describe('Utils:', function() {
 
+    it('initializes root view with tag', function(){
+
+        var options = {
+            el: 'body'
+        };
+
+        var view = utils.initializeRootView(options);
+        expect(view).not.toBe(undefined);
+
+    });
+
+    it('initializes root view with selector', function(){
+        loadFixtures('famous.html');
+
+        var options = {
+            el: '#jasmine-fixtures'
+        };
+
+        var view = utils.initializeRootView(options);
+        expect(view).not.toBe(undefined);
+    });
+
+
+
     it('modifierWithTransform with array', function(){
 
         var modifier = rich.utils.modifierWithTransform({
