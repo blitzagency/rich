@@ -8,7 +8,6 @@ var tests = [
     'tests/spec/rich-autolayout-modifiers',
     'tests/spec/rich-autolayout-utils',
     'tests/spec/rich-itemview-events',
-    // xxxxxx - 'tests/spec/rich-layout',
     'tests/spec/rich-region',
     'tests/spec/rich-scrollview',
     'tests/spec/rich-utils',
