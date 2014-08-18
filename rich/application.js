@@ -5,9 +5,9 @@ define(function (require, exports, module) {
 
     _.extend(marionette.Application.prototype, {
 
-        addContentViews: function(obj){
+        addRichContexts: function(obj){
             _.each(obj, function(options, key){
-                this[key] = utils.initializeRootView(options);
+                this[key] = utils.initializeRichContext(options);
             }, this);
         }
     });

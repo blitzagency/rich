@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
@@ -15,23 +16,31 @@ var colors = require('tests/utils/colors').blue;
 
 
 describe('Auto Layout:', function() {
+    var root;
     var region;
+    var context;
     var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
-        $el = region.el;
+        region = new rich.Region();
+        root.addSubview(region);
+
+        $el = $(root.context.container);
+        context = root.context;
+
         expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        region.reset();
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 

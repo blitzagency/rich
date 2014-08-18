@@ -19,7 +19,7 @@ describe('Utils:', function() {
             el: 'body'
         };
 
-        var view = utils.initializeRootView(options);
+        var view = utils.initializeRichContext(options);
         expect(view).not.toBe(undefined);
 
     });
@@ -32,7 +32,7 @@ describe('Utils:', function() {
             el: '#jasmine-fixtures'
         };
 
-        var view = utils.initializeRootView(options);
+        var view = utils.initializeRichContext(options);
         expect(view).not.toBe(undefined);
     });
 

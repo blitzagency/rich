@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Engine = require('famous/core/Engine');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
@@ -18,29 +19,33 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View + Constraints:', function() {
 
+    var root;
     var region;
-    var $el;
     var context;
+    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
-        $('#jasmine-fixtures').css({height: '100%'});
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
+        region = new rich.Region();
+        region.name = 'region';
 
-        $el = region.el;
-        context = region.context;
+        root.addSubview(region);
+
+        $el = $(root.context.container);
+        context = root.context;
 
         expect($el.length).toBe(1);
     });
 
-
     afterEach(function() {
-        region.reset();
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 
@@ -210,6 +215,7 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
+            className: 'foo'
         });
 
         var box1 = new RectangleView({
@@ -221,6 +227,7 @@ describe('View + Constraints:', function() {
 
         box0.box1 = box1;
         box0.addSubview(box1);
+
 
         region.show(box0);
 
@@ -256,6 +263,7 @@ describe('View + Constraints:', function() {
             box0.addConstraints([c1, c2]);
 
             render().then(function(){
+
                 expect(box1._autolayout.width.value).toBe(500);
                 expect(box1._autolayout.height.value).toBe(200);
                 expect(box1._autolayout.bottom.value).toBe(600);

@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Engine = require('famous/core/Engine');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
@@ -14,29 +15,31 @@ var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
 
 describe('Visual Format Language:', function() {
 
+    var root;
     var region;
-    var $el;
     var context;
+    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
-        $('#jasmine-fixtures').css({height: '100%'});
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
+        region = new rich.Region();
+        root.addSubview(region);
 
-        $el = region.el;
-        context = region.context;
+        $el = $(root.context.container);
+        context = root.context;
 
         expect($el.length).toBe(1);
     });
 
-
     afterEach(function() {
-        region.reset();
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 

@@ -31,7 +31,7 @@ define(function (require, exports, module) {
     exports.ItemView = itemview.FamousItemView;
     exports.LayoutView = layouts.FamousLayoutView;
     exports.CollectionView = collectionview.FamousCollectionView;
-    exports.Region = regions.FamousRegion;
+    exports.Region = regions.Region;
     exports.regionClassWithConfig = regions.regionClassWithConfig;
 
     // fully qualified

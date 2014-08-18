@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
@@ -18,93 +19,96 @@ var layoututils = require('rich/autolayout/utils');
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Auto Layout:', function() {
+    var root;
     var region;
-    var $el;
     var context;
+    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
-        $('#jasmine-fixtures').css({height: '100%'});
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
+        region = new rich.Region();
+        root.addSubview(region);
 
-        $el = region.el;
-        context = region.context;
+        $el = $(root.context.container);
+        context = root.context;
 
         expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        region.reset();
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 
-    // it('generates layout modifiers', function(done){
-    //     var model = new Rectangle({
-    //         color: 'red'
-    //     });
+    it('generates layout modifiers', function(done){
+        var model = new Rectangle({
+            color: 'red'
+        });
 
-    //     var view = new rich.View({
-    //         model: model,
-    //         constraints: [
+        var view = new rich.View({
+            model: model,
+            constraints: [
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'left',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem: 'superview',
-    //                 toAttribute: 'top',
-    //                 constant: 10,
-    //             },
+                {
+                    item: 'navigation',
+                    attribute: 'left',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'top',
+                    constant: 10,
+                },
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'right',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem:'superview',
-    //                 toAttribute: 'width',
-    //                 constant: 0,
-    //                 multiplier: 0.5
-    //             },
+                {
+                    item: 'navigation',
+                    attribute: 'right',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem:'superview',
+                    toAttribute: 'width',
+                    constant: 0,
+                    multiplier: 0.5
+                },
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'top',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem: 'superview',
-    //                 toAttribute: 'top',
-    //                 constant: 5,
-    //                 multiplier: 1
-    //             },
-    //         ]
-    //     });
+                {
+                    item: 'navigation',
+                    attribute: 'top',
+                    relatedBy: '==', // '=|>=|<='
+                    toItem: 'superview',
+                    toAttribute: 'top',
+                    constant: 5,
+                    multiplier: 1
+                },
+            ]
+        });
 
-    //     view.navigation = new RectangleView({
-    //         model:model
-    //     });
+        view.navigation = new RectangleView({
+            model:model
+        });
 
-    //     view.addSubview(view.navigation);
-    //     region.show(view);
+        view.addSubview(view.navigation);
+        region.show(view);
 
-    //     view.setSize([200, 200]);
+        view.setSize([200, 200]);
 
-    //     view.onShow = function(){
+        view.onShow = function(){
 
-    //         expect(view._autolayout.width.value).toBe(200);
-    //         expect(view._autolayout.height.value).toBe(200);
+            expect(view._autolayout.width.value).toBe(200);
+            expect(view._autolayout.height.value).toBe(200);
 
-    //         expect(view.navigation._autolayout.top.value).toBe(5);
-    //         expect(view.navigation._autolayout.height.value).toBe(195);
-    //         expect(view.navigation._autolayout.width.value).toBe(90);
-    //         expect(view.navigation._autolayout.left.value).toBe(10);
-    //         done();
-    //     };
+            expect(view.navigation._autolayout.top.value).toBe(5);
+            expect(view.navigation._autolayout.height.value).toBe(195);
+            expect(view.navigation._autolayout.width.value).toBe(90);
+            expect(view.navigation._autolayout.left.value).toBe(10);
+            done();
+        };
 
-    // });
+    });
 
     xit('cassowary test', function(done){
         var w = 0;
@@ -322,7 +326,7 @@ describe('Auto Layout:', function() {
         done();
     });
 
-    xit('generates complex layout modifiers', function(done){
+    it('generates complex layout modifiers', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -378,10 +382,6 @@ describe('Auto Layout:', function() {
         box1.name = 'box1';
         box2.name = 'box2';
 
-        console.log('box0: ', box0.cid);
-        console.log('box1: ', box1.cid);
-        console.log('box2: ', box2.cid);
-
         box0.box1 = box1;
         box0.addSubview(box1);
 
@@ -391,31 +391,31 @@ describe('Auto Layout:', function() {
         region.show(box0);
 
         box0.onShow = function(){
-            console.log('(box0) L:' + box0._autolayout.left.value);
-            console.log('(box0) R:' + box0._autolayout.right.value);
-            console.log('(box0) W:' + box0._autolayout.width.value);
-            console.log('(box0) H:' + box0._autolayout.height.value);
-            console.log('---');
+            expect(box0._autolayout.left.value).toEqual(0);
+            expect(box0._autolayout.right.value).toEqual(0);
+            expect(box0._autolayout.width.value).toEqual(1000);
+            expect(box0._autolayout.height.value).toEqual(800);
 
-            console.log('(box1) L:' + box1._autolayout.left.value);
-            console.log('(box1) R:' + box1._autolayout.right.value);
-            console.log('(box1) W:' + box1._autolayout.width.value);
-            console.log('(box1) H:' + box1._autolayout.height.value);
-            console.log('(box1) T:' + box1._autolayout.top.value);
-            console.log('(box1) B:' + box1._autolayout.bottom.value);
-            console.log('---');
+            expect(box1._autolayout.left.value).toEqual(0);
+            expect(box1._autolayout.right.value).toEqual(0);
+            expect(box1._autolayout.width.value).toEqual(1000);
+            expect(box1._autolayout.height.value).toEqual(200);
+            expect(box1._autolayout.top.value).toEqual(600);
+            expect(box1._autolayout.bottom.value).toEqual(0);
 
-            console.log('(box2) L:' + box2._autolayout.left.value);
-            console.log('(box2) R:' + box2._autolayout.right.value);
-            console.log('(box2) W:' + box2._autolayout.width.value);
-            console.log('(box2) H:' + box2._autolayout.height.value);
-            console.log('---');
+            expect(box2._autolayout.left.value).toEqual(0);
+            expect(box2._autolayout.right.value).toEqual(0);
+            expect(box2._autolayout.width.value).toEqual(1000);
+            expect(box2._autolayout.height.value).toEqual(200);
+            expect(box2._autolayout.top.value).toEqual(0);
+            expect(box2._autolayout.bottom.value).toEqual(0);
+
             done();
         };
 
     });
 
-    it('generates complex layout modifiers', function(done){
+    it('generates common app layout', function(done){
 
         var autolayoutTransition = {
             duration: 500
@@ -732,73 +732,56 @@ describe('Auto Layout:', function() {
             console.log('(action4) H:' + action4._autolayout.height.value);
         }
 
-        wait(1000).then(function(){
-            //region.context.setSize([500, 400]);
-            //region.contextDidResize();
-        });
-
         view.onShow = function(){
-            //$('body').css({'width': '100%'});
-            //$('body').css({'height': '100%'});
-
-            // console.log($('body').css('height'));
-            // console.log($('#famous-context').css('height'));
             //logValues();
+
+            expect(content._autolayout.left.value).toEqual(200);
+            expect(content._autolayout.right.value).toEqual(0);
+            expect(content._autolayout.width.value).toEqual(800);
+            expect(content._autolayout.height.value).toEqual(800);
+
+            expect(column._autolayout.left.value).toEqual(0);
+            expect(column._autolayout.right.value).toEqual(800);
+            expect(column._autolayout.width.value).toEqual(200);
+            expect(column._autolayout.height.value).toEqual(800);
+
+            expect(footer._autolayout.left.value).toEqual(0);
+            expect(footer._autolayout.right.value).toEqual(0);
+            expect(footer._autolayout.width.value).toEqual(200);
+            expect(footer._autolayout.height.value).toEqual(50);
+            expect(footer._autolayout.top.value).toEqual(750);
+            expect(footer._autolayout.bottom.value).toEqual(0);
+
+            expect(action1._autolayout.left.value).toEqual(150);
+            expect(action1._autolayout.right.value).toEqual(0);
+            expect(action1._autolayout.width.value).toEqual(50);
+            expect(action1._autolayout.height.value).toEqual(50);
+            expect(action1._autolayout.top.value).toEqual(0);
+            expect(action1._autolayout.bottom.value).toEqual(750);
+
+            expect(action2._autolayout.left.value).toEqual(150);
+            expect(action2._autolayout.right.value).toEqual(0);
+            expect(action2._autolayout.width.value).toEqual(50);
+            expect(action2._autolayout.height.value).toEqual(50);
+            expect(action2._autolayout.top.value).toEqual(0);
+            expect(action2._autolayout.bottom.value).toEqual(0);
+
+            expect(action3._autolayout.left.value).toEqual(90);
+            expect(action3._autolayout.right.value).toEqual(60);
+            expect(action3._autolayout.width.value).toEqual(50);
+            expect(action3._autolayout.height.value).toEqual(50);
+            expect(action3._autolayout.top.value).toEqual(0);
+            expect(action3._autolayout.bottom.value).toEqual(0);
+
+            expect(action4._autolayout.left.value).toEqual(40);
+            expect(action4._autolayout.right.value).toEqual(0);
+            expect(action4._autolayout.width.value).toEqual(10);
+            expect(action4._autolayout.height.value).toEqual(10);
+            expect(action4._autolayout.top.value).toEqual(40);
+            expect(action4._autolayout.bottom.value).toEqual(0);
+
             done();
-
-            // expect(content._autolayout.left.value).toBe(200);
-            // expect(content._autolayout.right.value).toBe(0);
-
-            // expect(column._autolayout.right.value).toBe(800);
-            // expect(column._autolayout.left.value).toBe(0);
-
-            // expect(action1._autolayout.left.value).toBe(150);
-            // expect(action1._autolayout.right.value).toBe(0);
-            // expect(action1._autolayout.width.value).toBe(50);
-            // expect(action1._autolayout.height.value).toBe(50);
-
-            // expect(footer._autolayout.left.value).toBe(0);
-            // expect(footer._autolayout.right.value).toBe(0);
-            // expect(footer._autolayout.width.value).toBe(200);
-            // expect(footer._autolayout.height.value).toBe(50);
-
-
-            // expect(action2._autolayout.left.value).toBe(150);
-            // expect(action2._autolayout.right.value).toBe(0);
-            // expect(action2._autolayout.width.value).toBe(50);
-
-
-
-            //$('#famous-context').css({width: '1000px', height: '400px'});
-
-            // logValues();
-
-
-            // logValues();
-
-            // wait(3000).then(function(){
-            //     region.context.setSize([1000, 400]);
-            //     region.contextDidResize();
-            // });
-
-
-            // wait(3000).then(function(){
-            //      logValues();
-            //      //done();
-            // });
-
         };
-
-        // wait(3000).then(function(){
-        //         //$('#famous-context').css({width: '1000px', height: '400px'});
-        //         //console.log($('#famous-context').css('height'));
-        //         // region.context.setSize([1000, 400]);
-        //         // region.invalidateLayout();
-        //         // logValues();
-        //         console.log('+++++++++++++');
-        //         done();
-        //     });
-
     });
 
 

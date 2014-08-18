@@ -1,11 +1,12 @@
 define(function (require, exports, module) {
+var $ = require('jquery');
 var _ = require('underscore');
 var Engine = require('famous/core/Engine');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var View = require('rich/view').FamousView;
 
-function initializeRootView(options){
+function initializeRichContext(options){
 
     var $el;
     var context;
@@ -14,6 +15,8 @@ function initializeRootView(options){
 
     if(typeof options.el == 'string'){
         $el = $(options.el);
+    } else if (options.el instanceof $){
+        $el = options.el;
     }
 
     context = Engine.createContext($el[0]);
@@ -43,6 +46,11 @@ function initializeRootView(options){
     context.on('resize', resizeHandler);
 
     return contentView;
+}
+
+function disposeRichContext(view){
+    var context = view.context;
+    Engine.deregisterContext(context);
 }
 
 
@@ -174,7 +182,8 @@ function modifierWithConfig(config){
 
 exports.getViewSize = getViewSize;
 exports.postrenderOnce = postrenderOnce;
-exports.initializeRootView = initializeRootView;
+exports.initializeRichContext = initializeRichContext;
+exports.disposeRichContext = disposeRichContext;
 exports.modifierWithTransform = modifierWithTransform;
 exports.modifierWithSize = modifierWithSize;
 exports.modifierWithOpacity = modifierWithOpacity;

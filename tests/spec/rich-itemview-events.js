@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
 var EventsView = require('app/shared/views/events-view').EventsView;
 var render = require('tests/utils/time').render;
@@ -15,26 +16,32 @@ var colors = require('tests/utils/colors').blue;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('ItemView Events:', function() {
+    var root;
     var region;
+    var context;
     var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
-        $el = region.el;
+        region = new rich.Region();
+        root.addSubview(region);
+
+        $el = $(root.context.container);
+        context = root.context;
+
         expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        region.reset();
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
-
-
 
     it('bindings work', function(done){
 

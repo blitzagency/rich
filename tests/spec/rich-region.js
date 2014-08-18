@@ -5,7 +5,9 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
+var Engine = require('famous/core/Engine');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
@@ -13,9 +15,10 @@ var wait = require('tests/utils/time').wait;
 var css = require('tests/utils/css');
 var colors = require('tests/utils/colors').blue;
 
-
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Region:', function() {
+    var root;
     var region;
     var context;
     var $el;
@@ -23,92 +26,122 @@ describe('Region:', function() {
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
-        $el = region.el;
-        context = region.context;
-        expect($el.length).toBe(1);
+        region = new rich.Region();
+        root.addSubview(region);
 
-        //jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+        $el = $(root.context.container);
+        context = root.context;
+
+        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
-    it('uses size', function(){
-        var region = new rich.Region({context: context, size: [20, 20]});
-        expect(region.getSize()).toEqual([20, 20]);
-    });
 
-    it('uses default zIndex', function(done){
-        var region = new rich.Region({context: context, zIndex: 3});
-        var rect1 = new Rectangle({
-            tx: 0,
-            ty: 0,
-            size: [200, 200],
-            color: colors[3]
+    it('view inherits size', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
         });
 
-        var rect1View = new RectangleView({model: rect1});
-        region.show(rect1View);
+        var box0 = new RectangleView({
+            model: color0,
+        });
 
-        // don't understand the issue with needing to do this here:
-        // vs the blow. the render().then() should be after a render,
-        // at which time we should have an element, but we don't just
-        // using render().then() had to use rect1View.onElement THEN
-        // render().then()...  Will need to understand why that is
-
-        rect1View.onShow = function(){
-            var value = css.getZIndex(rect1View.$el);
-            expect(value).toBe(4);
+        box0.onShow = function(){
+            var size = css.getSize(box0.$el);
+            expect(size).toEqual([1000, 800]);
             done();
         };
 
+        region.show(box0);
     });
 
-    it('uses size as function', function(){
+    it('uses constraints', function(done){
 
-        var obj = {
-            size: function(){
-                return [20, 20];
-            }
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        region.constraints = function(){
+            return [
+                {
+                    item: box0,
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 100
+                }
+            ];
         };
 
-        var spy = spyOn(obj, 'size').and.callThrough();
-
-        var region = new rich.Region({context: context, size: obj.size});
-
-        expect(spy).toHaveBeenCalled();
-        expect(region.getSize()).toEqual([20, 20]);
-    });
-
-
-    it('invalidates layout on resize', function(done){
-
-        var view = new rich.View();
-
-        spyOn(region, 'invalidateLayout').and.callThrough();
-        region.show(view);
-
-        window.dispatchEvent(new Event('resize'));
-
-        setTimeout(function(){
-            expect(region.invalidateLayout.calls.count()).toBe(1);
+        box0.onShow = function(){
+            var size = css.getSize(box0.$el);
+            expect(size).toEqual([1000, 100]);
             done();
-        }, 10);
+        };
+
+        region.show(box0);
     });
 
-    it('throws on invalid initialization', function(){
+    it('swaps views', function(done){
 
-        function action(){
-            // no el, no context should explode.
-            new rich.Region();
-        }
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
 
-        expect(action).toThrow();
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        box0.name = 'box0';
+        box1.name = 'box1';
+
+        region.constraints = function(){
+            return [
+                {
+                    item: 'currentView',
+                    attribute: 'height',
+                    relatedBy: '==',
+                    constant: 100
+                }
+            ];
+        };
+
+        box0.onShow = function(){
+            var size = css.getSize(box0.$el);
+            expect(size).toEqual([1000, 100]);
+
+            region.show(box1);
+        };
+
+        box1.onShow = function(){
+            var size = css.getSize(box0.$el);
+            expect(size).toEqual([1000, 100]);
+            done();
+        };
+
+        region.show(box0);
     });
 
 }); // eof describe

@@ -6,6 +6,7 @@ var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
 var Modifier = require('famous/core/Modifier');
+var utils = require('rich/utils');
 var scroll = require('rich/scrollview/scrollview');
 var BounceDriver = require('rich/scrollview/scroll-drivers/bounce').BounceDriver;
 var render = require('tests/utils/time').render;
@@ -16,22 +17,31 @@ var LongView = require('app/shared/views/long-view').LongView;
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Layout:', function() {
+    var root;
     var region;
+    var context;
     var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
-        $el = region.el;
+        region = new rich.Region();
+        root.addSubview(region);
+
+        $el = $(root.context.container);
+        context = root.context;
+
         expect($el.length).toBe(1);
     });
 
     afterEach(function() {
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 

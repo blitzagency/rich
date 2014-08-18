@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
@@ -16,6 +17,7 @@ var colors = require('tests/utils/colors').blue;
 
 
 describe('View+Z-Index:', function() {
+    var root;
     var region;
     var context;
     var $el;
@@ -23,20 +25,23 @@ describe('View+Z-Index:', function() {
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
+        root = utils.initializeRichContext({
             el: '#famous-context'
         });
 
-        $el = region.el;
-        context = region.context;
+        region = new rich.Region();
+        root.addSubview(region);
+
+        $el = $(root.context.container);
+        context = root.context;
+
         expect($el.length).toBe(1);
-        expect(context).not.toBe(undefined);
-        //jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
     });
 
-
     afterEach(function() {
+        utils.disposeRichContext(root);
         region = null;
+        root = null;
     });
 
 

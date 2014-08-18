@@ -420,7 +420,7 @@ var FamousView = marionette.View.extend({
 
         if(this.root){
             this.invalidateLayout();
-            this.triggerRichInvalidate();
+            this.invalidateView();
         }
     },
 
@@ -449,7 +449,7 @@ var FamousView = marionette.View.extend({
 
         if(this.root){
             this.invalidateLayout();
-            this.triggerRichInvalidate();
+            this.invalidateView();
         }
 
     },
@@ -489,7 +489,7 @@ var FamousView = marionette.View.extend({
 
         if(this.root){
             this.invalidateLayout();
-            this.triggerRichInvalidate();
+            this.invalidateView();
         }
     },
 
@@ -522,7 +522,7 @@ var FamousView = marionette.View.extend({
 
         if(this.root){
             this.invalidateLayout();
-            this.triggerRichInvalidate();
+            this.invalidateView();
         }
     },
 
@@ -582,18 +582,20 @@ var FamousView = marionette.View.extend({
     },
 
     render: function(){
-
         if(this.root === null || this.needsDisplay()){
-            if(!this._constraintsInitialized){
-                this._initializeConstraints();
-            }
             this._render();
         }
+
         return this._spec;
     },
 
     _render: function(){
         var spec;
+
+        if(!this._constraintsInitialized){
+            this._initializeConstraints();
+        }
+
         this.root = this.createRenderNode();
 
         spec = this.root.render();
@@ -702,7 +704,7 @@ var FamousView = marionette.View.extend({
         return root;
     },
 
-    addSubview: function(view, zIndex){
+    prepareSubviewAdd: function(view, zIndex){
         view.superview = this;
 
         function setZIndex(value){
@@ -718,6 +720,27 @@ var FamousView = marionette.View.extend({
 
         this.listenTo(view, events.INVALIDATE, this.subviewDidChange);
         this.children.add(view);
+    },
+
+    addSubview: function(view, zIndex){
+        this.prepareSubviewAdd(view, zIndex);
+
+        if(this.root){
+            this.invalidateView();
+        }
+    },
+
+    prepareSubviewRemove: function(view){
+        view.superview = null;
+        view.context = null;
+        view.invalidateLayout();
+
+        this.children.remove(view);
+        this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
+    },
+
+    removeSubview: function(view){
+        this.prepareSubviewRemove(view);
 
         if(this.root){
             this.invalidateView();
@@ -826,19 +849,6 @@ var FamousView = marionette.View.extend({
         }
         modifiersLen += this._autolayoutModifier ? 1 : 0;
         return modifiersLen;
-    },
-
-    removeSubview: function(view){
-        view.superview = null;
-        view.context = null;
-        view.invalidateLayout();
-
-        this.children.remove(view);
-        this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
-
-        if(this.root){
-            this.invalidateView();
-        }
     },
 
     removeFromSuperview: function(){
