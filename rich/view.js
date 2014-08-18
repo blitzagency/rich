@@ -866,12 +866,13 @@ var FamousView = marionette.View.extend({
         //     var variables = [vars.width, vars.height];
         //     this.updateVariables(variables, value);
         // } else {
-        //     console.log('HERE', value);
         //     vars.width.value = value[0];
         //     vars.height.value = value[1];
         // }
 
-        this.invalidateLayout();
+        if(this.root){
+            this.invalidateLayout();
+        }
     },
 
     getSize: function(){

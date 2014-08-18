@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     // shortcuts
     exports.View = view.FamousView;
     exports.ItemView = itemview.FamousItemView;
-    exports.CollectionView = collectionview.FamousCollectionView;
+    exports.CollectionView = collectionview.CollectionView;
     exports.Region = regions.Region;
 
 });

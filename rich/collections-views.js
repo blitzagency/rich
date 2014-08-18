@@ -4,35 +4,27 @@ define(function (require, exports, module) {
     var ContainerSurface = require('famous/surfaces/ContainerSurface');
     var FamousItemView = require('./itemview').FamousItemView;
     var FamousView = require('./view').FamousView;
-
+    var utils = require('rich/utils');
+    var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
 
     var obj = {};
-    _.extend(obj, marionette.CollectionView.prototype, FamousItemView.prototype);
+    _.extend(obj, marionette.CollectionView.prototype, FamousView.prototype);
 
-    var FamousCollectionView = FamousItemView.extend(obj);
+    var CollectionView = FamousItemView.extend(obj);
 
-    FamousCollectionView = FamousCollectionView.extend({
-        modifierForViewAtIndex: null,
-        sizeForEmptyView: null,
-        sizeForViewAtIndex: null,
-        _subviewModifiers:{},
+    CollectionView = CollectionView.extend({
+        orientation: 'vertical',
+        spacing: 8,
 
         constructor: function(options){
             options || (options = {});
-
+            this.orientation = options.orientation || this.orientation;
             FamousView.prototype.constructor.apply(this, arguments);
-
-            if(options.modifierForViewAtIndex){
-                this.modifierForViewAtIndex = options.modifierForViewAtIndex;
-            }
 
             this._initialEvents();
             //this.initRenderBuffer();
         },
 
-        initializeRenderable: function(){
-            return null;
-        },
 
         // Configured the initial events that the collection view
         // binds to.
@@ -80,77 +72,13 @@ define(function (require, exports, module) {
             } else {
                 this.triggerMethod('before:render:collection', this);
                 // this.startBuffering();
+                console.log('showCollection');
                 this.showCollection();
                 // this.endBuffering();
                 this.triggerMethod('render:collection', this);
             }
 
             this._render();
-        },
-
-        createRenderNode: function(){
-            if(!this.modifierForViewAtIndex){
-                throw new Error('CollectionView must have '+
-                                'modifierForIndex(view, index) set');
-            }
-
-            var root = new RenderNode();
-            var relative = root;
-            var context = this.context;
-
-            if(this.modifier){
-                var modifiers = _.result(this, 'modifier');
-                relative = this.applyModifiers(modifiers, root);
-
-                this._modifier = modifiers;
-            }
-
-            if(this.nestedSubviews){
-                if(!this.container){
-                    this.container = new ContainerSurface(this.properties);
-
-                    if (this.className){
-                        this.container.addClass(_.result(this, 'className'));
-                    }
-                }
-
-                this.container.context._node = new RenderNode();
-
-                relative.add(this.container);
-                context = this.container.context;
-                relative = this.container;
-            }
-
-            this.children.each(function(view, index){
-                view.context = context;
-                view.superview = this;
-                var node = new RenderNode();
-
-                var modifier = this.modifierForViewAtIndex(view, index);
-                this._subviewModifiers[view.cid] = modifier;
-
-                if(modifier){
-                    node.add(modifier).add(view);
-                } else {
-                    node.add(view);
-                }
-
-                relative.add(node);
-
-            }, this);
-
-            return root;
-        },
-
-        subviewDidChange: function(view){
-            var renderNode = new RenderNode();
-            var modifier = this._subviewModifiers[view.cid];
-            renderNode.add(modifier).add(view);
-            var obj = {
-                _spec: renderNode.render(),
-                getFamousId: view.getFamousId
-            };
-            FamousItemView.prototype.subviewDidChange.apply(this, [obj]);
         },
 
         // Internal method to destroy an existing emptyView instance
@@ -225,12 +153,17 @@ define(function (require, exports, module) {
              * our subviews for our rendering needs
              */
 
-            if(this.sizeForViewAtIndex){
-                size = this.sizeForViewAtIndex(view, index);
-                view.properties.size = size;
+            this.addSubview(view);
+            var constraints;
+
+            if(this.orientation == 'vertical'){
+                constraints = this.applyVerticalConstraints(view, index);
+            } else {
+                constraints = this.applyHorizontalConstraints(view, index);
             }
 
-            this.addSubview(view);
+            view._initializeRelationships();
+            this.addConstraints(constraints);
 
             if (true || this._isShown && !this.isBuffering){
                 if (_.isFunction(view.triggerMethod)) {
@@ -241,6 +174,95 @@ define(function (require, exports, module) {
             }
 
             this.triggerMethod('add:child', view);
+        },
+
+        applyVerticalConstraints: function(view, index){
+            var size = this.sizeForViewAtIndex(view, index);
+            var constraints = [];
+
+            constraints.push(constraintWithJSON({
+                item: view,
+                attribute: 'width',
+                relatedBy: '==',
+                toItem: this,
+                toAttribute: 'width'
+            }));
+
+            constraints.push(constraintWithJSON({
+                item: view,
+                attribute: 'height',
+                relatedBy: '==',
+                constant: size[1]
+            }));
+
+            if(index === 0){
+                constraints.push(constraintWithJSON({
+                    item: view,
+                    attribute: 'top',
+                    relatedBy: '==',
+                    toItem: this,
+                    toAttribute: 'top',
+                    constant: 0
+                }));
+            } else {
+                constraints.push(constraintWithJSON({
+                    item: view,
+                    attribute: 'top',
+                    relatedBy: '==',
+                    toItem: this.children.findByIndex(index - 1),
+                    toAttribute: 'bottom',
+                    constant: this.spacing
+                }));
+            }
+
+            return constraints;
+        },
+
+        applyHorizontalConstraints: function(view, index){
+            var size = this.sizeForViewAtIndex(view, index);
+            var constraints = [];
+
+            constraints.push(constraintWithJSON({
+                item: view,
+                attribute: 'height',
+                relatedBy: '==',
+                toItem: this,
+                toAttribute: 'height'
+            }));
+
+            constraints.push(constraintWithJSON({
+                item: view,
+                attribute: 'width',
+                relatedBy: '==',
+                constant: size[0]
+            }));
+
+            if(index === 0){
+                constraints.push(constraintWithJSON({
+                    item: view,
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: this,
+                    toAttribute: 'left',
+                    constant: 0
+                }));
+            } else {
+                constraints.push(constraintWithJSON({
+                    item: view,
+                    attribute: 'left',
+                    relatedBy: '==',
+                    toItem: this.children.findByIndex(index - 1),
+                    toAttribute: 'right',
+                    constant: this.spacing
+                }));
+            }
+
+            return constraints;
+        },
+
+        sizeForViewAtIndex: function(view, index){
+            return [200, 50];
+            return utils.getViewSize(view);
         },
 
         // Remove the child view and destroy it.
@@ -277,5 +299,5 @@ define(function (require, exports, module) {
         },
     });
 
-    exports.FamousCollectionView = FamousCollectionView;
+    exports.CollectionView = CollectionView;
 });
