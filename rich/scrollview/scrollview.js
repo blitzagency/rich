@@ -330,7 +330,9 @@ define(function(require, exports, module) {
             if(this._scrollAnimationCallback){
                 this._scrollAnimationCallback();
             }
-            var delta = data.delta;
+            // dampening the difference to make it match the browser
+            var delta = this._driver.updateDelta(data.delta);
+
             this._setScrollDirection(delta);
 
             // normalize the data based on direction
