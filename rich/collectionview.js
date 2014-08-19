@@ -199,7 +199,6 @@ define(function (require, exports, module) {
                 relatedBy: '==',
                 toItem: this,
                 toAttribute: 'width',
-                multiplier: 0.90
             }));
 
             constraints.push(constraintWithJSON({
@@ -277,11 +276,7 @@ define(function (require, exports, module) {
         },
 
         sizeForViewAtIndex: function(view, index){
-            //console.log(view.getSize());
-            //return view.getSize();
             return view.getSize();
-            //console.log(this.getSize(), view.getSize());
-            //return this.getSize();
         },
 
         // Remove the child view and destroy it.
