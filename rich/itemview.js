@@ -1,8 +1,9 @@
 define(function (require, exports, module) {
+    var $ = require('jquery');
+    var _ = require('underscore');
     var marionette  = require('marionette');
     var Surface = require('famous/core/Surface');
     var FamousView = require('./view').FamousView;
-    var $ = require('jquery');
 
 
     var obj = {};
@@ -22,7 +23,8 @@ define(function (require, exports, module) {
         },
 
         initializeRenderable: function(){
-            var renderable = new Surface(this.properties);
+            var properties = _.omit(this.properties, 'size');
+            var renderable = new Surface(properties);
             renderable.deploy = this._deploy.bind(this);
             return renderable;
         },
