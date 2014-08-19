@@ -27,6 +27,7 @@ function initializeRichContext(options){
     });
 
     contentView.name = 'contentView';
+    contentView._isRoot = true;
     contentView.superview = {_isRoot: true, _autolayout: {}};
 
     context.add(contentView);
