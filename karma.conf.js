@@ -6,6 +6,7 @@ module.exports = function(config) {
     files: [
         {pattern: 'tests/common.js', included: true},
         {pattern: 'tests/fixtures/*.html', included: false},
+        {pattern: 'tests/fixtures/test.css', included: true},
         {pattern: 'tests/spec/*.js', included: false},
         {pattern: 'tests/vendor/**/*.js', included: false},
         {pattern: 'tests/utils/*.js', included: false},
