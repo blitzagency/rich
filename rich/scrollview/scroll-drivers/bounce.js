@@ -57,7 +57,6 @@ var BounceDriver = SimpleDriver.extend({
                 this.scrollView._particle.setVelocity(0);
                 this._physicsEngine.attach([this._spring], this.scrollView._particle);
                 this._hasSpring = true;
-                this.scrollView.setNeedsDisplay(true);
                 this.scrollView._scrollableView.setNeedsDisplay(true);
                 this.scrollView._scrollableView.on(events.RENDER, this.scrollView.triggerScrollUpdate);
             }
@@ -86,13 +85,12 @@ var BounceDriver = SimpleDriver.extend({
         var type = this.scrollView._scrollType;
         // remove all previous physics
         // console.log('detatch')
-
+        if(type == 'wheel')return;
 
         if(this._throwMod){
             this._throwMod.callback();
         }
         // we only want to add velocity if you're touch or click
-        if(type == 'wheel')return;
 
         this._physicsEngine.detachAll();
         this.scrollView._particle.setVelocity(0);

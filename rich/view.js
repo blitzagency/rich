@@ -43,7 +43,7 @@ var FamousView = marionette.View.extend({
         this.children = new backbone.ChildViewContainer();
 
         /* >>> BEGIN marionette.View() override */
-         _.bindAll(this, 'render');
+         _.bindAll(this, 'render', 'invalidateView');
 
         // this exposes view options to the view initializer
         // this is a backfill since backbone removed the assignment
@@ -616,6 +616,11 @@ var FamousView = marionette.View.extend({
     },
 
     setNeedsDisplay: function(value){
+        if(value){
+            Engine.on('postrender', this.invalidateView);
+        }else{
+            Engine.removeListener('postrender', this.invalidateView);
+        }
         this._needsDisplay = value;
     },
 
