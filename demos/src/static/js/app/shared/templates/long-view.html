@@ -1,4 +1,11 @@
 {{#each blocks}}
-<div style='width:100%; height:200px; background-color:{{this}}'>
-</div>
+    {{#if ../isVerticle}}
+    <div style='width:200px; height:100%; background-color:{{this}}; float:left'>
+
+    </div>
+    {{else}}
+    <div style='width:100%; height:200px; background-color:{{this}}'>
+
+    </div>
+    {{/if}}
 {{/each}}

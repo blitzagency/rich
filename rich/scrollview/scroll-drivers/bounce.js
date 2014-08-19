@@ -16,24 +16,12 @@ var BounceDriver = SimpleDriver.extend({
     _hasSpring: false,
     mobileStrength:0.003,
     strength: 0.005,
-    initialize: function(scrollView) {
-        this.scrollView = scrollView;
+    constructor: function(scrollView) {
+        SimpleDriver.prototype.constructor.apply(this, arguments);
         this._spring = new Spring({
             period: 300,
             dampingRatio: 1
         });
-
-
-        this._friction = new Drag({
-            forceFunction: Drag.FORCE_FUNCTIONS.LINEAR,
-        });
-
-        this._drag = new Drag({
-            forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC,
-        });
-
-        this._physicsEngine = new PhysicsEngine();
-        this._physicsEngine.addBody(this.scrollView._particle);
     },
 
     shouldLimitPastBounds: function(){

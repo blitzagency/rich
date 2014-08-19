@@ -180,10 +180,14 @@ define(function(require, exports, module) {
                 var obj = this._prepareScrollModification(transition.duration);
                 this._scrollAnimationCallback = obj.callback;
                 this._positionY.set(y, transition, obj.callback);
+                this._positionX.set(x, transition, obj.callback);
                 return obj.deferred;
             } else {
+                this._positionX.halt();
                 this._positionY.halt();
-                this._positionX.set(x);
+                this._positionX.set(x, {
+                    duration: 0
+                });
                 this._positionY.set(y, {
                     duration: 0
                 });
@@ -325,17 +329,16 @@ define(function(require, exports, module) {
         },
 
 
-
-        _normalizeDelta: function(delta){
+        _normalizeVector: function(position){
             // normalize the data based on direction
             if(this.direction == DIRECTION_Y){
-                delta[0] = 0;
+                position[0] = 0;
                 if(this._scrollDirection == 'x' && this.getDirectionalLockEnabled())return;
             }else if(this.direction == DIRECTION_X){
-                delta[1] = 0;
+                position[1] = 0;
                 if(this._scrollDirection == 'y' && this.getDirectionalLockEnabled())return;
             }
-            return delta;
+            return position;
         },
 
         clearScrollAnimations: function(){
@@ -345,7 +348,6 @@ define(function(require, exports, module) {
         },
 
         getBoundsInfo: function(delta){
-            var pos = this._particle.getPosition();
             var gotoPosX = this._positionX.get() + delta[0];
             var gotoPosY = this._positionY.get() + delta[1];
             var contentSize = this.getContentSize();
@@ -353,10 +355,10 @@ define(function(require, exports, module) {
             var scrollableDistanceX = contentSize[0] - containerSize[0];
             var scrollableDistanceY = contentSize[1] - containerSize[1];
 
-            var isPastTop = gotoPosY > 0;
-            var isPastBottom = scrollableDistanceY + gotoPosY < 0;
-            var isPastLeft = gotoPosX > 0;
-            var isPastRight = scrollableDistanceX + gotoPosX < 0;
+            var isPastTop = gotoPosY >= 0;
+            var isPastBottom = scrollableDistanceY + gotoPosY <= 0;
+            var isPastLeft = gotoPosX >= 0;
+            var isPastRight = scrollableDistanceX + gotoPosX <= 0;
 
             var isOutOfBoundsY = isPastTop || isPastBottom;
             var isOutOfBoundsX = isPastLeft || isPastRight;
@@ -366,7 +368,6 @@ define(function(require, exports, module) {
 
             var outOfBoundsX = gotoPosX;
             var outofBoundsY = gotoPosY;
-
             if(isOutOfBoundsX && this.direction != DIRECTION_Y){
                 outOfBoundsX = isPastRight ? -scrollableDistanceX : 0;
                 anchorPoint[0] = outOfBoundsX;
@@ -400,7 +401,7 @@ define(function(require, exports, module) {
 
             // depending on the direction you are scrolling, this will normalize the data
             // setting the other direction to 0, stopping any scroll in that direction
-            delta = this._normalizeDelta(delta);
+            delta = this._normalizeVector(delta);
 
             // dampen the delta so it feels right between mobile and desktop
             delta = this._driver.dampenDelta(data.delta, this._scrollType);
