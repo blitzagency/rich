@@ -55,7 +55,11 @@ var AppContainer = rich.View.extend({
         var model = view.model;
         var LoadView = model.get('view');
         var view = new LoadView();
+        if(this._currentView) {
+            this.contentRegion.removeSubview(view);
+        }
         this.contentRegion.addSubview(view);
+        this._currentView = view;
     },
 
 
