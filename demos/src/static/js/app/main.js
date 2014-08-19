@@ -6,32 +6,9 @@ var rich = require('rich');
 function main(options){
     var app = this;
 
-    // app.addRegions({
-    //     window: famous.Region.extend({
-    //         el: 'body'
-    //     }),
-    // });
-
-    app.addContentViews({
+    app.addRichContexts({
         window: {
-            el: 'body',
-            constraints: [
-                {
-                    item: 'navigation',
-                    attribute: 'height',
-                    relatedBy: '==',
-                    constant: 100
-                },
-
-                {
-                    item: 'navigation',
-                    attribute: 'top',
-                    relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'top',
-                    constant: 0
-                }
-            ]
+            el: 'body'
         }
     });
 

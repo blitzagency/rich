@@ -12,6 +12,7 @@ var LongView = rich.ItemView.extend({
     template : template,
     size: [4000, 4000],
     initialize: function(options){
+        options = options || (options={});
         this.isVerticle = !options.isVerticle;
     },
     serializeData: function(){
