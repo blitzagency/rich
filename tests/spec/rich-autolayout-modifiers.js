@@ -47,68 +47,70 @@ describe('Auto Layout:', function() {
     });
 
 
-    it('generates layout modifiers', function(done){
-        var model = new Rectangle({
-            color: 'red'
-        });
+    // it('generates layout modifiers', function(done){
+    //     var model = new Rectangle({
+    //         color: 'red'
+    //     });
 
-        var view = new rich.View({
-            model: model,
-            constraints: [
+    //     var view = new rich.View({
+    //         model: model,
+    //         constraints: [
 
-                {
-                    item: 'navigation',
-                    attribute: 'left',
-                    relatedBy: '==', // '=|>=|<='
-                    toItem: 'superview',
-                    toAttribute: 'top',
-                    constant: 10,
-                },
+    //             {
+    //                 item: 'navigation',
+    //                 attribute: 'left',
+    //                 relatedBy: '==', // '=|>=|<='
+    //                 toItem: 'superview',
+    //                 toAttribute: 'top',
+    //                 constant: 10,
+    //             },
 
-                {
-                    item: 'navigation',
-                    attribute: 'right',
-                    relatedBy: '==', // '=|>=|<='
-                    toItem:'superview',
-                    toAttribute: 'width',
-                    constant: 0,
-                    multiplier: 0.5
-                },
+    //             {
+    //                 item: 'navigation',
+    //                 attribute: 'right',
+    //                 relatedBy: '==', // '=|>=|<='
+    //                 toItem:'superview',
+    //                 toAttribute: 'width',
+    //                 constant: 0,
+    //                 multiplier: 0.5
+    //             },
 
-                {
-                    item: 'navigation',
-                    attribute: 'top',
-                    relatedBy: '==', // '=|>=|<='
-                    toItem: 'superview',
-                    toAttribute: 'top',
-                    constant: 5,
-                    multiplier: 1
-                },
-            ]
-        });
+    //             {
+    //                 item: 'navigation',
+    //                 attribute: 'top',
+    //                 relatedBy: '==', // '=|>=|<='
+    //                 toItem: 'superview',
+    //                 toAttribute: 'top',
+    //                 constant: 5,
+    //                 multiplier: 1
+    //             },
+    //         ]
+    //     });
 
-        view.navigation = new RectangleView({
-            model:model
-        });
+    //     view.navigation = new RectangleView({
+    //         model:model
+    //     });
 
-        view.addSubview(view.navigation);
-        region.show(view);
+    //     view.addSubview(view.navigation);
+    //     region.show(view);
 
-        view.setSize([200, 200]);
+    //     // this is questionable, setSize()
+    //     // don't think we use this anymore
+    //     view.setSize([200, 200]);
 
-        view.onShow = function(){
+    //     view.onShow = function(){
 
-            expect(view._autolayout.width.value).toBe(200);
-            expect(view._autolayout.height.value).toBe(200);
+    //         expect(view._autolayout.width.value).toBe(200);
+    //         expect(view._autolayout.height.value).toBe(200);
 
-            expect(view.navigation._autolayout.top.value).toBe(5);
-            expect(view.navigation._autolayout.height.value).toBe(195);
-            expect(view.navigation._autolayout.width.value).toBe(90);
-            expect(view.navigation._autolayout.left.value).toBe(10);
-            done();
-        };
+    //         expect(view.navigation._autolayout.top.value).toBe(5);
+    //         expect(view.navigation._autolayout.height.value).toBe(195);
+    //         expect(view.navigation._autolayout.width.value).toBe(90);
+    //         expect(view.navigation._autolayout.left.value).toBe(10);
+    //         done();
+    //     };
 
-    });
+    // });
 
     xit('cassowary test', function(done){
         var w = 0;
