@@ -166,8 +166,6 @@ define(function (require, exports, module) {
              */
 
             this.addSubview(view);
-            view.name = 'childView';
-            console.log(view.name, view.cid);
 
             var constraints;
 
@@ -201,6 +199,7 @@ define(function (require, exports, module) {
                 relatedBy: '==',
                 toItem: this,
                 toAttribute: 'width',
+                multiplier: 0.90
             }));
 
             constraints.push(constraintWithJSON({
@@ -208,7 +207,6 @@ define(function (require, exports, module) {
                 attribute: 'height',
                 relatedBy: '==',
                 constant: size[1],
-                priority: 20,
             }));
 
             if(index === 0){
