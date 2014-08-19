@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     GenericSync.register({
         "touch": TouchSync,
         "scroll": ScrollSync,
-        "mouse": MouseSync
+        // "mouse": MouseSync
     });
 
     var DIRECTION_X = GenericSync.DIRECTION_X;
@@ -260,6 +260,7 @@ define(function(require, exports, module) {
             var self = this;
             _.each(events, function(type) {
                 this.$el.on(type, function(e) {
+                    self._scrollType = type;
                     self._scrollHandler.emit(type, e.originalEvent);
                 });
             }, this);
@@ -294,6 +295,7 @@ define(function(require, exports, module) {
             this.setNeedsDisplay(false);
             this._scrollableView.setNeedsDisplay(false);
             this.trigger('scroll:end', this.getScrollPosition());
+            this._driver.wantsThrow(data.velocity);
         },
 
         _setScrollDirection: function(delta) {
@@ -325,18 +327,10 @@ define(function(require, exports, module) {
             return false;
         },
 
-        _onScrollUpdate: function(data) {
-            // this._driver.onScrollUpdate(data);
-            if(this._scrollAnimationCallback){
-                this._scrollAnimationCallback();
-            }
-            // dampening the difference to make it match the browser
-            var delta = this._driver.updateDelta(data.delta);
 
-            this._setScrollDirection(delta);
 
+        _normalizeDelta: function(delta){
             // normalize the data based on direction
-
             if(this.direction == DIRECTION_Y){
                 delta[0] = 0;
                 if(this._scrollDirection == 'x' && this.getDirectionalLockEnabled())return;
@@ -344,7 +338,16 @@ define(function(require, exports, module) {
                 delta[1] = 0;
                 if(this._scrollDirection == 'y' && this.getDirectionalLockEnabled())return;
             }
+            return delta;
+        },
 
+        clearScrollAnimations: function(){
+            if(this._scrollAnimationCallback){
+                this._scrollAnimationCallback();
+            }
+        },
+
+        getBoundsInfo: function(delta){
             var pos = this._particle.getPosition();
             var gotoPosX = this._positionX.get() + delta[0];
             var gotoPosY = this._positionY.get() + delta[1];
@@ -367,9 +370,6 @@ define(function(require, exports, module) {
             var outOfBoundsX = gotoPosX;
             var outofBoundsY = gotoPosY;
 
-            var shouldScroll =  this._shouldScroll(contentSize, containerSize);
-            if(!shouldScroll)return;
-
             if(isOutOfBoundsX && this.direction != DIRECTION_Y){
                 outOfBoundsX = isPastRight ? -scrollableDistanceX : 0;
                 anchorPoint[0] = outOfBoundsX;
@@ -381,11 +381,52 @@ define(function(require, exports, module) {
                 isPastLimits = true;
             }
 
+            return {
+                gotoPosX: gotoPosX,
+                gotoPosY: gotoPosY,
+                isPastLimits: isPastLimits,
+                anchorPoint: anchorPoint,
+                contentSize: contentSize,
+                containerSize: containerSize
+            };
+        },
+
+        _onScrollUpdate: function(data) {
+
+            // if you were animating a scroll, this will kill it
+            this.clearScrollAnimations();
+
+            var delta = data.delta;
+
+            // cache the direction for all future movement until you start again
+            this._setScrollDirection(delta);
+
+            // depending on the direction you are scrolling, this will normalize the data
+            // setting the other direction to 0, stopping any scroll in that direction
+            delta = this._normalizeDelta(delta);
+
+            // dampen the delta so it feels right between mobile and desktop
+            delta = this._driver.dampenDelta(data.delta, this._scrollType);
+
+            // run calculations based on variables, spit back needed data
+            var boundsInfo = this.getBoundsInfo(delta);
+
+
+            // stop scrolling if size doesn't warrent it
+            var shouldScroll =  this._shouldScroll(boundsInfo.contentSize, boundsInfo.containerSize);
+            if(!shouldScroll)return;
+
 
             // we check with the driver to see if it wants to limit the position of the
             // scroll when we are updating via scroll
-            this.setScrollPosition(gotoPosX, gotoPosY, null, this._driver.shouldLimitPastBounds());
-            this._driver.updateLimits(isPastLimits, anchorPoint);
+            this.setScrollPosition(boundsInfo.gotoPosX, boundsInfo.gotoPosY, null, this._driver.shouldLimitPastBounds());
+
+            // give the driver an opportunity to take control of the particle
+            // add a bounce for example
+            this._driver.updateParticle(boundsInfo.isPastLimits, boundsInfo.anchorPoint, data.velocity);
+
+
+            // trigger event handler
             this.triggerScrollUpdate();
         },
 
