@@ -10,13 +10,18 @@ var template = require('hbs!../templates/long-view');
 
 var LongView = rich.ItemView.extend({
     template : template,
+    size: [4000, 4000],
+    initialize: function(options){
+        this.isVerticle = !options.isVerticle;
+    },
     serializeData: function(){
         var blocks = [];
         _.each(_.range(20), function(i){
             blocks.push("hsl(" + (i * 360 / 40) + ", 100%, 50%)");
         }, this);
         return {
-            blocks:blocks
+            blocks:blocks,
+            isVerticle: this.isVerticle
         };
     },
 });
