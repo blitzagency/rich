@@ -13,7 +13,7 @@ var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
 
-
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Auto Layout:', function() {
     var root;
@@ -22,7 +22,7 @@ describe('Auto Layout:', function() {
     var $el;
 
     beforeEach(function() {
-        loadFixtures('famous.html');
+        loadFixtures('famous-full.html');
 
         root = utils.initializeRichContext({
             el: '#famous-context'
@@ -43,9 +43,59 @@ describe('Auto Layout:', function() {
         root = null;
     });
 
+    // xit('sets explicit size on subview', function(done){
+    //     var model = new Rectangle();
+
+    //     var view = new RectangleView({
+    //         model: model,
+    //         constraints: [
+    //             {
+    //                 item: 'navigation',
+    //                 attribute: 'width',
+    //                 relatedBy: '==',
+    //                 constant: 300,
+    //             },
+
+    //             {
+    //                 item: 'navigation',
+    //                 attribute: 'height',
+    //                 relatedBy: '==',
+    //                 constant: 100,
+    //             }
+    //         ]
+    //     });
+
+    //     // region.constraints = function(){
+    //     //     return [
+    //     //         'H:|[currentView]|',
+    //     //         'V:|[currentView]|',
+    //     //     ];
+    //     // };
+
+    //     view.navigation = new RectangleView({
+    //         model: model,
+    //        // size: [100, 200]
+    //     });
+
+    //     region.name = 'regionView';
+    //     view.name = 'rectangleView';
+    //     view.navigation.name = 'navigation';
+
+    //     view.addSubview(view.navigation);
+    //     region.show(view);
+
+    //     view.onShow = function(){
+    //         //expect(view.navigation.getSize()).toEqual([300, 200]);
+    //         console.log(view.navigation.getSize());
+    //         //done();
+    //     };
+    // });
+
     it('works', function(done){
 
-
+        var view = RectangleView.extend({
+            size: [100, 50]
+        });
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -70,32 +120,27 @@ describe('Auto Layout:', function() {
         var collectionView = new rich.CollectionView({
             collection: collection,
             orientation: 'vertical',
-            childView: RectangleView,
+            childView: view,
+            spacing: 1,
         });
 
-        region.constraints = function(){
-            // return [
-            //     {
-            //         item: collectionView,
-            //         attribute: 'width',
-            //         relatedBy: '==',
-            //         constant: 200
-            //     },
+        region.name = 'region';
+        collectionView.name = 'collectionView';
 
-            //     {
-            //         item: collectionView,
-            //         attribute: 'height',
-            //         relatedBy: '==',
-            //         constant: 200
-            //     }
-            // ];
+
+        region.constraints = function(){
+            return [
+                'H:|[currentView]|',
+                'V:|[currentView]|',
+            ];
         };
 
         region.show(collectionView);
 
         collectionView.onShow = function(){
-            console.log(region.getSize());
-            console.log(collectionView.getSize());
+            //console.log(region.getSize());
+            //console.log(collectionView.getSize());
+            done();
         };
 
 
