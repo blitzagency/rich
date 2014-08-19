@@ -18,7 +18,10 @@ define(function (require, exports, module) {
 
         constructor: function(options){
             options || (options = {});
-            this.orientation = options.orientation || this.orientation;
+
+            var collectionOptions = ['orientation', 'spacing', 'sizeForViewAtIndex'];
+            _.extend(this, _.pick(options, collectionOptions));
+
             FamousView.prototype.constructor.apply(this, arguments);
 
             this._initialEvents();
@@ -44,6 +47,8 @@ define(function (require, exports, module) {
         },
 
         _famousReset: function(){
+            this.destroyEmptyView();
+            this.destroyChildren();
             this.root = null;
             this.triggerRichInvalidate();
         },
@@ -64,15 +69,21 @@ define(function (require, exports, module) {
         // more control over events being triggered, around the rendering
         // process
         _renderChildren: function() {
+
             this.destroyEmptyView();
-            this.destroyChildren();
+
+            if(!this.isEmpty(this.collection) && this.children.length > 0){
+                this._render();
+                return;
+            }
+
+            //this.destroyChildren();
 
             if (this.isEmpty(this.collection)) {
                 this.showEmptyView();
             } else {
                 this.triggerMethod('before:render:collection', this);
                 // this.startBuffering();
-                console.log('showCollection');
                 this.showCollection();
                 // this.endBuffering();
                 this.triggerMethod('render:collection', this);
@@ -139,6 +150,7 @@ define(function (require, exports, module) {
         // Internal Method. Add the view to children and render it at
         // the given index.
         _addChildView: function(view, index) {
+
             // set up the child view event forwarding
             this.proxyChildEvents(view);
 
@@ -154,6 +166,7 @@ define(function (require, exports, module) {
              */
 
             this.addSubview(view);
+
             var constraints;
 
             if(this.orientation == 'vertical'){
@@ -185,14 +198,15 @@ define(function (require, exports, module) {
                 attribute: 'width',
                 relatedBy: '==',
                 toItem: this,
-                toAttribute: 'width'
+                toAttribute: 'width',
+                multiplier: 0.90
             }));
 
             constraints.push(constraintWithJSON({
                 item: view,
                 attribute: 'height',
                 relatedBy: '==',
-                constant: size[1]
+                constant: size[1],
             }));
 
             if(index === 0){
@@ -202,7 +216,8 @@ define(function (require, exports, module) {
                     relatedBy: '==',
                     toItem: this,
                     toAttribute: 'top',
-                    constant: 0
+                    constant: 0,
+                    priority: 20,
                 }));
             } else {
                 constraints.push(constraintWithJSON({
@@ -211,7 +226,8 @@ define(function (require, exports, module) {
                     relatedBy: '==',
                     toItem: this.children.findByIndex(index - 1),
                     toAttribute: 'bottom',
-                    constant: this.spacing
+                    constant: this.spacing,
+                    priority: 20,
                 }));
             }
 
@@ -261,8 +277,11 @@ define(function (require, exports, module) {
         },
 
         sizeForViewAtIndex: function(view, index){
-            return [200, 50];
-            return utils.getViewSize(view);
+            //console.log(view.getSize());
+            //return view.getSize();
+            return view.getSize();
+            //console.log(this.getSize(), view.getSize());
+            //return this.getSize();
         },
 
         // Remove the child view and destroy it.

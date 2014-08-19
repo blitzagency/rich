@@ -163,6 +163,8 @@ var FamousView = marionette.View.extend({
         w = w || 0;
         h = h || 0;
 
+
+
         if(this.properties.size){
             w = this.properties.size[0] || 0;
             h = this.properties.size[1] || 0;
@@ -223,8 +225,7 @@ var FamousView = marionette.View.extend({
         if(superview.left)
             solver.addStay(superview.left, autolayout.weak);
 
-
-        if(!this.properties.size){
+        if(!this._isRoot && !this.properties.size){
             solver.addEditVar(vars.width);
             solver.addEditVar(vars.height);
             solver.beginEdit();
