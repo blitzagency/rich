@@ -614,3 +614,9 @@ body {
 /* font extensions
 
 */
+/* line 1, ../scss/blocks/_cube-demo.scss */
+.cube-side {
+  -webkit-box-shadow: inset 0px 0px 161px 13px rgba(0, 0, 0, 0.96);
+  -moz-box-shadow: inset 0px 0px 161px 13px rgba(0, 0, 0, 0.96);
+  box-shadow: inset 0px 0px 161px 13px rgba(0, 0, 0, 0.96);
+}

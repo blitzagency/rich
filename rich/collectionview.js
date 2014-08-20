@@ -195,7 +195,6 @@ define(function (require, exports, module) {
         applyVerticalConstraints: function(view, index){
             var size = this.sizeForViewAtIndex(view, index);
             var constraints = [];
-            console.log(index);
 
             constraints.push(constraintWithJSON({
                 item: view,
