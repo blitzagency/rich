@@ -76,10 +76,10 @@ describe('View+ClassName:', function() {
 
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             expect(view.$el.hasClass('bar')).toBe(true);
             done();
-        });
+        };
     });
 
 }); // eof describe

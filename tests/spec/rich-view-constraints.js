@@ -49,7 +49,7 @@ describe('View + Constraints:', function() {
     });
 
 
-    it('updates with constraints', function(done){
+    xit('updates with constraints', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -76,7 +76,6 @@ describe('View + Constraints:', function() {
         box0.addSubview(box1);
 
         region.show(box0);
-
         box0.onShow = function(){
 
             expect(box0._autolayout.left.value).toBe(0);
@@ -95,7 +94,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('updates layout after adding constraint with JSON', function(done){
+    xit('updates layout after adding constraint with JSON', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -152,7 +151,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('updates layout after adding constraint with VFL', function(done){
+    xit('updates layout after adding constraint with VFL', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -204,7 +203,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('removes constraint', function(done){
+    xit('removes constraint', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -261,7 +260,6 @@ describe('View + Constraints:', function() {
             });
 
             box0.addConstraints([c1, c2]);
-
             render().then(function(){
 
                 expect(box1._autolayout.width.value).toBe(500);

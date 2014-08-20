@@ -45,7 +45,7 @@ describe('View+Core:', function() {
     });
 
 
-    xit('renders view', function(done){
+    it('renders view', function(done){
         var model = new Rectangle({
             size: [300, 500]
         });
@@ -63,7 +63,7 @@ describe('View+Core:', function() {
     });
 
 
-    xit('uses modifier', function(done){
+    it('uses modifier', function(done){
         var model = new Rectangle({
             size: [300, 500],
         });
@@ -77,7 +77,7 @@ describe('View+Core:', function() {
 
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
 
             expect(value).toEqual({
@@ -85,10 +85,10 @@ describe('View+Core:', function() {
             });
 
             done();
-        });
+        };
     });
 
-    xit('uses modifier as function', function(done){
+    it('uses modifier as function', function(done){
         var obj = {
             action: function(){
                 return new Modifier({
@@ -103,7 +103,7 @@ describe('View+Core:', function() {
         view.context = context;
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
 
             expect(spy).toHaveBeenCalled();
@@ -112,7 +112,7 @@ describe('View+Core:', function() {
             });
 
             done();
-        });
+        };
     });
 
     it('uses modifier as array', function(done){
@@ -134,17 +134,17 @@ describe('View+Core:', function() {
         view.context = context;
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
             expect(value).toEqual({
                 x: 10, y: 10, z: 0
             });
 
             done();
-        });
+        };
     });
 
-    xit('adds subviews', function(done){
+    it('adds subviews', function(done){
         var rect1 = new Rectangle({
             tx: 0,
             ty: 0,
@@ -177,7 +177,7 @@ describe('View+Core:', function() {
         rect1View.context = context;
         context.add(rect1View);
 
-        render().then(function(){
+        rect3View.onShow = function(){
             var value1 = matrix.getTranslation(rect1View.$el);
             var value2 = matrix.getTranslation(rect2View.$el);
             var value3 = matrix.getTranslation(rect3View.$el);
@@ -195,10 +195,10 @@ describe('View+Core:', function() {
             });
 
             done();
-        });
+        };
     });
 
-    xit('adds nested subviews', function(done){
+    it('adds nested subviews', function(done){
 
         var rect1 = new Rectangle({
             tx: 0,
@@ -235,7 +235,7 @@ describe('View+Core:', function() {
         view.context = context;
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             expect(view.$el).not.toBe(undefined);
 
             // <div class="famous-group famous-container-group">
@@ -259,11 +259,11 @@ describe('View+Core:', function() {
             });
 
             done();
-        });
+        }
     });
 
 
-    xit('invalidates subview layouts', function(){
+    it('invalidates subview layouts', function(){
         // top to bottom
         var view1 = new rich.View();
         var view2 = new rich.View();
@@ -281,8 +281,8 @@ describe('View+Core:', function() {
         spyOn(view3b, 'invalidateLayout').and.callThrough();
         spyOn(view4, 'invalidateLayout').and.callThrough();
 
+        // region calls invalidateLayout
         region.show(view1);
-        view1.invalidateLayout();
 
         expect(view2.invalidateLayout.calls.count()).toBe(1);
         expect(view3a.invalidateLayout.calls.count()).toBe(1);
@@ -291,7 +291,7 @@ describe('View+Core:', function() {
     });
 
 
-    xit('invalidates subview', function(){
+    it('invalidates subview', function(){
         // bottom to top
         var view1 = new rich.View();
         var view2 = new rich.View();
@@ -314,6 +314,41 @@ describe('View+Core:', function() {
         expect(view1.subviewDidChange.calls.count()).toBe(1);
         expect(view2.subviewDidChange.calls.count()).toBe(1);
         expect(view3.subviewDidChange.calls.count()).toBe(1);
+    });
+
+    it('triggers onShow with subviews', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var box1 = new RectangleView({
+            model: color0,
+        });
+
+        box0.addSubview(box1);
+
+        box1.onShow = function(){
+            expect(this.$el).not.toBe(undefined);
+        };
+        box0.onShow = function(){
+            expect(this.$el).not.toBe(undefined);
+        };
+
+        var spy0 = spyOn(box0, 'onShow').and.callThrough();
+        var spy1 = spyOn(box1, 'onShow').and.callThrough();
+
+        render(1000).then(function(){
+            expect(spy0).toHaveBeenCalled();
+            expect(spy1).toHaveBeenCalled();
+            done();
+        });
+
+        region.show(box0);
     });
 
 }); // eof describe

@@ -46,7 +46,7 @@ describe('Region:', function() {
     });
 
 
-    it('view inherits size', function(done){
+    xit('view inherits size', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -65,7 +65,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('uses constraints', function(done){
+    xit('uses constraints', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -95,7 +95,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('swaps views', function(done){
+    xit('swaps views', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -143,6 +143,9 @@ describe('Region:', function() {
 
         region.show(box0);
     });
+
+
+
 
 }); // eof describe
 }); // eof define
