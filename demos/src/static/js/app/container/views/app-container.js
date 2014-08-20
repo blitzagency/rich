@@ -8,6 +8,7 @@ var NavigationModel = require('app/navigation/models/navigation').NavigationMode
 
 // examples
 var AutoLayoutDemo = require('app/demos/auto-layout-demo/views/demo').AutoLayoutDemo;
+var CubeDemo = require('app/demos/cube-demo/views/cube-scroll-layout').CubeScrollLayout;
 
 var AppContainer = rich.View.extend({
     constraints: [
@@ -39,7 +40,11 @@ var AppContainer = rich.View.extend({
                 new NavigationModel({
                     label: 'Auto Layout Constraints',
                     view: AutoLayoutDemo
-                })
+                }),
+                new NavigationModel({
+                    label: 'Cube Demo',
+                    view: CubeDemo
+                }),
             ])
         });
         this.listenTo(navigation, 'childview:navigate', this.onNavigate);

@@ -6,7 +6,6 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var Footer = require('./footer').Footer;
 
-
 var Column = RectangleView.extend({
     autoLayoutTransition: {
         duration: 500

@@ -44,25 +44,26 @@ var AutoLayoutDemo = rich.View.extend({
     ],
 
     initialize: function(){
-        var color0 = new Rectangle({
-            color: utils.colors.blue[0]
-        });
 
-        var gray = new Rectangle({
-            color: '#ccc'
-        });
+        // var color0 = new Rectangle({
+        //     color: utils.colors.blue[0]
+        // });
 
-        //init views
-        var column = new Column({
-            model: color0
-        });
+        // var gray = new Rectangle({
+        //     color: '#ccc'
+        // });
 
-        var content = new Content({
-            model: gray
-        });
+        // //init views
+        // var column = new Column({
+        //     model: color0
+        // });
 
-        this.addSubview(column);
-        this.addSubview(content);
+        // var content = new Content({
+        //     model: gray
+        // });
+
+        // this.addSubview(column);
+        // this.addSubview(content);
     },
 
 
