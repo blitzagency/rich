@@ -57,7 +57,7 @@ var CubeView = rich.CollectionView.extend({
             tz: h/2,
         });
 
-        this.collection = new backbone.Collection([front, back, bottom, top]);
+        this.collection = new backbone.Collection([front, back, top, bottom]);
 
         // prep for animation and move
         // container with scrollView
