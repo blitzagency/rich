@@ -76,11 +76,20 @@ Region = Region.extend({
         return this;
     },
 
+    // open: function(view){
+    //     this.prepareSubviewAdd(view);
+
+    //     if(this.root){
+    //         this.invalidateLayout();
+    //         this.invalidateView();
+    //     }
+    // },
+
     open: function(view){
+        view.invalidateLayout();
         this.prepareSubviewAdd(view);
 
-        if(this.root){
-            this.invalidateLayout();
+        if(this.context){
             this.invalidateView();
         }
     },
