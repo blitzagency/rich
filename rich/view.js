@@ -251,6 +251,22 @@ var FamousView = marionette.View.extend({
         );
     },
 
+    _processIntrinsicConstraints: function(constraints){
+        var tmp = [];
+
+        for(var i = 0; i < constraints.length; i++){
+            var each = constraints[i];
+
+            if(_.isString(each)){
+                tmp = tmp.concat(constraintsWithVFL(each));
+            } else {
+                tmp.push(constraintWithJSON(each));
+            }
+        }
+
+        return tmp;
+    },
+
     _initializeConstraints: function(){
         var constraints = _.result(this, 'constraints');
         var wantsInitialize;
@@ -266,19 +282,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(constraints){
-            var tmp = [];
-
-            for(var i = 0; i < constraints.length; i++){
-                var each = constraints[i];
-
-                if(_.isString(each)){
-                    tmp = tmp.concat(constraintsWithVFL(each));
-                } else {
-                    tmp.push(constraintWithJSON(each));
-                }
-            }
-
-            constraints = tmp;
+            constraints = this._processIntrinsicConstraints(constraints)
             key = hashConstraints(constraints, this);
             shouldClearConstraints = key != this._currentConstraintKey;
         }
