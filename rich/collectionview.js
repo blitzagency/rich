@@ -301,6 +301,22 @@ define(function (require, exports, module) {
 
                 // decrement the index of views after this one
                 this._updateIndices(view, false);
+
+                var constraints = [];
+
+                var action = this.orientation == 'vertical' ?
+                    this.applyVerticalConstraints.bind(this) :
+                    this.applyHorizntalConstraints.bind(this);
+
+                this.children.each(function(view, index){
+                    //view.invalidateLayout();
+                    constraints = constraints.concat(action(view, index));
+                }, this);
+
+                this._constraints = constraints;
+                this._constraintsInitialized = false;
+                //this.invalidateLayout();
+                this.invalidateView();
             }
 
             return view;
