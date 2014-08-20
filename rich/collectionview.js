@@ -165,7 +165,10 @@ define(function (require, exports, module) {
              * our subviews for our rendering needs
              */
 
-            this.addSubview(view);
+            // we don't want addSubview here, that will immediately
+            // invalidate the view. addCOnstraints below will do that
+            // job for us as well as invalidating the layout.
+            this.prepareSubviewAdd(view);
 
             var constraints;
 
