@@ -5,6 +5,7 @@ define(function(require, exports, module) {
 var _ = require('underscore');
 var $ = require('jquery');
 var rich = require('rich');
+var backbone = require('backbone');
 var utils = require('rich/utils');
 var Modifier = require('famous/core/Modifier');
 var Engine = require('famous/core/Engine');
@@ -46,7 +47,7 @@ describe('Region:', function() {
     });
 
 
-    it('view inherits size', function(done){
+    xit('view inherits size', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -65,7 +66,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('uses constraints', function(done){
+    xit('uses constraints', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -95,7 +96,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('swaps views', function(done){
+    xit('swaps views', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -142,7 +143,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('applies constraints to subviews children', function(done){
+    xit('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -172,7 +173,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    it('applies constraints to subviews children', function(done){
+    xit('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -205,7 +206,7 @@ describe('Region:', function() {
         region.show(parent);
     });
 
-    it('applies constraints to subviews children', function(done){
+    xit('applies h/w constraints to subviews children with nestedSubviews', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -238,6 +239,55 @@ describe('Region:', function() {
         });
 
         region.show(parent);
+    });
+
+    xit('applies h/w constraints to collection view', function(done){
+
+        var collection = new backbone.Collection();
+
+        var collectionView = new rich.CollectionView({
+            collection: collection,
+            childView: RectangleView
+        });
+
+        region.show(collectionView);
+
+        render().then(function(){
+            expect(region.getSize()).toEqual([1000, 800]);
+            expect(collectionView.getSize()).toEqual([1000, 800]);
+            done();
+        });
+    });
+
+    it('applies h/w constraints to collection views children', function(done){
+
+        var collection = new backbone.Collection([
+            new Rectangle({
+                color: colors[0]
+            }),
+            new Rectangle({
+                color: colors[1]
+            }),
+        ]);
+
+        var collectionView = new rich.CollectionView({
+            collection: collection,
+            childView: RectangleView
+        });
+
+        region.show(collectionView);
+
+        render().then(function(){
+            expect(region.getSize()).toEqual([1000, 800]);
+            console.log(region.currentView.getSize())
+            console.log(collectionView.getSize())
+            collectionView.children.each(function(child){
+
+                // @adam...ok here we go
+                console.log(child.getSize());
+            })
+            done();
+        });
     });
 
 }); // eof describe
