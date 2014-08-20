@@ -21,7 +21,7 @@ describe('Utils:', function() {
 
         var view = utils.initializeRichContext(options);
         expect(view).not.toBe(undefined);
-
+        utils.disposeRichContext(view);
     });
 
 
@@ -34,6 +34,7 @@ describe('Utils:', function() {
 
         var view = utils.initializeRichContext(options);
         expect(view).not.toBe(undefined);
+        utils.disposeRichContext(view);
     });
 
 
@@ -105,14 +106,18 @@ describe('Utils:', function() {
     });
 
     it('postrenderOnce', function(done){
-        var context = Engine.createContext();
-        var handler = jasmine.createSpy('handler');
+        var options = {
+            el: 'body'
+        };
 
+        var view = utils.initializeRichContext(options);
+        var handler = jasmine.createSpy('handler');
         utils.postrenderOnce(handler);
 
         setTimeout(function(){
             expect(handler.calls.count()).toBe(1);
             done();
+            utils.disposeRichContext(view);
         }, 500);
     });
 
