@@ -7,7 +7,7 @@ var NavigationView = require('app/navigation/views/navigation-view').NavigationV
 var NavigationModel = require('app/navigation/models/navigation').NavigationModel;
 
 // examples
-var LongView = require('app/shared/views/long-view').LongView;
+var Action4 = require('app/demos/action-4/views/long-view').demo.js;
 
 var AppContainer = rich.View.extend({
     constraints: [
@@ -38,7 +38,7 @@ var AppContainer = rich.View.extend({
             collection: new backbone.Collection([
                 new NavigationModel({
                     label: 'Constraints Layout',
-                    view: LongView
+                    view: Action4
                 })
             ])
         });
