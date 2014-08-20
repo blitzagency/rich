@@ -304,6 +304,10 @@ define(function (require, exports, module) {
 
                 var constraints = [];
 
+                constraints = constraints.concat(this._processIntrinsicConstraints(
+                    _.result(this, 'constraints')
+                ));
+
                 var action = this.orientation == 'vertical' ?
                     this.applyVerticalConstraints.bind(this) :
                     this.applyHorizntalConstraints.bind(this);
@@ -315,7 +319,6 @@ define(function (require, exports, module) {
 
                 this._constraints = constraints;
                 this._constraintsInitialized = false;
-                //this.invalidateLayout();
                 this.invalidateView();
             }
 

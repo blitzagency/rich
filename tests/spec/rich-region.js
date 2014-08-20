@@ -46,7 +46,7 @@ describe('Region:', function() {
     });
 
 
-    xit('view inherits size', function(done){
+    it('view inherits size', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -65,7 +65,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('uses constraints', function(done){
+    it('uses constraints', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -95,7 +95,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('swaps views', function(done){
+    it('swaps views', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -128,24 +128,117 @@ describe('Region:', function() {
             ];
         };
 
-        box0.onShow = function(){
+        render().then(function(){
             var size = css.getSize(box0.$el);
             expect(size).toEqual([1000, 100]);
-
             region.show(box1);
-        };
-
-        box1.onShow = function(){
-            var size = css.getSize(box0.$el);
-            expect(size).toEqual([1000, 100]);
-            done();
-        };
+            render().then(function(){
+                var size = css.getSize(box1.$el);
+                expect(size).toEqual([1000, 100]);
+                done();
+            });
+        });
 
         region.show(box0);
     });
 
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
 
 
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(box0);
+    });
+
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        var parent = new rich.View();
+
+        parent.addSubview(box0);
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(parent);
+    });
+
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        var parent = new rich.View({
+            nestedSubviews: true
+        });
+
+        parent.addSubview(box0);
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(parent);
+    });
 
 }); // eof describe
 }); // eof define
