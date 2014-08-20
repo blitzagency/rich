@@ -41,6 +41,7 @@ var AppContainer = rich.View.extend({
                     label: 'Auto Layout Constraints',
                     view: AutoLayoutDemo
                 }),
+
                 new NavigationModel({
                     label: 'Cube Demo',
                     view: CubeDemo
