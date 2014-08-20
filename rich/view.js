@@ -164,8 +164,6 @@ var FamousView = marionette.View.extend({
         w = w || 0;
         h = h || 0;
 
-
-
         if(this.properties.size){
             w = this.properties.size[0] || 0;
             h = this.properties.size[1] || 0;
