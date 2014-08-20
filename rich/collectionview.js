@@ -195,6 +195,7 @@ define(function (require, exports, module) {
         applyVerticalConstraints: function(view, index){
             var size = this.sizeForViewAtIndex(view, index);
             var constraints = [];
+            console.log(index);
 
             constraints.push(constraintWithJSON({
                 item: view,
@@ -287,6 +288,7 @@ define(function (require, exports, module) {
         // later views in the collection in order to keep
         // the children in sync with the collection.
         removeChildView: function(view) {
+
             if (view) {
                 this.triggerMethod('before:remove:child', view);
                 // call 'destroy' or 'remove', depending on which is found
@@ -294,17 +296,15 @@ define(function (require, exports, module) {
                 else if (view.remove) { view.remove(); }
 
                 this.stopListening(view);
-
-                /**
-                 * RICH CHANGE: from this.children.remove(view) to
-                 * this.removeSubview(view).
-                 */
-                this.removeSubview(view);
+                //this.children.remove(view);
+                this.prepareSubviewRemove(view);
                 this.triggerMethod('remove:child', view);
 
                 // decrement the index of views after this one
                 this._updateIndices(view, false);
             }
+
+            return view;
         },
 
         startBuffering: function(){
