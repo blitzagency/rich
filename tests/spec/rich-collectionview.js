@@ -18,7 +18,7 @@ var log = require('tests/utils/log');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Auto Layout:', function() {
+describe('CollectionView:', function() {
     var root;
     var region;
     var context;
@@ -268,6 +268,82 @@ describe('Auto Layout:', function() {
                 });
 
                 done();
+            });
+        };
+    });
+
+    it('removes model', function(done){
+
+        var AltView = RectangleView.extend({
+            size: [0, 50]
+        });
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var color2 = new Rectangle({
+            color: colors[5]
+        });
+
+        var color3 = new Rectangle({
+            color: colors[4]
+        });
+
+
+        var collection = new backbone.Collection([color0, color1]);
+
+
+        var collectionView = new rich.CollectionView({
+            collection: collection,
+            orientation: 'vertical',
+            childView: AltView,
+            spacing: 5,
+        });
+
+        region.constraints = function(){
+            return [
+                'H:|[currentView]|',
+                'V:|[currentView]|',
+            ];
+        };
+
+        region.show(collectionView);
+
+        collectionView.onShow = function(){
+            var targetHeight = 50;
+            var targetWidth = window.innerWidth;
+            var $child;
+
+            expect($el.children().length).toEqual(2);
+            expect(collectionView.children.length).toEqual(2);
+
+            var startCid = collectionView.children.findByIndex(1).cid;
+
+            render().then(function(){
+                $child = $($el.children()[1]);
+                var targetTranslation = (targetHeight + collectionView.spacing) * 1;
+                expect(matrix.getTranslation($child).y).toEqual(targetTranslation);
+
+                collection.remove(color0);
+
+                render().then(function(){
+                    // will be 2, famo.us keeps empty nodes around for
+                    // recycling purposes.
+                    expect($el.children().length).toEqual(2);
+                    expect($($el.children()[0]).css('display')).toEqual('none');
+                    expect(collectionView.children.length).toEqual(1);
+                    expect(collectionView.children.findByIndex(0).cid).toEqual(startCid);
+
+                    $child = $($el.children()[1]);
+                    expect(matrix.getTranslation($child).y).toEqual(0);
+
+                    done();
+                });
             });
         };
     });
