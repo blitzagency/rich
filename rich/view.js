@@ -282,7 +282,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(constraints){
-            constraints = this._processIntrinsicConstraints(constraints)
+            constraints = this._processIntrinsicConstraints(constraints);
             key = hashConstraints(constraints, this);
             shouldClearConstraints = key != this._currentConstraintKey;
         }
