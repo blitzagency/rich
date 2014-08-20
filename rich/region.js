@@ -61,17 +61,6 @@ Region = Region.extend({
                 this.open(view);
             }
 
-            // very rich specific
-            utils.postrenderOnce(function(){
-                this.triggerMethod('show', view);
-
-                if (_.isFunction(view.triggerMethod)) {
-                    view.triggerMethod('show');
-                } else {
-                    this.triggerMethod.call(view, 'show');
-                }
-            }.bind(this));
-
         }
         return this;
     },
