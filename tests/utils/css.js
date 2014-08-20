@@ -35,7 +35,7 @@ function getSize($el){
     return [parseInt(width, 10), parseInt(height, 10)];
 }
 
-http://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
+// http://stackoverflow.com/questions/1740700/how-to-get-hex-color-value-rather-than-rgb-value
 function rgb2hex(rgb) {
     rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
     function hex(x) {
