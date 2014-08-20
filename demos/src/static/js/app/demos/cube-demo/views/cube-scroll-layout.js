@@ -11,20 +11,13 @@ var ScrollControlView = require('./scroll-control-view').ScrollControlView;
 var Easing = require('famous/transitions/Easing');
 var BounceDriver = require('rich/scrollview/scroll-drivers/bounce').BounceDriver;
 
-
-var w = window.innerWidth;
-var h = window.innerHeight;
-var scrollH = h * 3;
-
 var CubeScrollLayout = rich.ItemView.extend({
     name: 'CubeLayout',
     template: false,
     regions:{
         scrollContainer: rich.Region.extend({
-            size: [w, h],
             modifier: function(){
                 return new Modifier({
-                    origin: [0.5, 0.5]
                 });
             }
         })
@@ -34,18 +27,24 @@ var CubeScrollLayout = rich.ItemView.extend({
         var scrollView =  this.scrollView = new scroll.ScrollView({
             className: 'scroll-view',
             // contentSize: [w, h * 4.14],
-            contentSize: [w, h * 50],
+            contentSize: function(){
+                var size = this.getSize();
+                size[1] = size[1] * 50;
+                return size;
+            },
             direction: scroll.DIRECTION_Y,
-            perspective: 2000,
+            perspective: 1000,
             hidesOverflow: false,
             scrollDriver: BounceDriver
         });
+
+        console.log(this.scrollView.outerHeight);
 
         this.listenTo(scrollView, 'scroll:update', this.onScrollUpdate);
         this.listenTo(scrollView, 'scroll:end', this.onScrollEnd);
 
         this.scrollControlView = new ScrollControlView({
-            size: [w, h]
+            size: this.getSize.bind(this)
         });
 
         scrollView.addSubview(this.scrollControlView);

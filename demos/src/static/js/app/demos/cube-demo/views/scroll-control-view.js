@@ -10,7 +10,7 @@ var w = window.innerWidth;
 var h = window.innerHeight;
 
 var ScrollControlView = rich.ItemView.extend({
-    className: 'scroll-controlView',
+    className: 'scroll-control-view',
     template : template,
     size: [w, h],
     initialize : function(){
@@ -21,12 +21,11 @@ var ScrollControlView = rich.ItemView.extend({
         this.addSubview(this.cubeView);
 
         this.modifier = new Modifier({
-            origin: [0.5, 0.5],
         });
     },
 
     setScrollPosition: function(yPos){
-        // console.log(yPos)
+        // console.log(this.getSize())
         this._currentPos = yPos;
         // console.log(yPos)
         this.cubeView.scrollPosition(yPos);
