@@ -2,6 +2,7 @@ define(function (require, exports, module) {
 
 var _ = require('underscore');
 var $ = require('jquery');
+var utils = require('rich/utils');
 var marionette = require('marionette');
 var backbone = require('backbone');
 var RenderNode = require('famous/core/RenderNode');
@@ -602,6 +603,13 @@ var FamousView = marionette.View.extend({
         spec = this.root.render();
         this._spec = spec;
         this.triggerRichRender();
+
+        if(!this._isShown){
+            this._isShown = true;
+            utils.postrenderOnce(function(){
+                this.triggerMethod('show');
+            }.bind(this));
+        }
     },
 
     triggerRichRender: function(){
@@ -687,6 +695,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(!this.renderable && this.getTemplate()){
+
             this.renderable = this.initializeRenderable();
         }
 
@@ -703,6 +712,7 @@ var FamousView = marionette.View.extend({
 
             if(needsTrigger){
                 view.triggerMethod('context');
+
             }
             relative.add(view);
         }, this);
@@ -739,6 +749,7 @@ var FamousView = marionette.View.extend({
     prepareSubviewRemove: function(view){
         view.superview = null;
         view.context = null;
+        view._isShown = false;
         view.invalidateLayout();
 
         this.children.remove(view);

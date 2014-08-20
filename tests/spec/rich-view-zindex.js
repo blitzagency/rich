@@ -72,11 +72,11 @@ describe('View+Z-Index:', function() {
 
         context.add(view);
 
-        render().then(function(){
+        view.onShow = function(){
             var value = css.getZIndex(view.$el);
             expect(value).toBe(99);
             done();
-        });
+        };
     });
 
     it('adjusts zIndex if superview is greater', function(done){

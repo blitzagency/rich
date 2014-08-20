@@ -4,6 +4,7 @@ define(function (require, exports, module) {
     var marionette  = require('marionette');
     var Surface = require('famous/core/Surface');
     var FamousView = require('./view').FamousView;
+    var utils = require('rich/utils');
 
 
     var obj = {};
@@ -16,10 +17,6 @@ define(function (require, exports, module) {
 
         constructor: function(options){
             FamousView.prototype.constructor.apply(this, arguments);
-        },
-
-        shouldInitializeRenderable: function(){
-            return true;
         },
 
         initializeRenderable: function(){
@@ -63,6 +60,7 @@ define(function (require, exports, module) {
             this.bindUIElements();
 
             this.triggerMethod("render", this);
+
 
         }
 
