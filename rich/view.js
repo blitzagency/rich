@@ -254,6 +254,8 @@ var FamousView = marionette.View.extend({
     _processIntrinsicConstraints: function(constraints){
         var tmp = [];
 
+        if(!constraints) return tmp;
+
         for(var i = 0; i < constraints.length; i++){
             var each = constraints[i];
 
