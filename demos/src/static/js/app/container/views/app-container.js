@@ -7,7 +7,7 @@ var NavigationView = require('app/navigation/views/navigation-view').NavigationV
 var NavigationModel = require('app/navigation/models/navigation').NavigationModel;
 
 // examples
-var Action4 = require('app/demos/action-4/views/long-view').demo.js;
+var Action4 = require('app/demos/action-4/views/demo').Action4;
 
 var AppContainer = rich.View.extend({
     constraints: [
@@ -45,7 +45,7 @@ var AppContainer = rich.View.extend({
         this.listenTo(navigation, 'childview:navigate', this.onNavigate);
 
 
-        var contentRegion = this.contentRegion = new rich.View();
+        var contentRegion = this.contentRegion = new rich.Region();
 
         this.addSubview(this.contentRegion);
         this.addSubview(navigation);
@@ -55,11 +55,7 @@ var AppContainer = rich.View.extend({
         var model = view.model;
         var LoadView = model.get('view');
         var view = new LoadView();
-        if(this._currentView) {
-            this.contentRegion.removeSubview(view);
-        }
-        this.contentRegion.addSubview(view);
-        this._currentView = view;
+        this.contentRegion.show(view);
     },
 
 
