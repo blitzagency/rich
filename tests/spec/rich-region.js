@@ -142,8 +142,103 @@ describe('Region:', function() {
         region.show(box0);
     });
 
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
 
 
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(box0);
+    });
+
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        var parent = new rich.View();
+
+        parent.addSubview(box0);
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(parent);
+    });
+
+    it('applies constraints to subviews children', function(done){
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var box1 = new RectangleView({
+            model: color1,
+        });
+
+        var parent = new rich.View({
+            nestedSubviews: true
+        });
+
+        parent.addSubview(box0);
+        box0.addSubview(box1);
+
+        render().then(function(){
+            expect(box0.getSize()).toEqual([1000, 800]);
+            expect(box1.getSize()).toEqual([1000, 800]);
+            done();
+        });
+
+        region.show(parent);
+    });
 
 }); // eof describe
 }); // eof define
