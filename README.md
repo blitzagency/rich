@@ -212,6 +212,33 @@ var MyView = new rich.ItemView.extend({
 
 ```
 
+It's also completely valid to just have an empty view, that does nothing but hold subviews, note that rich.View does not require a template.
+
+```javascript
+var MyView = new rich.View.extend({
+    constraints:[
+        {
+            item: 'childView',
+            attribute: 'left',
+            relatedBy: '==',
+            toItem: 'superview',
+            toAttribute: 'left',
+            constant: 20
+        },
+        
+        'V:[chidView(200)]',
+        'H:[chidView(100)]',
+        
+    ], // yes, you can mix styles when defining the intrinsic constraints on a view.
+    
+    initialize: function(){
+        this.chidView = new OtherView();
+        this.addSubview(this.chidView);
+    }
+});
+
+```
+
 Why did we go this path?  Because everything is a view, we have the ability to have the views talk to eachother up and down the tree.  This is how we handle view invalidation, for example.  Every view, similar to a [Famo.us] view/surface has a render() function.  Every rich view will, by default, store a cached version of it's own render() result.  When render is called it will return that cache.  If a view updates, it will trigger an event up to it's parent. That parent then grabs the update from the child, reaches into it's own cached render response and patches it.  Thus only modifying the parts that are required and not incurring the cost of a full rerender each render cycle.
 
 In addition, the base view allows the constraints system to have a hierarchical structure as well. If I have a parent size [100x100], it's children will all inherit that size.  If I add a constraint to any child down the tree the children will inherit the parents size.
