@@ -326,30 +326,27 @@ define(function (require, exports, module) {
                 else if (view.remove) { view.remove(); }
 
                 this.stopListening(view);
-                //this.children.remove(view);
+
                 this.prepareSubviewRemove(view);
                 this.triggerMethod('remove:child', view);
 
                 // decrement the index of views after this one
                 this._updateIndices(view, false);
 
-                var constraints = [];
-
-                constraints = constraints.concat(this._processIntrinsicConstraints(
+                var constraints = this._processIntrinsicConstraints(
                     _.result(this, 'constraints')
-                ));
+                );
 
                 var action = this.orientation == 'vertical' ?
                     this.applyVerticalConstraints.bind(this) :
                     this.applyHorizntalConstraints.bind(this);
 
                 this.children.each(function(view, index){
-                    //view.invalidateLayout();
                     constraints = constraints.concat(action(view, index));
                 }, this);
 
                 this._constraints = constraints;
-                this._constraintsInitialized = false;
+                this.invalidateLayout();
                 this.invalidateView();
             }
 
