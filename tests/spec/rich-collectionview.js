@@ -295,7 +295,7 @@ describe('CollectionView:', function() {
         });
 
 
-        var collection = new backbone.Collection([color0, color1]);
+        var collection = new backbone.Collection([color0, color1, color2, color3]);
 
 
         var collectionView = new rich.CollectionView({
@@ -305,12 +305,12 @@ describe('CollectionView:', function() {
             spacing: 5,
         });
 
-        region.constraints = function(){
-            return [
-                'H:|[currentView]|',
-                'V:|[currentView]|',
-            ];
-        };
+        // region.constraints = function(){
+        //     return [
+        //         'H:|[currentView]|',
+        //         'V:|[currentView]|',
+        //     ];
+        // };
 
         region.show(collectionView);
 
@@ -319,28 +319,43 @@ describe('CollectionView:', function() {
             var targetWidth = window.innerWidth;
             var $child;
 
-            expect($el.children().length).toEqual(2);
-            expect(collectionView.children.length).toEqual(2);
+            expect($el.children().length).toEqual(4);
+            expect(collectionView.children.length).toEqual(4);
 
-            var startCid = collectionView.children.findByIndex(1).cid;
+            var startCid = collectionView.children.findByIndex(3).cid;
 
             render().then(function(){
-                $child = $($el.children()[1]);
-                var targetTranslation = (targetHeight + collectionView.spacing) * 1;
-                expect(matrix.getTranslation($child).y).toEqual(targetTranslation);
 
-                collection.remove(color0);
+                _.each($el.children(), function(child, index){
+                    $child = $($el.children()[index]);
+                    var targetTranslation = (targetHeight + collectionView.spacing) * index;
+                    expect(matrix.getTranslation($child).y).toEqual(targetTranslation);
+                    expect($child.height()).toEqual(targetHeight);
+                    expect($child.width()).toEqual(targetWidth);
+                });
+
+                collection.remove(color2);
 
                 render().then(function(){
-                    // will be 2, famo.us keeps empty nodes around for
-                    // recycling purposes.
-                    expect($el.children().length).toEqual(2);
-                    expect($($el.children()[0]).css('display')).toEqual('none');
-                    expect(collectionView.children.length).toEqual(1);
-                    expect(collectionView.children.findByIndex(0).cid).toEqual(startCid);
 
-                    $child = $($el.children()[1]);
-                    expect(matrix.getTranslation($child).y).toEqual(0);
+                    // will be 4 like when we began, famo.us keeps empty nodes
+                    // around for recycling purposes.
+                    expect($el.children().length).toEqual(4);
+                    expect(collectionView.children.length).toEqual(3);
+                    expect($($el.children()[2]).css('display')).toEqual('none');
+
+                    // ensure the cid of the last view, index 3, is the same
+                    // but now at index 2
+                    expect(collectionView.children.findByIndex(2).cid).toEqual(startCid);
+
+                    // make sure everything is where we think it should be
+                    collectionView.children.each(function(child, index){
+                        var targetTranslation = (targetHeight + collectionView.spacing) * index;
+                        $child = child.$el;
+                        expect(matrix.getTranslation($child).y).toEqual(targetTranslation);
+                        expect($child.height()).toEqual(targetHeight);
+                        expect($child.width()).toEqual(targetWidth);
+                    });
 
                     done();
                 });
