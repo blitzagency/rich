@@ -6,26 +6,30 @@
 Rich
 =======
 
-Welcome to the Rich GitHub Repo.
+Welcome to Rich, a GitHub Repo.
 
 ## About
-Rich is our take on the [Famo.us] + [Marionette.js][] framework.  It allows you to write code that looks and feels like [Marionette.js][] but with all of the power of [Famo.us].
+Rich is our take on a [Famo.us] + [Marionette.js][] framework.  It allows you to write code that looks and feels like [Marionette.js][] but with all of the power of [Famo.us].
 
-We are currently in very active development and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out.
+We are currently in very active development, it's only 4 weeks old (2014-08-21), and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out. 
+
+Did we get some things wrong? You bet. Did we get some things right? We don't know yet =)
 
 ## Approach
-The intent behind Rich is to keep the [Marionette.js][] *view intact while backing that view by the [Famo.us] engine.  We have kept nearly all [Marionette.js][] logic and are currently built ontop of the latest [Marionette.js][] code.
+The intent behind Rich is to keep the [Marionette.js][] *view intact while backing that view with [Famo.us] surfaces.  We have kept nearly all [Marionette.js][] logic and are currently built ontop of the latest [Marionette.js][] code, 2.1.0 at the time of this writing.
 
-## What do i get?
-Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have layouts.  The concept of a layout isn't really needed due to rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints (more on that later).
+## What do I get?
+Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have LayoutViews(Layouts for those not using Marionette 2.x).  The concept of a layout isn't really needed due to rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints (more on that later, but for now think a system inspired by Apple's autolayout).
 
 With Rich you also get CollectionViews, ItemViews, And Regions.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
-[Famo.us] is powerful...very powerful.  But it can get a bit trixy to position things in relation to other things, this is why we created constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
+[Famo.us] is powerful...very powerful.  But it can get a bit trixy to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
 
 ```javascript
 var myView = new rich.ItemView({
+    template: 'myview.html',
+    
     constraints:[
         {
             item: 'view1',
@@ -70,13 +74,14 @@ You can check out a more comprehensive example of this [here](https://github.com
 
 One of the powerful things that you can do with this is resonsive constraints based on other variables (ex: window.outerWidth).  Example [here](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/todo/views/todo-layout.js#L18).
 
-And due to how rich sets up it's initial containers, we automatically listen for a resize of that container and automatically handle the rebuild of the constraints when needed.
+And due to how rich sets up it's initial containers, we automatically listen for a resize of that container and  handle the rebuild of the constraints when needed.
 
-Rich's constraints system is backed by [Cassowary][] which is the same algorithm used in OSX and iOS 6+.  And just to make it a little extra special, we incorporated a visual formatting language to allow for quick constraints.  Here's a quick example:
+Rich's constraints system is backed by [Cassowary][] which is the same algorithm that Apple derived their Autolayout sytem from in OSX and iOS.  And just to make it a little extra special, we incorporated Apple's visual formatting language to allow for quick constraints.  Here's a quick example:
 
 
 ```javascript
 var myView = new rich.ItemView({
+    template: 'myview.html',
     constraints:[
         '|-20-[view1(>120)]-20-[view2(200)]-|',
     ],
@@ -91,7 +96,7 @@ var myView = new rich.ItemView({
 As you can see, VFL is extremely powerful and allows you to do some really quick constraints.  In this we said we want view1 to be 20px from the left, have a width greater than 120px, have a 20px right padding, then view2 has a 200px width and is butted up agaist the right wall and view1's right side.  As you can see it's quick and easy to read as well.  At a single glance you can see how this view would be layed out.
 
 
-## Can i have multiple [Famo.us] context's?
+## Can I have multiple [Famo.us] context's?
 YUP!  most of the time you'll only need 1, and you do want to be careful regarding the number of context containers you create as they get expensive.  [Heres an example](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/app.js#L6-L10) of how you would go about initializing a context and adding your initial view into it.  We wanted to keep the same feel of how you would go about regeistering a region, but obviously rich is a tad different, so it initialization is a tad differnt than a region.
 
 ## Regions? Yup!
