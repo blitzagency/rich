@@ -251,16 +251,26 @@ At it's core, our base view allows rich to tightly couple things enough to allow
 
 There are times, when you may need to set `overflow:hidden` to get some masking of your views. In [Famo.us][] you would solve this using a ContainerSurface. We solve it the same way in Rich, however we will create the container suerface for you, so you don't need to import it.
 
+```css
+.overflow-me{
+    overflow: hidden;
+}
+```
+
 ```javascript
 var MyView = rich.View.extend({
-    template: 'myview.html',
     nestedSubviews: true,
+    className: 'overflow-me',
     
-    modifier: function(){
-        return new Modifier()
+    initialize: function(){
+        this.foo = new OtherView();
+        this.addSubview(this.foo);
     }
 });
 ```
+
+Note the `nestedSubviews` attribute. This will effectively create a new ContainerSurface for you and each subview you will will be added as a child of that ConatinerSurface. Please be advised, use of `nestedSubviews` aka ContainerSurfaces is expensive, don't use them all over.
+
 
 ## Modifiers
 Rich allows for modifiers just like [Famo.us] does.  Rich's approach on modifiers is that they are attached to views.  Here is an example of a view with a modifier on it:
