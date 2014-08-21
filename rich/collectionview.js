@@ -77,7 +77,13 @@ define(function (require, exports, module) {
         _famousReset: function(){
             this.destroyEmptyView();
             this.destroyChildren();
+
+            this._constraints = [];
+            this.invalidateLayout();
+
             this.root = null;
+            this.render();
+
             this.triggerRichInvalidate();
         },
 
