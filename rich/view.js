@@ -548,11 +548,13 @@ var FamousView = marionette.View.extend({
 
         var callback = function(){
             Engine.removeListener('postrender', tick);
+            Engine.removeListener('postrender', callback);
             deferred.resolve(this);
         }.bind(this);
 
         if(!duration){
-            this._render();
+            this.invalidateView();
+            Engine.on('postrender', callback);
         }else{
             Engine.on('postrender', tick);
         }
@@ -564,7 +566,8 @@ var FamousView = marionette.View.extend({
         index || (index = 0);
 
         var target;
-        var duration = transition && transition.duration ? transition.duration : null;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
         var obj = this._prepareModification(duration);
 
         if(_.isArray(this._modifier)){
@@ -573,7 +576,84 @@ var FamousView = marionette.View.extend({
             target = this._modifier;
         }
 
-        target.setTransform(transform, transition, obj.callback);
+        if(!duration){
+            target.setTransform(transform);
+            this.invalidateView();
+        }else{
+            target.setTransform(transform, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
+
+    setOpacity: function(opacity, transition, index){
+        index || (index = 0);
+
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setOpacity(opacity);
+            this.invalidateView();
+        }else{
+            target.setOpacity(opacity, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
+
+    setOrigin: function(origin, transition, index){
+        index || (index = 0);
+
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setOrigin(origin);
+            this.invalidateView();
+        }else{
+            target.setOrigin(origin, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
+
+    setAlign: function(align, transition, index){
+        index || (index = 0);
+
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setAlign(align);
+            this.invalidateView();
+        }else{
+            target.setAlign(align, transition, obj.callback);
+        }
 
         return obj.deferred;
     },
