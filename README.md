@@ -12,7 +12,7 @@ Welcome to Rich, a GitHub Repo.
 ## About
 Rich is our take on a [Famo.us] + [Marionette.js][] framework.  It allows you to write code that looks and feels like [Marionette.js][] but with all of the power of [Famo.us].
 
-We are currently in very active development, it's only 4 weeks old (2014-08-21), and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out. 
+We are currently in very active development, it's only 4 weeks old (as of 2014-08-21), and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out. 
 
 Did we get some things wrong? You bet. Did we get some things right? We don't know yet =)
 
