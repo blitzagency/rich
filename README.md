@@ -65,7 +65,7 @@ var MyView = new rich.ItemView.extend({
         this.view1 = new rich.ItemView();
         this.view2 = new rich.ItemView();
     }
-})
+});
 
 ```
 
@@ -87,11 +87,12 @@ var MyView = new rich.ItemView.extend({
     constraints:[
         '|-20-[view1(>120)]-20-[view2(200)]-|',
     ],
+    
     initialize: function(){
         this.view1 = new rich.ItemView();
         this.view2 = new rich.ItemView();
     }
-})
+});
 
 ```
 
@@ -127,7 +128,6 @@ app.addRichContexts({
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-
     
     initialize: function(){
         this.fooRegion = new rich.Region();
@@ -136,7 +136,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 
 ```
 
@@ -173,7 +173,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 ```
 
 *Same as above, but using VFL*
@@ -193,7 +193,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 
 ```
 
