@@ -48,7 +48,7 @@ describe('Region:', function() {
     });
 
 
-    xit('view inherits size', function(done){
+    it('view inherits size', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -67,7 +67,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('uses constraints', function(done){
+    it('uses constraints', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -97,7 +97,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('swaps views', function(done){
+    it('swaps views', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -144,7 +144,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('applies h/w constraints to subviews children', function(done){
+    it('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -174,7 +174,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('applies h/w constraints to subviews children', function(done){
+    it('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -207,7 +207,7 @@ describe('Region:', function() {
         region.show(parent);
     });
 
-    xit('applies h/w constraints to subviews children with nestedSubviews', function(done){
+    it('applies h/w constraints to subviews children with nestedSubviews', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -242,7 +242,7 @@ describe('Region:', function() {
         region.show(parent);
     });
 
-    xit('applies h/w constraints to collection view', function(done){
+    it('applies h/w constraints to collection view', function(done){
 
         var collection = new backbone.Collection();
 
@@ -260,39 +260,6 @@ describe('Region:', function() {
         });
     });
 
-    it('applies h/w constraints to collection views children', function(done){
-
-        var collection = new backbone.Collection([
-            new Rectangle({
-                color: colors[5]
-            }),
-
-            new Rectangle({
-                color: colors[7]
-            }),
-        ]);
-
-        var collectionView = new rich.CollectionView({
-            collection: collection,
-            childView: RectangleView,
-            sizeForViewAtIndex: function(){
-                return [null, 50];
-            }
-        });
-
-        region.show(collectionView);
-
-        render().then(function(){
-            expect(region.getSize()).toEqual([1000, 800]);
-            log.autolayout(region.currentView, {label: 'currentView', nodes: 'wh'});
-            log.autolayout(collectionView, {label: 'collectionView', nodes: 'wh'});
-
-            collectionView.children.each(function(child){
-                log.autolayout(collectionView, {nodes: 'wh'});
-            });
-            //done();
-        });
-    });
 
 }); // eof describe
 }); // eof define
