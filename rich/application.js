@@ -7,6 +7,11 @@ define(function (require, exports, module) {
 
         addRichContexts: function(obj){
             _.each(obj, function(options, key){
+
+                if(_.isString(options)){
+                    options = {el: options};
+                }
+
                 this[key] = utils.initializeRichContext(options);
             }, this);
         }
