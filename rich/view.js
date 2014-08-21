@@ -484,8 +484,7 @@ var FamousView = marionette.View.extend({
 
             // bookkeeping - very costly bookkeeping
             // not happy with this at all, need to look into
-            // building a tree out of that data maybe to make these
-            // easier to remove without this overhead.
+            // ways to handle this withough all this overhead.
             delete this._constraintsIndex[constraint.cid];
             for(var j = index; j < this._constraints.length; j++){
                 var each = this._constraints[j];
@@ -941,7 +940,9 @@ var FamousView = marionette.View.extend({
     },
 
     invalidateLayout: function(){
-
+        // this is rather destructive and it's results are
+        // very expensive. We can most certainly can find a
+        // better way to handle this.
         this._constraintsInitialized = false;
         this._relationshipsInitialized = false;
         this._initializeAutolayoutDefaults();
