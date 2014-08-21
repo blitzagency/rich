@@ -16,6 +16,8 @@ We are currently in very active development, it's only 4 weeks old (as of 2014-0
 
 Did we get some things wrong? You bet. Did we get some things right? We don't know yet =)
 
+It is an open source project, so please feel free to rant/rave/contribute as you see fit. Bugs are always welcome, as are better ways to handle some of the problems we are trying to solve. By no means, for example, are we masters of [Cassowary][] yet.
+
 ## Approach
 The intent behind Rich is to keep the [Marionette.js][] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing.
 
