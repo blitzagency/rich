@@ -100,19 +100,94 @@ As you can see, VFL is extremely powerful and allows you to do some really quick
 YUP!  most of the time you'll only need 1, and you do want to be careful regarding the number of context containers you create as they get expensive.  [Heres an example](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/app.js#L6-L10) of how you would go about initializing a context and adding your initial view into it.  We wanted to keep the same feel of how you would go about regeistering a region, but obviously rich is a tad different, so it initialization is a tad differnt than a region.
 
 ## Regions? Yup!
-A region is not a top level container like it is in [Marionette.js][], we use addContexts() for that on the app itself.  A region at it's core is a view that has the ability to swap content in and out of.  So you could do something like:
+A region is a container like it is in [Marionette.js][]. In a normal Marionette application you add regions at the top level of your application using `app.addRegions({...})`, with Rich it's slighty different.  We do not use a Region on the top level, instead we use a `rich.View` that is initialized using `app.addRichContexts({...})`.  
+
+In rich, a Region is just a view with some boilerplate around only allowing 1 subview to be added, it does, however, get all of the events of a normal Marionette Region and as a reference to it's currentView via `myRegion.currentView`.
+
+*Initializing your root region(s) in Marionette*
 
 ```javascript
-var myView = new rich.ItemView({
+app.addRegions({
+  window: "#main-content"
+});
+
+```
+
+*Initializing your root View(s) in Rich*
+```javascript
+app.addRichContexts({
+    window: "#main-content"
+});
+```
+
+*Using regions in your views*
+
+```javascript
+var myView = new MyView({
+    
     initialize: function(){
         this.fooRegion = new rich.Region();
-        this.fooRegion.show(new rich.ItemView());
+    },
+    
+    onShow: function(){
+        this.fooRegion.show(new OtherView());
     }
 })
 
 ```
 
 This is very helpful when you have a section of your site that you'd like to have constrained to a certain height and width and you want to swap content in and out of it easily.  You would just add a constraint to the region, and toss content in and out of the region and the content will auto fill up the size of it's region.
+
+Revisiting the last example from above, lets enforce that out region is 300x200:
+
+*Using regions in your views with constraints*
+
+```javascript
+var myView = new MyView({
+    constraints:[
+        {
+            item: 'fooRegion',
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 300
+        },
+        
+        {
+            item: 'fooRegion',
+            attribute: 'height',
+            relatedBy: '==',
+            constant: 200
+        }
+    ]
+    
+    initialize: function(){
+        this.fooRegion = new rich.Region();
+    },
+    
+    onShow: function(){
+        this.fooRegion.show(new OtherView());
+    }
+})
+```
+
+*Same as above, but using VFL*
+```javascript
+var myView = new MyView({
+    constraints:[
+        'H:[fooRegion(300)]',
+        'V:[fooRegion(200)]
+    ]
+    
+    initialize: function(){
+        this.fooRegion = new rich.Region();
+    },
+    
+    onShow: function(){
+        this.fooRegion.show(new OtherView());
+    }
+})
+
+```
 
 ## View Hierarchy
 Everything in rich extends our base view.  Rich's base view is required because of how it handles the view hierarchy.  You construct the hierarchy by creating a view, and adding a view inside of that view.  Example:
