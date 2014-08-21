@@ -305,13 +305,6 @@ describe('CollectionView:', function() {
             spacing: 5,
         });
 
-        // region.constraints = function(){
-        //     return [
-        //         'H:|[currentView]|',
-        //         'V:|[currentView]|',
-        //     ];
-        // };
-
         region.show(collectionView);
 
         collectionView.onShow = function(){
@@ -357,6 +350,61 @@ describe('CollectionView:', function() {
                         expect($child.width()).toEqual(targetWidth);
                     });
 
+                    done();
+                });
+            });
+        };
+    });
+
+    it('resets', function(done){
+
+        var AltView = RectangleView.extend({
+            size: [0, 50]
+        });
+
+        var color0 = new Rectangle({
+            color: 'green'
+        });
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var color2 = new Rectangle({
+            color: colors[5]
+        });
+
+        var color3 = new Rectangle({
+            color: colors[4]
+        });
+
+
+        var collection = new backbone.Collection([color0, color1]);
+
+        var collectionView = new rich.CollectionView({
+            collection: collection,
+            orientation: 'vertical',
+            childView: AltView,
+            spacing: 5,
+        });
+
+
+        region.show(collectionView);
+
+        collectionView.onShow = function(){
+            var targetHeight = 50;
+            var targetWidth = window.innerWidth;
+            var $child;
+
+            expect($el.children().length).toEqual(2);
+            expect(collectionView.children.length).toEqual(2);
+
+            render().then(function(){
+
+
+                collection.reset([color2, color3]);
+
+                render().then(function(){
                     done();
                 });
             });
