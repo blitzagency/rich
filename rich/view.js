@@ -634,7 +634,29 @@ var FamousView = marionette.View.extend({
         return obj.deferred;
     },
 
+    setAlign: function(align, transition, index){
+        index || (index = 0);
 
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setAlign(align);
+            this.invalidateView();
+        }else{
+            target.setAlign(align, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
 
     getFamousId: function(){
         if(this.renderable){
