@@ -25,7 +25,35 @@ define(function (require, exports, module) {
             FamousView.prototype.constructor.apply(this, arguments);
 
             this._initialEvents();
-            //this.initRenderBuffer();
+            this.initRenderBuffer();
+        },
+
+        // Instead of inserting elements one by one into the page,
+        // it's much more performant to insert elements into a document
+        // fragment and then insert that document fragment into the page
+        initRenderBuffer: function() {
+          //this.elBuffer = document.createDocumentFragment();
+          //this._bufferedChildren = [];
+          this._constraintBuffer = [];
+        },
+
+        startBuffering: function() {
+            this.initRenderBuffer();
+            this.isBuffering = true;
+
+            var constraints = _.result(this, 'constraints');
+            this._constraintBuffer = this._constraintBuffer.concat(
+                this._processIntrinsicConstraints(constraints)
+            );
+        },
+
+        endBuffering: function() {
+            this.isBuffering = false;
+            this._constraints = this._constraintBuffer;
+
+            //this._triggerBeforeShowBufferedChildren();
+            //this._triggerShowBufferedChildren();
+            this.initRenderBuffer();
         },
 
 
@@ -83,9 +111,9 @@ define(function (require, exports, module) {
                 this.showEmptyView();
             } else {
                 this.triggerMethod('before:render:collection', this);
-                // this.startBuffering();
+                this.startBuffering();
                 this.showCollection();
-                // this.endBuffering();
+                this.endBuffering();
                 this.triggerMethod('render:collection', this);
             }
 
@@ -168,7 +196,6 @@ define(function (require, exports, module) {
             // we don't want addSubview here, that will immediately
             // invalidate the view. addCOnstraints below will do that
             // job for us as well as invalidating the layout.
-            this.prepareSubviewAdd(view);
 
             var constraints;
 
@@ -178,8 +205,14 @@ define(function (require, exports, module) {
                 constraints = this.applyHorizontalConstraints(view, index);
             }
 
-            view._initializeRelationships();
-            this.addConstraints(constraints);
+            this.prepareSubviewAdd(view);
+
+            if(this.isBuffering){
+                this._constraintBuffer = this._constraintBuffer.concat(constraints);
+            } else {
+                view._initializeRelationships();
+                this.addConstraints(constraints);
+            }
 
             if (true || this._isShown && !this.isBuffering){
                 if (_.isFunction(view.triggerMethod)) {
@@ -219,7 +252,6 @@ define(function (require, exports, module) {
                     toItem: this,
                     toAttribute: 'top',
                     constant: 0,
-                    priority: 20,
                 }));
             } else {
                 constraints.push(constraintWithJSON({
@@ -228,8 +260,7 @@ define(function (require, exports, module) {
                     relatedBy: '==',
                     toItem: this.children.findByIndex(index - 1),
                     toAttribute: 'bottom',
-                    constant: this.spacing,
-                    priority: 20,
+                    constant: this.spacing
                 }));
             }
 
@@ -323,14 +354,6 @@ define(function (require, exports, module) {
             }
 
             return view;
-        },
-
-        startBuffering: function(){
-            // noop for now
-        },
-
-        endBuffering: function(){
-            // noop for now
         },
     });
 
