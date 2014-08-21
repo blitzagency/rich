@@ -27,7 +27,7 @@ With Rich you also get CollectionViews, ItemViews, And Regions.  Each of them ha
 [Famo.us] is powerful...very powerful.  But it can get a bit trixy to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
 
 ```javascript
-var myView = new rich.ItemView({
+var MyView = new rich.ItemView.extend({
     template: 'myview.html',
     
     constraints:[
@@ -80,8 +80,9 @@ Rich's constraints system is backed by [Cassowary][] which is the same algorithm
 
 
 ```javascript
-var myView = new rich.ItemView({
+var MyView = new rich.ItemView.extend({
     template: 'myview.html',
+    
     constraints:[
         '|-20-[view1(>120)]-20-[view2(200)]-|',
     ],
@@ -123,7 +124,9 @@ app.addRichContexts({
 *Using regions in your views*
 
 ```javascript
-var myView = new MyView({
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+
     
     initialize: function(){
         this.fooRegion = new rich.Region();
@@ -143,7 +146,9 @@ Revisiting the last example from above, lets enforce that out region is 300x200:
 *Using regions in your views with constraints*
 
 ```javascript
-var myView = new MyView({
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+
     constraints:[
         {
             item: 'fooRegion',
@@ -158,7 +163,7 @@ var myView = new MyView({
             relatedBy: '==',
             constant: 200
         }
-    ]
+    ],
     
     initialize: function(){
         this.fooRegion = new rich.Region();
@@ -172,11 +177,13 @@ var myView = new MyView({
 
 *Same as above, but using VFL*
 ```javascript
-var myView = new MyView({
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+
     constraints:[
         'H:[fooRegion(300)]',
         'V:[fooRegion(200)]
-    ]
+    ],
     
     initialize: function(){
         this.fooRegion = new rich.Region();
@@ -194,61 +201,87 @@ Everything in rich extends our base view.  Rich's base view is required because 
 
 
 ```javascript
-var myView = new rich.ItemView({
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+    
     initialize: function(){
-        this.chidView = new rich.ItemView();
+        this.chidView = new OtherView();
         this.addSubview(this.chidView);
     }
-})
+});
 
 ```
 
-Why did we go this path?  Because everything is a view, we have the ability to have the views talk to eachother up and down the tree.  One example of this is how we handle invalidation of a view.  Every view, similar to a [Famo.us] view has a render() function.  Every rich view will by default store a cached version of it's own render() response.  When render is called it will return that cache.  If a view updates, it will trigger an event up to it's parent. That parent then grabs the update from the child, reaches into it's own cached render response and patches it.  Thus only modifying the parts that are required and not having the entire root rendernode traversing the tree each render cycle.
+Why did we go this path?  Because everything is a view, we have the ability to have the views talk to eachother up and down the tree.  This is how we handle view invalidation, for example.  Every view, similar to a [Famo.us] view/surface has a render() function.  Every rich view will, by default, store a cached version of it's own render() result.  When render is called it will return that cache.  If a view updates, it will trigger an event up to it's parent. That parent then grabs the update from the child, reaches into it's own cached render response and patches it.  Thus only modifying the parts that are required and not incurring the cost of a full rerender each render cycle.
 
-In addition, the base view allows the constraints system to have a hierarchical structure as well. If i have a parent size [100x100], it's children will all inherit that size.  If I add a constraint to any child down the tree the children will inherit the parents size.
+In addition, the base view allows the constraints system to have a hierarchical structure as well. If I have a parent size [100x100], it's children will all inherit that size.  If I add a constraint to any child down the tree the children will inherit the parents size.
 
-At it's core, our base view allows rich to tightly couple things enough to allow it to make enough assumptions to do a ton of work for you.  I don't know about you...but i like when work is done for me. :)
+At it's core, our base view allows rich to tightly couple things enough to allow it to make enough assumptions to do a ton of work for you.  I don't know about you, but I like when work is done for me. :)
 
 
 ## Modifiers
 Rich allows for modifiers just like [Famo.us] does.  Rich's approach on modifiers is that they are attached to views.  Here is an example of a view with a modifier on it:
 
 ```javascript
-var myView = new rich.ItemView({
+var MyView = rich.ItemView.extend({
+    template: 'myview.html',
+    
     modifier: function(){
         return new Modifier()
     }
-})
+});
 
 ```
-Which is great! ..But what if i need to add a bunch of constraints?
+
+Which is great! What if I need to add a bunch of modifiers?
 
 ```javascript
-var myView = new rich.ItemView({
-    constraints: function(){
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+    
+    modifier: function(){
         return [new Modifier(), new Modifier(), new Modifier()]
     }
-})
+});
 
 ```
-Constraints is a _.result() so you can have constraints be a function that returns an array, or just have it equal to an array.  
+`modifier` is uses underscore's `_.result()` when it is read, so you can have `modifier` be a function that returns an array, or just have it equal to an array, or just have it equal a single modifier.
 
 ```javascript
-var mod1 = new Modifier()
-var mod2 = new Modifier()
-var myView = new rich.ItemView({
-    constraints: [mod1, mod2]
-})
+var mod1 = new Modifier();
+var mod2 = new Modifier();
+var mod3 = new Modifier();
+
+var MyView = new rich.ItemView.extend({
+    template: 'myview.html',
+    
+    modifier: [mod1, mod2]
+});
+
+var OtherView = new rich.ItemView.extend({
+    template: 'otherview.html',
+    
+    modifier: mod1
+});
+
+var AnotherView = new rich.ItemView.extend({
+    template: 'anotherview.html',
+    
+    modifier: function(){
+        return new Modifier();
+    }
+});
 ```
 
 Or, if you want to use the famous physics engine, you can also have it return the result of a particle:
 
 ```javascript
-var mod1 = new Modifier()
-var particle = new Particle()
-var myView = new rich.ItemView({
+var mod1 = new Modifier();
+var particle = new Particle();
+
+var MyView = new rich.ItemView.extend({
     constraints: [mod1, particle]
-})
+});
 ```
 
 
