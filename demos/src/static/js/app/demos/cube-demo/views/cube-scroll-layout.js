@@ -38,8 +38,6 @@ var CubeScrollLayout = rich.ItemView.extend({
             scrollDriver: BounceDriver
         });
 
-        console.log(this.scrollView.outerHeight);
-
         this.listenTo(scrollView, 'scroll:update', this.onScrollUpdate);
         this.listenTo(scrollView, 'scroll:end', this.onScrollEnd);
 
