@@ -17,15 +17,16 @@ We are currently in very active development, it's only 4 weeks old (2014-08-21),
 Did we get some things wrong? You bet. Did we get some things right? We don't know yet =)
 
 ## Approach
-The intent behind Rich is to keep the [Marionette.js][] *view intact while backing that view with [Famo.us] surfaces.  We have kept nearly all [Marionette.js][] logic and are currently built ontop of the latest [Marionette.js][] code, 2.1.0 at the time of this writing.
+The intent behind Rich is to keep the [Marionette.js][] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing.
 
 ## What do I get?
-Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have LayoutViews(Layouts for those not using Marionette 2.x).  The concept of a layout isn't really needed due to rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints (more on that later, but for now think a system inspired by Apple's autolayout).
+Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have LayoutViews(Layouts for those using Marionette 1.x).  The concept of a layout isn't really needed due to Rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints and `subviews` (more on that later, but for now think of constraints as inspired by Apple's autolayout).
 
-With Rich you also get CollectionViews, ItemViews, And Regions.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
+With Rich you currently get View, ItemView, CollectionView, and Regions as your display primatives.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
-[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
+[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, right, bottom or left, and then if you want to have a 2nd view always be positioned in relation to that first view...done. 
+A quick example:
 
 ```javascript
 var MyView = new rich.ItemView.extend({
