@@ -50,7 +50,7 @@ describe('View Animation:', function() {
     });
 
 
-    it('runs setTransform with animateion', function(done){
+    it('runs setTransform with animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -86,7 +86,7 @@ describe('View Animation:', function() {
 
     });
 
-    it('runs setTransform without animateion', function(done){
+    it('runs setTransform without animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -116,6 +116,142 @@ describe('View Animation:', function() {
         });
 
     });
+
+    it('runs setOpacity with animation', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+            expect(box0.$el.css('opacity')).toBe('1');
+            wait(200).then(function(){
+                expect(box0.$el.css('opacity')).not.toBe('1');
+                expect(box0.$el.css('opacity')).not.toBe('0');
+            });
+            box0.setOpacity(
+                0,
+                {duration: 400}
+            ).then(function(){
+                expect(box0.$el.css('opacity')).toBe('0');
+                done();
+            });
+        });
+
+    });
+
+    it('runs setOpacity without animation', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+            expect(box0.$el.css('opacity')).toBe('1');
+            box0.setOpacity(
+                0
+            ).then(function(){
+                expect(box0.$el.css('opacity')).toBe('0');
+                done();
+            });
+        });
+
+    });
+
+    it('runs setOrigin with animation', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+            expect(css.getOrigin(box0.$el)).toEqual([0, 0]);
+            wait(200).then(function(){
+                expect(css.getOrigin(box0.$el)).not.toEqual([0, 0]);
+                expect(css.getOrigin(box0.$el)).not.toEqual([100, 100]);
+            });
+            box0.setOrigin(
+                [1, 1],
+                {duration: 400}
+            ).then(function(){
+                expect(css.getOrigin(box0.$el)).toEqual([100, 100]);
+                done();
+            });
+        });
+
+    });
+
+    it('runs setOrigin without animation', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+            expect(css.getOrigin(box0.$el)).toEqual([0, 0]);
+            box0.setOrigin(
+                [1, 1]
+            ).then(function(){
+                expect(css.getOrigin(box0.$el)).toEqual([100, 100]);
+                done();
+            });
+        });
+
+    });
+
+
 
 }); // eof describe
 }); // eof define

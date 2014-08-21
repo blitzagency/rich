@@ -586,6 +586,56 @@ var FamousView = marionette.View.extend({
         return obj.deferred;
     },
 
+    setOpacity: function(opacity, transition, index){
+        index || (index = 0);
+
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setOpacity(opacity);
+            this.invalidateView();
+        }else{
+            target.setOpacity(opacity, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
+
+    setOrigin: function(origin, transition, index){
+        index || (index = 0);
+
+        var target;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
+        var obj = this._prepareModification(duration);
+
+        if(_.isArray(this._modifier)){
+            target = this._modifier[index];
+        } else {
+            target = this._modifier;
+        }
+
+        if(!duration){
+            target.setOrigin(origin);
+            this.invalidateView();
+        }else{
+            target.setOrigin(origin, transition, obj.callback);
+        }
+
+        return obj.deferred;
+    },
+
+
+
     getFamousId: function(){
         if(this.renderable){
             return this.renderable.id;

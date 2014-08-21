@@ -21,6 +21,24 @@ function getTransformMatrix($el){
     });
 }
 
+function getOrigin($el){
+    var computed = getComputedStyle($el);
+    var origin = computed.getPropertyValue("-webkit-transform-origin") ||
+                    computed.getPropertyValue("-moz-transform-origin") ||
+                    computed.getPropertyValue("-ms-transform-origin") ||
+                    computed.getPropertyValue("-o-transform-origin") ||
+                    computed.getPropertyValue("transform-origin");
+
+    var values = origin.split(' ');
+    // var values = transform.split('(')[1];
+    //     values = values.split(')')[0];
+    //     values = values.split(',');
+
+    return _.map(values, function(each){
+        return parseInt(each, 10);
+    });
+}
+
 
 function getZIndex($el){
     var computed = getComputedStyle($el);
@@ -49,5 +67,6 @@ exports.getTransformMatrix = getTransformMatrix;
 exports.getZIndex = getZIndex;
 exports.getSize = getSize;
 exports.rgb2hex = rgb2hex;
+exports.getOrigin = getOrigin;
 
 });
