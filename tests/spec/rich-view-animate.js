@@ -287,6 +287,37 @@ describe('View Animation:', function() {
 
     });
 
+    it('runs setAlign with animation', function(done){
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+            expect(matrix.getTranslation(box0.$el)).toEqual({x: 0, y: 0, z: 0});
+            box0.setAlign(
+                [1, 1]
+            ).then(function(){
+                expect(matrix.getTranslation(box0.$el)).toEqual({x: 100, y: 100, z: 0});
+                done();
+            });
+        });
+
+    });
+
 
 
 }); // eof describe
