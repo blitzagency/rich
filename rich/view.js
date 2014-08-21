@@ -549,11 +549,13 @@ var FamousView = marionette.View.extend({
 
         var callback = function(){
             Engine.removeListener('postrender', tick);
+            Engine.removeListener('postrender', callback);
             deferred.resolve(this);
         }.bind(this);
 
         if(!duration){
-            this._render();
+            this.invalidateView();
+            Engine.on('postrender', callback);
         }else{
             Engine.on('postrender', tick);
         }
@@ -565,7 +567,8 @@ var FamousView = marionette.View.extend({
         index || (index = 0);
 
         var target;
-        var duration = transition && transition.duration ? transition.duration : null;
+        var duration = transition && transition.duration ? transition.duration : 0;
+
         var obj = this._prepareModification(duration);
 
         if(_.isArray(this._modifier)){
@@ -574,7 +577,12 @@ var FamousView = marionette.View.extend({
             target = this._modifier;
         }
 
-        target.setTransform(transform, transition, obj.callback);
+        if(!duration){
+            target.setTransform(transform);
+            this.invalidateView();
+        }else{
+            target.setTransform(transform, transition, obj.callback);
+        }
 
         return obj.deferred;
     },
