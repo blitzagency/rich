@@ -25,7 +25,7 @@ Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rol
 With Rich you also get CollectionViews, ItemViews, And Regions.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
-[Famo.us] is powerful...very powerful.  But it can get a bit trixy to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
+[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
 
 ```javascript
 var MyView = new rich.ItemView.extend({
@@ -65,7 +65,7 @@ var MyView = new rich.ItemView.extend({
         this.view1 = new rich.ItemView();
         this.view2 = new rich.ItemView();
     }
-})
+});
 
 ```
 
@@ -87,11 +87,12 @@ var MyView = new rich.ItemView.extend({
     constraints:[
         '|-20-[view1(>120)]-20-[view2(200)]-|',
     ],
+    
     initialize: function(){
         this.view1 = new rich.ItemView();
         this.view2 = new rich.ItemView();
     }
-})
+});
 
 ```
 
@@ -127,7 +128,6 @@ app.addRichContexts({
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-
     
     initialize: function(){
         this.fooRegion = new rich.Region();
@@ -136,7 +136,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 
 ```
 
@@ -173,7 +173,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 ```
 
 *Same as above, but using VFL*
@@ -183,7 +183,7 @@ var MyView = new rich.ItemView.extend({
 
     constraints:[
         'H:[fooRegion(300)]',
-        'V:[fooRegion(200)]
+        'V:[fooRegion(200)]'
     ],
     
     initialize: function(){
@@ -193,7 +193,7 @@ var MyView = new rich.ItemView.extend({
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
-})
+});
 
 ```
 
@@ -251,16 +251,26 @@ At it's core, our base view allows rich to tightly couple things enough to allow
 
 There are times, when you may need to set `overflow:hidden` to get some masking of your views. In [Famo.us][] you would solve this using a ContainerSurface. We solve it the same way in Rich, however we will create the container suerface for you, so you don't need to import it.
 
+```css
+.overflow-me{
+    overflow: hidden;
+}
+```
+
 ```javascript
 var MyView = rich.View.extend({
-    template: 'myview.html',
     nestedSubviews: true,
+    className: 'overflow-me',
     
-    modifier: function(){
-        return new Modifier()
+    initialize: function(){
+        this.foo = new OtherView();
+        this.addSubview(this.foo);
     }
 });
 ```
+
+Note the `nestedSubviews` attribute. This will effectively create a new ContainerSurface for you and each subview you will will be added as a child of that ConatinerSurface. Please be advised, use of `nestedSubviews` aka ContainerSurfaces is expensive, don't use them all over.
+
 
 ## Modifiers
 Rich allows for modifiers just like [Famo.us] does.  Rich's approach on modifiers is that they are attached to views.  Here is an example of a view with a modifier on it:
