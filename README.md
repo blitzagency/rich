@@ -25,7 +25,7 @@ Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rol
 With Rich you also get CollectionViews, ItemViews, And Regions.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
-[Famo.us] is powerful...very powerful.  But it can get a bit trixy to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
+[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.  Heres a quick example of that:
 
 ```javascript
 var MyView = new rich.ItemView.extend({
