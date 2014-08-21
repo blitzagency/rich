@@ -197,7 +197,7 @@ var MyView = new rich.ItemView.extend({
 
 ```
 
-## View Hierarchy
+## View
 Everything in rich extends our base view.  Rich's base view is required because of how it handles the view hierarchy.  You construct the hierarchy by creating a view, and adding a view inside of that view.  Example:
 
 
@@ -246,6 +246,21 @@ In addition, the base view allows the constraints system to have a hierarchical 
 
 At it's core, our base view allows rich to tightly couple things enough to allow it to make enough assumptions to do a ton of work for you.  I don't know about you, but I like when work is done for me. :)
 
+
+#### Nested Subviews
+
+There are times, when you may need to set `overflow:hidden` to get some masking of your views. In [Famo.us][] you would solve this using a ContainerSurface. We solve it the same way in Rich, however we will create the container suerface for you, so you don't need to import it.
+
+```javascript
+var MyView = rich.View.extend({
+    template: 'myview.html',
+    nestedSubviews: true,
+    
+    modifier: function(){
+        return new Modifier()
+    }
+});
+```
 
 ## Modifiers
 Rich allows for modifiers just like [Famo.us] does.  Rich's approach on modifiers is that they are attached to views.  Here is an example of a view with a modifier on it:
