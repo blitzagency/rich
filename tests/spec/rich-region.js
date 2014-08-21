@@ -15,6 +15,7 @@ var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var css = require('tests/utils/css');
 var colors = require('tests/utils/colors').blue;
+var log = require('tests/utils/log');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -263,30 +264,33 @@ describe('Region:', function() {
 
         var collection = new backbone.Collection([
             new Rectangle({
-                color: colors[0]
+                color: colors[5]
             }),
+
             new Rectangle({
-                color: colors[1]
+                color: colors[7]
             }),
         ]);
 
         var collectionView = new rich.CollectionView({
             collection: collection,
-            childView: RectangleView
+            childView: RectangleView,
+            sizeForViewAtIndex: function(){
+                return [null, 50];
+            }
         });
 
         region.show(collectionView);
 
         render().then(function(){
             expect(region.getSize()).toEqual([1000, 800]);
-            console.log(region.currentView.getSize())
-            console.log(collectionView.getSize())
-            collectionView.children.each(function(child){
+            log.autolayout(region.currentView, {label: 'currentView', nodes: 'wh'});
+            log.autolayout(collectionView, {label: 'collectionView', nodes: 'wh'});
 
-                // @adam...ok here we go
-                console.log(child.getSize());
-            })
-            done();
+            collectionView.children.each(function(child){
+                log.autolayout(collectionView, {nodes: 'wh'});
+            });
+            //done();
         });
     });
 
