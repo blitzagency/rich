@@ -183,7 +183,7 @@ var MyView = new rich.ItemView.extend({
 
     constraints:[
         'H:[fooRegion(300)]',
-        'V:[fooRegion(200)]
+        'V:[fooRegion(200)]'
     ],
     
     initialize: function(){
