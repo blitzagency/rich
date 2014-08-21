@@ -2,6 +2,7 @@
 [Marionette.js]: https://github.com/marionettejs/backbone.marionette "Marionette.js"
 [Demos]: https://github.com/blitzagency/rich/tree/develop/demos/src/static/js/app/demos "Demos"
 [Cassowary]: https://github.com/slightlyoff/cassowary.js/ "Cassowary"
+[Backbone]: http://backbonejs.org/ "Backbone"
 
 Rich
 =======
@@ -335,7 +336,9 @@ var myView = new rich.ItemView({
 This will trigger the need for this view to be updated every frame via the `needsDisplay` attribute.  Keep in mind this should only be turned on when you need the view rendered.  Setting it to true on all views will basically kill all of the caching that's taking place in your views.
 
 ## CollectionView
-Rich's collectionview extends [Marionette.js][]'s collectionview, but have a very different way of handling the actual dom representation.  A vanilla collectionview will look and act exactly the same as it's [Marionette.js][] equivelant aside from the fact that you can inject a modifier on it and get crazy with animations.
+Rich's CollectionView extends [Marionette.js][]'s CollectionView, but it has a very different way of handling the actual DOM representation.  Yes, this works as you think it would using [Backbone][] Collections and [Backbone][] Models, go nuts. 
+
+A vanilla CollectionView will look and act exactly the same as it's [Marionette.js][] equivelant aside from the fact that you can inject a modifier on it and get crazy with animations.
 
 
 ## Examples
