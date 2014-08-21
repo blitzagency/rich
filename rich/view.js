@@ -941,7 +941,9 @@ var FamousView = marionette.View.extend({
     },
 
     invalidateLayout: function(){
-
+        // this is rather destructive and it's results are
+        // very expensive. We can most certainly can find a
+        // better way to handle this.
         this._constraintsInitialized = false;
         this._relationshipsInitialized = false;
         this._initializeAutolayoutDefaults();
