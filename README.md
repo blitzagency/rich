@@ -318,17 +318,18 @@ because rich caches the render() response we have modified how you interact with
 ```javascript
 myView.setTransform(transform, transition, 1).then(function(){
     console.log('called')
-})
+});
 ```
 
 But...lets say you need to get fancy, and you have a particle that's in the engine that needs to be rendering every frame. All you need to do is the following:
 
 ```javascript
 var particle = new Particle()
+
 var myView = new rich.ItemView({
     constraints: particle,
     needsDisplay: true
-})
+});
 ```
 
 This will trigger the need for this view to be updated every frame via the `needsDisplay` attribute.  Keep in mind this should only be turned on when you need the view rendered.  Setting it to true on all views will basically kill all of the caching that's taking place in your views.
