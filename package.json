@@ -15,6 +15,7 @@
     "jsdoc": "~3.3.0-alpha8",
     "jsdoc-rst-template": "0.0.17",
     "karma": "~0.12.16",
+    "karma-chrome-launcher": "^0.1.4",
     "karma-cli": "0.0.4",
     "karma-coverage": "~0.1.5",
     "karma-firefox-launcher": "^0.1.3",
