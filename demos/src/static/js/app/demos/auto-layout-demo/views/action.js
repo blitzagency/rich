@@ -58,11 +58,11 @@ var Action = RectangleView.extend({
             color: utils.colors.blue[2]
         });
 
-        var action4 = new RectangleView({
+        this.action4 = new RectangleView({
             model: color2
         });
 
-        this.addSubview(action4);
+        this.addSubview(this.action4);
     },
 });
 

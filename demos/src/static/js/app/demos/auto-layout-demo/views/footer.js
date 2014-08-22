@@ -70,16 +70,16 @@ var Footer = RectangleView.extend({
             color: utils.colors.blue[5]
         });
 
-        var action2 = new RectangleView({
+        this.action2 = new RectangleView({
             model: color4
         });
 
-        var action3 = new Action({
+        this.action3 = new Action({
             model: color5
         });
 
-        this.addSubview(action2, 3);
-        this.addSubview(action3, 3);
+        this.addSubview(this.action2, 3);
+        this.addSubview(this.action3, 3);
 
     },
 });

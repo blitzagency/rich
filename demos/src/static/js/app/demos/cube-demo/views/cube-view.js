@@ -107,7 +107,6 @@ var CubeView = rich.CollectionView.extend({
 
     wantsSnapToScroll: function(){
         var percent = this._yPos / h;
-        console.log(percent);
         var duration = 1000;
         if (percent < 0.785) {
             this.scrollView.setScrollPosition(0, 0 , true,

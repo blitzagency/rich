@@ -25,7 +25,6 @@ var ScrollControlView = rich.ItemView.extend({
     },
 
     setScrollPosition: function(yPos){
-        console.log(this.getSize());
         this._currentPos = yPos;
         // console.log(yPos)
         this.cubeView.scrollPosition(yPos);
