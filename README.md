@@ -14,6 +14,11 @@ Welcome to Rich, a GitHub Repo.
 
 _(Rich + Famous - get it?)_
 
+## Get Started Now
+
+https://github.com/blitzagency/rich-bootstrap
+
+
 ## About
 Rich is [BLITZ][]'s take on a [Famo.us][] + [Marionette.js][] framework.  It allows you to write code that looks and feels like [Marionette.js][] but with all of the power of [Famo.us].
 
