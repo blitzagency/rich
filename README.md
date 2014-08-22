@@ -7,6 +7,8 @@
 Rich
 =======
 
+[![Build Status](https://travis-ci.org/blitzagency/rich.svg?branch=develop)](https://travis-ci.org/blitzagency/rich)
+
 Welcome to Rich, a GitHub Repo.
 
 ## About

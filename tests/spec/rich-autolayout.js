@@ -51,7 +51,7 @@ describe('Auto Layout:', function() {
         expect(view._autolayout).not.toBe(undefined);
     });
 
-    it('adds left constraint based on parents width', function(done){
+    xit('adds left constraint based on parents width', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,

@@ -138,7 +138,6 @@ var BounceDriver = SimpleDriver.extend({
                 this._thrownPastLimits = true;
             }
 
-            this.scrollView.invalidateView();
             this.scrollView._scrollableView.invalidateView();
             this.scrollView.triggerScrollUpdate();
             var v = this.scrollView._particle.getVelocity();
