@@ -6,6 +6,10 @@ var Modifier = require('famous/core/Modifier');
 var Transform = require('famous/core/Transform');
 var View = require('rich/view').FamousView;
 
+function defer(callback){
+    window.requestAnimationFrame(callback);
+}
+
 function initializeRichContext(options){
 
     var $el;
@@ -187,6 +191,7 @@ function modifierWithConfig(config){
 exports.getViewSize = getViewSize;
 exports.postrenderOnce = postrenderOnce;
 exports.initializeRichContext = initializeRichContext;
+exports.defer = defer;
 exports.disposeRichContext = disposeRichContext;
 exports.modifierWithTransform = modifierWithTransform;
 exports.modifierWithSize = modifierWithSize;

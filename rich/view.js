@@ -23,13 +23,11 @@ var CONSTRAINT_PROPS = ['width', 'height', 'top', 'left'];
 
 var FamousView = marionette.View.extend({
 
-    //size: null,
     nestedSubviews: false,
     template: false,
     modifier: null,
     zIndex: 1,
     superview: null,
-    subviews: null,
     root: null,
     context: null,
     _isRoot: false,
@@ -457,7 +455,6 @@ var FamousView = marionette.View.extend({
             this.invalidateLayout();
             this.invalidateView();
         }
-
     },
 
     removeConstraints: function(constraints){
@@ -805,6 +802,7 @@ var FamousView = marionette.View.extend({
 
     prepareSubviewAdd: function(view, zIndex){
         view.superview = this;
+        this._richDestroyed = false;
 
         function setZIndex(value){
             view.zIndex = value;
@@ -830,13 +828,13 @@ var FamousView = marionette.View.extend({
     },
 
     prepareSubviewRemove: function(view){
-        view.superview = null;
-        view.context = null;
-        view._isShown = false;
-        view.invalidateLayout();
-
         this.children.remove(view);
         this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
+
+        utils.defer(function(){
+            view.invalidateLayout();
+            view._richDestroy();
+        });
     },
 
     removeSubview: function(view){
@@ -891,7 +889,6 @@ var FamousView = marionette.View.extend({
                 node = node.target;
             }
         }
-
 
         var famousId = view.getFamousId();
 
@@ -1027,12 +1024,11 @@ var FamousView = marionette.View.extend({
         this._relationshipsInitialized = false;
         this._initializeAutolayoutDefaults();
 
-        if(this.children){
+        if(!this.isDestroyed){
             this.children.each(function(subview){
                 subview.invalidateLayout();
             });
         }
-
 
         if(this.root){
             this.root = null;
@@ -1045,6 +1041,18 @@ var FamousView = marionette.View.extend({
         this.triggerRichInvalidate();
     },
 
+    _richDestroy: function(){
+        this._solver = null;
+        this._isShown = false;
+        this._autolayout = {};
+        this._constraintsIndex = {};
+        this._constraintRelations = null;
+        this.superview = null;
+        this.context = null;
+        this.root = null;
+        this.children = null;
+        this._richDestroyed = true;
+    },
 
     // override Backbone.View.remove()
     remove: function(){
@@ -1054,12 +1062,15 @@ var FamousView = marionette.View.extend({
         // Backbone.View.remove()
 
         // this.$el.remove();
-        this.children = null;
-        this.root = null;
+
         if(this.$el){
             this.undelegateEvents();
         }
         this.stopListening();
+
+        if(!this._richDestroyed)
+            this._richDestroy();
+
         return this;
     },
 
