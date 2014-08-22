@@ -93,7 +93,7 @@ in this case, you can see that the first view's width is half of it's parent vie
 
 You can check out a more comprehensive example of this [here](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/todo/constraints/todo-layout.js) and [here](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/todo/views/todo-layout.js#L17-L23)
 
-One of the powerful things that you can do with this is resonsive constraints based on other variables (ex: window.outerWidth).  Example [here](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/todo/views/todo-layout.js#L18).
+One of the powerful things that you can do with this is responsive constraints based on other variables (ex: window.outerWidth).  Example [here](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/todo/views/todo-layout.js#L18).
 
 And due to how rich sets up it's initial containers, we automatically listen for a resize of that container and  handle the rebuild of the constraints when needed.
 
@@ -120,7 +120,7 @@ As you can see, VFL is extremely powerful and allows you to do some really quick
 
 
 ## Can I have multiple [Famo.us] context's?
-YUP!  most of the time you'll only need 1, and you do want to be careful regarding the number of context containers you create as they get expensive.  [Heres an example](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/app.js#L6-L10) of how you would go about initializing a context and adding your initial view into it.  We wanted to keep the same feel of how you would go about regeistering a region, but obviously rich is a tad different, so it initialization is a tad differnt than a region.
+YUP!  most of the time you'll only need 1, and you do want to be careful regarding the number of context containers you create as they get expensive.  [Heres an example](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/app.js#L6-L10) of how you would go about initializing a context and adding your initial view into it.  We wanted to keep the same feel of how you would go about regeistering a region, but obviously rich is a tad different, so it initialization is a tad different than a region.
 
 ## Regions? Yup!
 A region is a container like it is in [Marionette.js][]. In a normal Marionette application you add regions at the top level of your application using `app.addRegions({...})`, with Rich it's slighty different.  We do not use a Region on the top level, instead we use a `rich.View` that is initialized using `app.addRichContexts({...})`.
@@ -162,7 +162,7 @@ var MyView = new rich.ItemView.extend({
 
 This is very helpful when you have a section of your site that you'd like to have constrained to a certain height and width and you want to swap content in and out of it easily.  You would just add a constraint to the region, and toss content in and out of the region and the content will auto fill up the size of it's region.
 
-Revisiting the last example from above, lets enforce that out region is 300x200:
+Revisiting the last example from above, lets enforce that our region is 300x200:
 
 *Using regions in your views with constraints*
 
@@ -289,7 +289,7 @@ var MyView = rich.View.extend({
 });
 ```
 
-Note the `nestedSubviews` attribute. This will effectively create a new ContainerSurface for you and each subview you will will be added as a child of that ConatinerSurface. Please be advised, use of `nestedSubviews` aka ContainerSurfaces is expensive, don't use them all over.
+Note the `nestedSubviews` attribute. This will effectively create a new ContainerSurface for you and each subview you will be added as a child of that ConatinerSurface. Please be advised, use of `nestedSubviews` aka ContainerSurfaces is expensive, don't use them all over.
 
 
 ## Modifiers
@@ -318,7 +318,7 @@ var MyView = new rich.ItemView.extend({
 });
 
 ```
-`modifier` is uses underscore's `_.result()` when it is read, so you can have `modifier` be a function that returns an array, or just have it equal to an array, or just have it equal a single modifier.
+`modifier` uses underscore's `_.result()` when it is read, so you can have `modifier` be a function that returns an array, or just have it equal to an array, or just have it equal a single modifier.
 
 ```javascript
 var mod1 = new Modifier();
