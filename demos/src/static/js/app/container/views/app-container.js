@@ -38,12 +38,12 @@ var AppContainer = rich.View.extend({
         var navigation = this.navigation = new NavigationView({
             collection: new backbone.Collection([
                 new NavigationModel({
-                    label: 'Auto Layout Constraints',
+                    label: 'Auto Layout Constraints Demo',
                     view: AutoLayoutDemo
                 }),
 
                 new NavigationModel({
-                    label: 'Cube Demo',
+                    label: '3D Scroll Demo',
                     view: CubeDemo
                 }),
             ])
