@@ -408,6 +408,12 @@ describe('CollectionView:', function() {
                     expect($el.children().length).toEqual(5);
                     expect(collectionView.children.length).toEqual(2);
 
+                    // console.log($($el.children()[0]).css('display'));
+                    // console.log($($el.children()[1]).css('display'));
+                    // console.log($($el.children()[2]).css('display'));
+                    // console.log($($el.children()[3]).css('display'));
+                    // console.log($($el.children()[4]).css('display'));
+
                     expect($($el.children()[0]).css('display')).toEqual('none');
                     expect($($el.children()[1]).css('display')).toEqual('none');
                     expect($($el.children()[2]).css('display')).toEqual('none');

@@ -178,7 +178,7 @@ define(function (require, exports, module) {
             this.triggerMethod('add:child', view);
         },
 
-        applyVerticalConstraints: function(view, index){
+        createVerticalConstraints: function(view, index){
             var size = this.sizeForViewAtIndex(view, index);
             var constraints = [];
 
@@ -220,7 +220,7 @@ define(function (require, exports, module) {
             return constraints;
         },
 
-        applyHorizontalConstraints: function(view, index){
+        createHorizontalConstraints: function(view, index){
             var size = this.sizeForViewAtIndex(view, index);
             var constraints = [];
 
@@ -321,8 +321,8 @@ define(function (require, exports, module) {
             );
 
             var action = this.orientation == 'vertical' ?
-                this.applyVerticalConstraints.bind(this) :
-                this.applyHorizntalConstraints.bind(this);
+                this.createVerticalConstraints.bind(this) :
+                this.createHorizontalConstraints.bind(this);
 
             this.children.each(function(view, index){
                 constraints = constraints.concat(action(view, index));
