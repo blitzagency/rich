@@ -31,8 +31,15 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
+    browsers: ['Chrome', 'Firefox'],
+    singleRun: false,
+    plugins : [
+        'karma-chrome-launcher',
+        'karma-firefox-launcher',
+        'karma-jasmine',
+        'karma-coverage',
+        'karma-requirejs'
+    ],
 
   });
 };

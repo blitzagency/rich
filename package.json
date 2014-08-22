@@ -11,16 +11,17 @@
     "istanbul": "~0.1.44"
   },
   "devDependencies": {
-    "karma-cli": "0.0.4",
-    "karma": "~0.12.16",
-    "karma-chrome-launcher": "~0.1.4",
-    "karma-jasmine": "~0.2.2",
-    "requirejs": "~2.1.14",
-    "karma-requirejs": "~0.2.2",
     "istanbul": "~0.1.46",
-    "karma-coverage": "~0.1.5",
+    "jsdoc": "~3.3.0-alpha8",
     "jsdoc-rst-template": "0.0.17",
-    "jsdoc": "~3.3.0-alpha8"
+    "karma": "~0.12.16",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-cli": "0.0.4",
+    "karma-coverage": "~0.1.5",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-jasmine": "~0.2.2",
+    "karma-requirejs": "~0.2.2",
+    "requirejs": "~2.1.14"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
   },
   "bugs": {
     "url": "https://github.com/blitzagency/rich/issues"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/karma start --single-run --browsers Firefox"
   }
 }

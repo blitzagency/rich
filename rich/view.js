@@ -924,7 +924,7 @@ var FamousView = marionette.View.extend({
                 id = obj[0];
             } else if(_.isObject(obj)){
                 // these aren't the droids your looking for
-                break;
+                continue;
             }else{
                 debugger;
                 throw new Error('An unexpected error occured '+
