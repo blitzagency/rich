@@ -80,10 +80,9 @@ define(function(require, exports, module) {
         },
 
         bindParticle: function(){
-            var self = this;
             this._particle.positionFrom(function() {
-                return [self._positionX.get(), self._positionY.get()];
-            });
+                return [this._positionX.get(), this._positionY.get()];
+            }.bind(this));
         },
 
         unbindParticle: function(){
@@ -169,10 +168,8 @@ define(function(require, exports, module) {
             limit = _.isUndefined(limit) ? true : limit;
             if (limit) {
                 var pos = this._cleanScrollPosition(x, y);
-                xLimited = pos[0];
-                yLimited = pos[1];
-                x = xLimited;
-                y = yLimited;
+                x = pos[0];
+                y = pos[1];
             }
             // don't let the scroll position be anything crazy
 
@@ -202,7 +199,6 @@ define(function(require, exports, module) {
 
             var tick = function() {
                 self.triggerScrollUpdate();
-                self.invalidateView();
                 self._scrollableView.invalidateView();
             };
 
@@ -210,8 +206,9 @@ define(function(require, exports, module) {
                 Engine.removeListener('postrender', tick);
                 deferred.resolve(this);
             }.bind(this);
+
             if (!duration) {
-                this.invalidateView();
+                this._scrollableView.invalidateView();
             } else {
                 Engine.on('postrender', tick);
             }
@@ -226,7 +223,6 @@ define(function(require, exports, module) {
 
         addSubview: function(view) {
             this._scrollableView.addSubview(view);
-            // this.listenTo(view, events.INVALIDATE, this.update);
         },
 
         removeSubview: function(v) {
@@ -235,7 +231,7 @@ define(function(require, exports, module) {
         },
 
         update: function() {
-            this.setScrollPosition(this._positionX.get(), this._positionY.get(), null, true);
+            this._onScrollUpdate({delta:[0,0]});
         },
 
         _onFamousRender: function() {
@@ -249,12 +245,12 @@ define(function(require, exports, module) {
             // we have to manually get the position for it to update each frame
             this._particle.getPosition();
 
-
-            if(!yVelocity && !xVelocity){
+            if(yVelocity === 0 && xVelocity === 0){
                 this._idleIncrement ++;
             }else{
                 this._idleIncrement = 0;
             }
+
             // if the velocity has sat at 0 for 300 frames, kill the render
             if(this._idleIncrement > 300){
                 this._scrollableView.setNeedsDisplay(false);
@@ -312,6 +308,7 @@ define(function(require, exports, module) {
         },
 
         triggerScrollUpdate: function(){
+            this._scrollableView.setNeedsDisplay(true);
             this.trigger('scroll:update', this.getScrollPosition());
         },
 
