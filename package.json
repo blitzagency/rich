@@ -28,5 +28,9 @@
   },
   "bugs": {
     "url": "https://github.com/blitzagency/rich/issues"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/karma start --single-run"
   }
+
 }
