@@ -7,7 +7,7 @@ var tests = [
     'tests/spec/rich-autolayout-modifiers',
     'tests/spec/rich-autolayout-utils',
     'tests/spec/rich-autolayout',
-    // 'tests/spec/rich-collectionview',
+    'tests/spec/rich-collectionview',
     'tests/spec/rich-itemview-events',
     'tests/spec/rich-region',
     'tests/spec/rich-view-animate',

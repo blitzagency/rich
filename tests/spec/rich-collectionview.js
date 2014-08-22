@@ -379,7 +379,7 @@ describe('CollectionView:', function() {
         });
 
 
-        var collection = new backbone.Collection([color0, color1]);
+        var collection = new backbone.Collection([color0, color1, color2]);
 
         var collectionView = new rich.CollectionView({
             collection: collection,
@@ -396,8 +396,8 @@ describe('CollectionView:', function() {
             var targetWidth = window.innerWidth;
             var $child;
 
-            expect($el.children().length).toEqual(2);
-            expect(collectionView.children.length).toEqual(2);
+            expect($el.children().length).toEqual(3);
+            expect(collectionView.children.length).toEqual(3);
 
             render().then(function(){
 
@@ -405,6 +405,22 @@ describe('CollectionView:', function() {
                 collection.reset([color2, color3]);
 
                 render().then(function(){
+                    expect($el.children().length).toEqual(5);
+                    expect(collectionView.children.length).toEqual(2);
+
+                    expect($($el.children()[0]).css('display')).toEqual('none');
+                    expect($($el.children()[1]).css('display')).toEqual('none');
+                    expect($($el.children()[2]).css('display')).toEqual('none');
+
+                    var $rect3 = $($el.children()[3]).find(':first-child');
+                    var $rect4 = $($el.children()[4]).find(':first-child');
+
+                    var color5 = css.rgb2hex($rect3.css('backgroundColor'));
+                    var color4 = css.rgb2hex($rect4.css('backgroundColor'));
+
+                    expect(color5).toEqual(colors[5]);
+                    expect(color4).toEqual(colors[4]);
+
                     done();
                 });
             });
