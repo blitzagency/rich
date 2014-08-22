@@ -50,7 +50,7 @@ describe('View Animation:', function() {
     });
 
 
-    xit('runs setTransform with animation', function(done){
+    it('runs setTransform with animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -86,7 +86,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setTransform without animation', function(done){
+    it('runs setTransform without animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -117,7 +117,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOpacity with animation', function(done){
+    it('runs setOpacity with animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -153,7 +153,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOpacity without animation', function(done){
+    it('runs setOpacity without animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -184,7 +184,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOrigin with animation', function(done){
+    it('runs setOrigin with animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -220,7 +220,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOrigin without animation', function(done){
+    it('runs setOrigin without animation', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
