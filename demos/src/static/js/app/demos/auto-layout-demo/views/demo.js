@@ -26,6 +26,9 @@ var AutoLayoutDemo = rich.View.extend({
             multiplier: 0.2
         },
 
+        // column min width = 120px
+        "[column(>=120)]",
+
         {
             item: 'column',
             attribute: 'left',
