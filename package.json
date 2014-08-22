@@ -19,6 +19,7 @@
     "karma-cli": "0.0.4",
     "karma-coverage": "~0.1.5",
     "karma-jasmine": "~0.2.2",
+    "karma-phantomjs-launcher": "^0.1.4",
     "karma-requirejs": "~0.2.2",
     "phantomjs": "^1.9.7-15",
     "requirejs": "~2.1.14"
