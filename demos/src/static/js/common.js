@@ -35,7 +35,7 @@ require.config({
         },
 
         {
-            location: '../../../../../rich',
+            location: '../../../../rich',
             name: 'rich',
             main: 'init'
         },
