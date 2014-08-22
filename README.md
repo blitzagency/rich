@@ -19,8 +19,7 @@ _(Rich + Famous - get it?)_
 https://github.com/blitzagency/rich-bootstrap
 
 ## Demos
- * One
- * Two
+ * [Rich Demos](http://blitzagency.github.io/rich/demos/src/)
 
 
 ## About
