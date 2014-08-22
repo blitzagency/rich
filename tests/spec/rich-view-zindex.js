@@ -15,6 +15,7 @@ var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View+Z-Index:', function() {
     var root;
@@ -56,8 +57,14 @@ describe('View+Z-Index:', function() {
         context.add(view);
 
         render().then(function(){
+            // console.log(view.$el.css('z-index'))
+
             var value = css.getZIndex(view.$el);
-            expect(value).toBe(1);
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                expect(value).toBe(0);
+            }else{
+                expect(value).toBe(1);
+            }
             done();
         });
     });
@@ -74,7 +81,11 @@ describe('View+Z-Index:', function() {
 
         view.onShow = function(){
             var value = css.getZIndex(view.$el);
-            expect(value).toBe(99);
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                expect(value).toBe(0);
+            }else{
+                expect(value).toBe(99);
+            }
             done();
         };
     });
@@ -93,7 +104,11 @@ describe('View+Z-Index:', function() {
 
         render().then(function(){
             var value = css.getZIndex(view2.$el);
-            expect(value).toBe(4);
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                expect(value).toBe(0);
+            }else{
+                expect(value).toBe(4);
+            }
             done();
         });
     });
@@ -112,7 +127,11 @@ describe('View+Z-Index:', function() {
 
         render().then(function(){
             var value = css.getZIndex(view2.$el);
-            expect(value).toBe(1);
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                expect(value).toBe(0);
+            }else{
+                expect(value).toBe(1);
+            }
             done();
         });
     });
