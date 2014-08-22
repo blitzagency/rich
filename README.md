@@ -12,7 +12,7 @@ Welcome to Rich, a GitHub Repo.
 ## About
 Rich is our take on a [Famo.us] + [Marionette.js][] framework.  It allows you to write code that looks and feels like [Marionette.js][] but with all of the power of [Famo.us].
 
-We are currently in very active development, it's only 4 weeks old (as of 2014-08-21), and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out. 
+We are currently in very active development, it's only 4 weeks old (as of 2014-08-21), and things WILL change on a daily/weekly basis.  This includes core api, adding/removing of things, and a huge amount of instability.  Please keep this in mind if you decide to try things out.
 
 Did we get some things wrong? You bet. Did we get some things right? We don't know yet =)
 
@@ -27,13 +27,13 @@ Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rol
 With Rich you currently get View, ItemView, CollectionView, and Regions as your display primatives.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
-[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, right, bottom or left, and then if you want to have a 2nd view always be positioned in relation to that first view...done. 
+[Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, right, bottom or left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.
 A quick example:
 
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     constraints:[
         {
             item: 'view1',
@@ -86,11 +86,11 @@ Rich's constraints system is backed by [Cassowary][] which is the same algorithm
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     constraints:[
         '|-20-[view1(>120)]-20-[view2(200)]-|',
     ],
-    
+
     initialize: function(){
         this.view1 = new rich.ItemView();
         this.view2 = new rich.ItemView();
@@ -106,7 +106,7 @@ As you can see, VFL is extremely powerful and allows you to do some really quick
 YUP!  most of the time you'll only need 1, and you do want to be careful regarding the number of context containers you create as they get expensive.  [Heres an example](https://github.com/dinopetrone/rich-todo/blob/master/src/static/js/app/app.js#L6-L10) of how you would go about initializing a context and adding your initial view into it.  We wanted to keep the same feel of how you would go about regeistering a region, but obviously rich is a tad different, so it initialization is a tad differnt than a region.
 
 ## Regions? Yup!
-A region is a container like it is in [Marionette.js][]. In a normal Marionette application you add regions at the top level of your application using `app.addRegions({...})`, with Rich it's slighty different.  We do not use a Region on the top level, instead we use a `rich.View` that is initialized using `app.addRichContexts({...})`.  
+A region is a container like it is in [Marionette.js][]. In a normal Marionette application you add regions at the top level of your application using `app.addRegions({...})`, with Rich it's slighty different.  We do not use a Region on the top level, instead we use a `rich.View` that is initialized using `app.addRichContexts({...})`.
 
 In rich, a Region is just a view with some boilerplate around only allowing 1 subview to be added, it does, however, get all of the events of a normal Marionette Region and as a reference to it's currentView via `myRegion.currentView`.
 
@@ -131,11 +131,11 @@ app.addRichContexts({
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     initialize: function(){
         this.fooRegion = new rich.Region();
     },
-    
+
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
@@ -160,7 +160,7 @@ var MyView = new rich.ItemView.extend({
             relatedBy: '==',
             constant: 300
         },
-        
+
         {
             item: 'fooRegion',
             attribute: 'height',
@@ -168,11 +168,11 @@ var MyView = new rich.ItemView.extend({
             constant: 200
         }
     ],
-    
+
     initialize: function(){
         this.fooRegion = new rich.Region();
     },
-    
+
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
@@ -188,11 +188,11 @@ var MyView = new rich.ItemView.extend({
         'H:[fooRegion(300)]',
         'V:[fooRegion(200)]'
     ],
-    
+
     initialize: function(){
         this.fooRegion = new rich.Region();
     },
-    
+
     onShow: function(){
         this.fooRegion.show(new OtherView());
     }
@@ -207,7 +207,7 @@ Everything in rich extends our base view.  Rich's base view is required because 
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     initialize: function(){
         this.chidView = new OtherView();
         this.addSubview(this.chidView);
@@ -229,12 +229,12 @@ var MyView = new rich.View.extend({
             toAttribute: 'left',
             constant: 20
         },
-        
+
         'V:[chidView(200)]',
         'H:[chidView(100)]',
-        
+
     ], // yes, you can mix styles when defining the intrinsic constraints on a view.
-    
+
     initialize: function(){
         this.chidView = new OtherView();
         this.addSubview(this.chidView);
@@ -264,7 +264,7 @@ There are times, when you may need to set `overflow:hidden` to get some masking 
 var MyView = rich.View.extend({
     nestedSubviews: true,
     className: 'overflow-me',
-    
+
     initialize: function(){
         this.foo = new OtherView();
         this.addSubview(this.foo);
@@ -281,7 +281,7 @@ Rich allows for modifiers just like [Famo.us] does.  Rich's approach on modifier
 ```javascript
 var MyView = rich.ItemView.extend({
     template: 'myview.html',
-    
+
     modifier: function(){
         return new Modifier()
     }
@@ -294,7 +294,7 @@ Which is great! What if I need to add a bunch of modifiers?
 ```javascript
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     modifier: function(){
         return [new Modifier(), new Modifier(), new Modifier()]
     }
@@ -310,19 +310,19 @@ var mod3 = new Modifier();
 
 var MyView = new rich.ItemView.extend({
     template: 'myview.html',
-    
+
     modifier: [mod1, mod2]
 });
 
 var OtherView = new rich.ItemView.extend({
     template: 'otherview.html',
-    
+
     modifier: mod1
 });
 
 var AnotherView = new rich.ItemView.extend({
     template: 'anotherview.html',
-    
+
     modifier: function(){
         return new Modifier();
     }
@@ -364,7 +364,7 @@ var myView = new rich.ItemView({
 This will trigger the need for this view to be updated every frame via the `needsDisplay` attribute.  Keep in mind this should only be turned on when you need the view rendered.  Setting it to true on all views will basically kill all of the caching that's taking place in your views.
 
 ## CollectionView
-Rich's CollectionView extends [Marionette.js][]'s CollectionView, but it has a very different way of handling the actual DOM representation.  Yes, this works as you think it would using [Backbone][] Collections and [Backbone][] Models, go nuts. 
+Rich's CollectionView extends [Marionette.js][]'s CollectionView, but it has a very different way of handling the actual DOM representation.  Yes, this works as you think it would using [Backbone][] Collections and [Backbone][] Models, go nuts.
 
 A vanilla CollectionView will look and act exactly the same as it's [Marionette.js][] equivelant aside from the fact that you can inject a modifier on it and get crazy with animations.
 
@@ -375,3 +375,4 @@ A vanilla CollectionView will look and act exactly the same as it's [Marionette.
 
 ## Getting Started
 Download this repo, [Famo.us], and [Marionette.js][], and off you go.  [Demos][] can be viewed by running `$ make serve` from inside of the demos directory.
+
