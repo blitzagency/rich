@@ -21,7 +21,7 @@ Did we get some things wrong? You bet. Did we get some things right? We don't kn
 It is an open source project, so please feel free to rant/rave/contribute as you see fit. Bugs are always welcome, as are better ways to handle some of the problems we are trying to solve. By no means, for example, are we masters of [Cassowary][] yet.
 
 ## Approach
-The intent behind Rich is to keep the [Marionette.js][] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing.
+The intent behind Rich is to keep the [Marionette.js][Marionette] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing.
 
 ## What do I get?
 Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have LayoutViews(Layouts for those using Marionette 1.x).  The concept of a layout isn't really needed due to Rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints and `subviews` (more on that later, but for now think of constraints as inspired by Apple's autolayout).
