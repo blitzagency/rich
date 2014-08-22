@@ -281,8 +281,7 @@ describe('View+Core:', function() {
         spyOn(view3b, 'invalidateLayout').and.callThrough();
         spyOn(view4, 'invalidateLayout').and.callThrough();
 
-        // region calls invalidateLayout
-        region.show(view1);
+        view1.invalidateLayout();
 
         expect(view2.invalidateLayout.calls.count()).toBe(1);
         expect(view3a.invalidateLayout.calls.count()).toBe(1);

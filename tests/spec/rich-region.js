@@ -48,7 +48,7 @@ describe('Region:', function() {
     });
 
 
-    xit('view inherits size', function(done){
+    it('view inherits size', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -67,7 +67,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('uses constraints', function(done){
+    it('uses constraints', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -130,21 +130,23 @@ describe('Region:', function() {
             ];
         };
 
+        box0.onShow = function(){
+            expect(region._autolayout.width.value).toEqual(1000);
+            expect(region._autolayout.height.value).toEqual(700);
+            expect(region._autolayout.top.value).toEqual(100);
+            done();
+        };
 
         render().then(function(){
-            log.autolayout(region, {nodes: 'whtb'});
+            expect(region._autolayout.width.value).toEqual(1000);
+            expect(region._autolayout.height.value).toEqual(700);
+            expect(region._autolayout.top.value).toEqual(100);
+
             region.show(box0);
-
-
-            //region.show(box0);
-            render().then(function(){
-                log.autolayout(region, {nodes: 'whtb'});
-                done();
-            });
         });
     });
 
-    xit('swaps views', function(done){
+    it('swaps views', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -191,7 +193,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('applies h/w constraints to subviews children', function(done){
+    it('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -221,7 +223,7 @@ describe('Region:', function() {
         region.show(box0);
     });
 
-    xit('applies h/w constraints to subviews children', function(done){
+    it('applies h/w constraints to subviews children', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -254,7 +256,7 @@ describe('Region:', function() {
         region.show(parent);
     });
 
-    xit('applies h/w constraints to subviews children with nestedSubviews', function(done){
+    it('applies h/w constraints to subviews children with nestedSubviews', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -289,7 +291,7 @@ describe('Region:', function() {
         region.show(parent);
     });
 
-    xit('applies h/w constraints to collection view', function(done){
+    it('applies h/w constraints to collection view', function(done){
 
         var collection = new backbone.Collection();
 

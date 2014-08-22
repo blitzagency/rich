@@ -68,9 +68,12 @@ Region = Region.extend({
     open: function(view){
 
         // view.invalidateLayout();
+        //this.invalidateLayout();
+        //this._relationshipsInitialized = false;
+        this._constraintsInitialized = false;
         this.prepareSubviewAdd(view);
 
-        this.invalidateLayout();
+
         // this that have nestedSubviews
         // will break if we don't ensure a context is present
         // also, if no context is present, we have yet to be
