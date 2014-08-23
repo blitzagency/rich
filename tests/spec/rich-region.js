@@ -183,6 +183,7 @@ describe('Region:', function() {
             var size = css.getSize(box0.$el);
             expect(size).toEqual([1000, 100]);
             region.show(box1);
+
             render().then(function(){
                 var size = css.getSize(box1.$el);
                 expect(size).toEqual([1000, 100]);

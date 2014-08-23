@@ -66,8 +66,24 @@ Region = Region.extend({
     },
 
     open: function(view){
+        view.invalidateLayout();
 
-        this._constraintsInitialized = false;
+        var constraints = this._constraints;
+        var required = [];
+
+        // apply any constraints to the object that will become
+        // 'currentView'
+
+        for(var i = 0; i < constraints.length; i++){
+            var each = constraints[i];
+
+            if(each._json.item == 'currentView'){
+                required.push(each);
+            }
+        }
+
+        view._superviewConstraints = required;
+
         this.prepareSubviewAdd(view);
 
         // this that have nestedSubviews

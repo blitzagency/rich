@@ -49,7 +49,7 @@ describe('View + Constraints:', function() {
     });
 
 
-    xit('updates with constraints', function(done){
+    it('updates with constraints', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -94,7 +94,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    xit('updates layout after adding constraint with JSON', function(done){
+    it('updates layout after adding constraint with JSON', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -151,7 +151,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    xit('updates layout after adding constraint with VFL', function(done){
+    it('updates layout after adding constraint with VFL', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -203,7 +203,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    xit('removes constraint', function(done){
+    it('removes constraint', function(done){
         var color0 = new Rectangle({
             color: colors[0]
         });

@@ -158,7 +158,8 @@ exports.constraintsFromJson = function(json, view){
     return {
         constraint: constraint,
         stays: stays,
-        solver: item._solver,
+        item: item,
+        json: json
     };
 };
 

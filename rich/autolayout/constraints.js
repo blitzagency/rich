@@ -24,6 +24,7 @@ define(function (require, exports, module) {
         _constraint: null,
         _stays: null,
         _solver: null,
+        _item: null,
 
         defaults: {
             item: null,
@@ -44,7 +45,9 @@ define(function (require, exports, module) {
             var obj = utils.constraintsFromJson(this.attributes, view);
             this._constraint = obj.constraint;
             this._stays = obj.stays;
-            this._solver = obj.solver;
+            this._solver = obj.item._solver;
+            this._item = obj.item;
+            this._json = obj.json;
         }
     });
 

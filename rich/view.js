@@ -103,6 +103,7 @@ var FamousView = marionette.View.extend({
     _initializeAutolayout: function(){
 
         this._autolayout = {};
+        this._superviewConstraints = [];
 
         this._initializeAutolayoutDefaults();
         this._initializeAutolayoutModifier();
@@ -247,6 +248,25 @@ var FamousView = marionette.View.extend({
                 this.superview._autolayout.height,
                 autolayout.weak, 0)
         );
+
+        if(this._superviewConstraints.length){
+            var superviewConstriants = this._superviewConstraints;
+
+            var addStay = function(stay){
+                solver.addStay(stay, autolayout.weak, 10);
+            };
+
+            for(var i = 0; i < superviewConstriants.length; i++){
+                var each = superviewConstriants[i];
+                each.prepare(this.superview);
+
+                if(each._stays){
+                    _.each(each._stays, addStay);
+                }
+
+                solver.addConstraint(each._constraint);
+            }
+        }
     },
 
     _processIntrinsicConstraints: function(constraints){
@@ -300,6 +320,7 @@ var FamousView = marionette.View.extend({
         this.children.each(function(child){
             child._initializeRelationships();
         });
+
 
         this.addConstraints(wantsInitialize);
 
@@ -418,6 +439,7 @@ var FamousView = marionette.View.extend({
             }
 
             each._solver.addConstraint(each._constraint);
+            each._item._superviewConstraints.push(each);
         }
 
         this._resolveConstraintDependencies(changes);
@@ -449,6 +471,8 @@ var FamousView = marionette.View.extend({
         }
 
         constraint._solver.addConstraint(constraint._constraint);
+        constraint._item._superviewConstraints.push(constraint);
+
         this._resolveConstraintDependencies(changes);
 
         if(this.root){
@@ -475,9 +499,23 @@ var FamousView = marionette.View.extend({
             // (will need) to check. We could just ensure our stays are
             // added as StayConstraints, would require some refactoring.
 
+            var superviewConstriants = target._item._superviewConstraints;
+            var newConstraints = [];
+
+            for(var x = 0; x < superviewConstriants.length; x++){
+                var y = superviewConstriants[x];
+
+                if(y.cid != target.cid){
+                    newConstraints.push(y);
+                }
+            }
+
+            target._item._superviewConstraints = newConstraints;
+
             target._constraint = null;
             target._solver = null;
             target._stays = null;
+            target._item = null;
 
             // bookkeeping - very costly bookkeeping
             // not happy with this at all, need to look into
@@ -511,9 +549,23 @@ var FamousView = marionette.View.extend({
         // (will need) to check. We could just ensure our stays are
         // added as StayConstraints, would require some refactoring.
 
+        var superviewConstriants = target._item._superviewConstraints;
+        var newConstraints = [];
+
+        for(var x = 0; x < superviewConstriants.length; x++){
+            var y = superviewConstriants[x];
+
+            if(y.cid != target.cid){
+                newConstraints.push(y);
+            }
+        }
+
+        target._item._superviewConstraints = newConstraints;
+
         target._constraint = null;
         target._solver = null;
         target._stays = null;
+        target._item = null;
 
         // bookkeeping
         delete this._constraintsIndex[constraint.cid];
@@ -1042,16 +1094,22 @@ var FamousView = marionette.View.extend({
     },
 
     _richDestroy: function(){
-        this._solver = null;
         this._isShown = false;
-        this._autolayout = {};
-        this._constraintsIndex = {};
-        this._constraintRelations = null;
         this.superview = null;
         this.context = null;
         this.root = null;
         this.children = null;
+        this._richAutolayoutDestroy();
         this._richDestroyed = true;
+    },
+
+    _richAutolayoutDestroy: function(){
+        this._solver = null;
+        this._autolayout = {};
+        this._constraints = [];
+        this._constraintsIndex = {};
+        this._constraintRelations = null;
+        this._superviewConstraints = [];
     },
 
     // override Backbone.View.remove()

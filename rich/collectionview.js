@@ -1,4 +1,5 @@
 define(function (require, exports, module) {
+    var backbone = require('backbone');
     var marionette  = require('marionette');
     var RenderNode = require('famous/core/RenderNode');
     var ContainerSurface = require('famous/surfaces/ContainerSurface');
@@ -97,7 +98,6 @@ define(function (require, exports, module) {
             else if(!this.root || this.needsDisplay()){
                 this._renderWorkflow();
             }
-
             return this._spec;
         },
 
@@ -305,12 +305,13 @@ define(function (require, exports, module) {
             var removes = this._lazyRemove;
             var i;
 
-            for(i = 0; i < adds.length; i++){
-                this.prepareSubviewAdd(adds[i]);
-            }
-
             for(i = 0; i < removes.length; i++){
                 this.prepareSubviewRemove(removes[i]);
+            }
+
+            for(i = 0; i < adds.length; i++){
+                adds[i].invalidateLayout();
+                this.prepareSubviewAdd(adds[i]);
             }
 
             this._lazyAdd = [];
@@ -329,7 +330,12 @@ define(function (require, exports, module) {
             }, this);
 
             this._constraints = constraints;
-            this.invalidateLayout();
+
+            this._constraintsInitialized = false;
+            this._relationshipsInitialized = false;
+            this._initializeAutolayoutDefaults();
+            this.root = null;
+
             this.invalidateView();
 
             this._richDirty = false;
