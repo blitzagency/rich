@@ -103,7 +103,6 @@ var FamousView = marionette.View.extend({
     _initializeAutolayout: function(){
 
         this._autolayout = {};
-        this._superviewConstraints = [];
 
         this._initializeAutolayoutDefaults();
         this._initializeAutolayoutModifier();
@@ -248,25 +247,6 @@ var FamousView = marionette.View.extend({
                 this.superview._autolayout.height,
                 autolayout.weak, 0)
         );
-
-        if(this._superviewConstraints.length){
-            var superviewConstriants = this._superviewConstraints;
-
-            var addStay = function(stay){
-                solver.addStay(stay, autolayout.weak, 10);
-            };
-
-            for(var i = 0; i < superviewConstriants.length; i++){
-                var each = superviewConstriants[i];
-                each.prepare(this.superview);
-
-                if(each._stays){
-                    _.each(each._stays, addStay);
-                }
-
-                solver.addConstraint(each._constraint);
-            }
-        }
     },
 
     _processIntrinsicConstraints: function(constraints){
@@ -439,7 +419,6 @@ var FamousView = marionette.View.extend({
             }
 
             each._solver.addConstraint(each._constraint);
-            each._item._superviewConstraints.push(each);
         }
 
         this._resolveConstraintDependencies(changes);
@@ -471,7 +450,6 @@ var FamousView = marionette.View.extend({
         }
 
         constraint._solver.addConstraint(constraint._constraint);
-        constraint._item._superviewConstraints.push(constraint);
 
         this._resolveConstraintDependencies(changes);
 
@@ -498,19 +476,6 @@ var FamousView = marionette.View.extend({
             // removeStay, but Stay's are just StayConstraints IIRC
             // (will need) to check. We could just ensure our stays are
             // added as StayConstraints, would require some refactoring.
-
-            var superviewConstriants = target._item._superviewConstraints;
-            var newConstraints = [];
-
-            for(var x = 0; x < superviewConstriants.length; x++){
-                var y = superviewConstriants[x];
-
-                if(y.cid != target.cid){
-                    newConstraints.push(y);
-                }
-            }
-
-            target._item._superviewConstraints = newConstraints;
 
             target._constraint = null;
             target._solver = null;
@@ -548,19 +513,6 @@ var FamousView = marionette.View.extend({
         // removeStay, but Stay's are just StayConstraints IIRC
         // (will need) to check. We could just ensure our stays are
         // added as StayConstraints, would require some refactoring.
-
-        var superviewConstriants = target._item._superviewConstraints;
-        var newConstraints = [];
-
-        for(var x = 0; x < superviewConstriants.length; x++){
-            var y = superviewConstriants[x];
-
-            if(y.cid != target.cid){
-                newConstraints.push(y);
-            }
-        }
-
-        target._item._superviewConstraints = newConstraints;
 
         target._constraint = null;
         target._solver = null;
@@ -1068,16 +1020,23 @@ var FamousView = marionette.View.extend({
         this.triggerMethod('element', this);
     },
 
+
     invalidateLayout: function(){
         // this is rather destructive and it's results are
         // very expensive. We can most certainly can find a
         // better way to handle this.
+        // this._constraintsInitialized = false;
+        // this._relationshipsInitialized = false;
+        // this._initializeAutolayoutDefaults();
         this._constraintsInitialized = false;
-        this._relationshipsInitialized = false;
-        this._initializeAutolayoutDefaults();
 
         if(!this.isDestroyed){
+
             this.children.each(function(subview){
+                subview._constraintsInitialized = false;
+                subview._relationshipsInitialized = false;
+                subview._currentConstraintKey = null;
+                subview._initializeAutolayoutDefaults();
                 subview.invalidateLayout();
             });
         }

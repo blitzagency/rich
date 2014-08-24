@@ -310,7 +310,6 @@ define(function (require, exports, module) {
             }
 
             for(i = 0; i < adds.length; i++){
-                adds[i].invalidateLayout();
                 this.prepareSubviewAdd(adds[i]);
             }
 
@@ -331,11 +330,7 @@ define(function (require, exports, module) {
 
             this._constraints = constraints;
 
-            this._constraintsInitialized = false;
-            this._relationshipsInitialized = false;
-            this._initializeAutolayoutDefaults();
-            this.root = null;
-
+            this.invalidateLayout();
             this.invalidateView();
 
             this._richDirty = false;

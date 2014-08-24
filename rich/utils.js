@@ -36,19 +36,21 @@ function initializeRichContext(options){
 
     context.add(contentView);
 
+
     var resizeHandler = function(){
         var size = context.getSize();
 
         var variables = [
-            contentView._autolayout.width,
-            contentView._autolayout.height
+            this._autolayout.width,
+            this._autolayout.height
         ];
 
-        contentView.updateVariables(variables, size);
-        contentView.invalidateLayout();
+        this.updateVariables(variables, size);
+        this.invalidateLayout();
     };
 
-    context.on('resize', resizeHandler);
+    contentView._resizeHandler = resizeHandler.bind(contentView);
+    context.on('resize', contentView._resizeHandler);
 
     return contentView;
 }

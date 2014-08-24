@@ -46,7 +46,7 @@ describe('CollectionView:', function() {
         root = null;
     });
 
-    xit('display views from initial collection (sizeForViewAtIndex)', function(done){
+    it('display views from initial collection (sizeForViewAtIndex)', function(done){
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -120,7 +120,7 @@ describe('CollectionView:', function() {
 
     });
 
-    xit('display views from initial collection (intrinsic size)', function(done){
+    it('display views from initial collection (intrinsic size)', function(done){
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -196,7 +196,7 @@ describe('CollectionView:', function() {
 
     });
 
-    xit('adds model', function(done){
+    it('adds model', function(done){
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -272,7 +272,7 @@ describe('CollectionView:', function() {
         };
     });
 
-    xit('removes model', function(done){
+    it('removes model', function(done){
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -356,7 +356,7 @@ describe('CollectionView:', function() {
         };
     });
 
-    xit('resets', function(done){
+    it('resets', function(done){
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -458,6 +458,11 @@ describe('CollectionView:', function() {
 
         var collection = new backbone.Collection([color0, color1]);
 
+        AltView.prototype._render = function(){
+            //debugger;
+            rich.View.prototype._render.apply(this, arguments);
+        };
+
         var collectionView = new rich.CollectionView({
             collection: collection,
             orientation: 'horizontal',
@@ -477,6 +482,7 @@ describe('CollectionView:', function() {
                 ];
             }
         });
+
 
         layout.addSubview(collectionView);
         root.addSubview(layout);
