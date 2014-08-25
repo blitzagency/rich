@@ -12,7 +12,7 @@ Rich
 
 Welcome to Rich, a GitHub Repo.
 
-_(Rich + Famous - get it?)_
+_(Rich + Famo.us - get it?)_
 
 ## Get Started Now
 
