@@ -73,10 +73,11 @@ define(function (require, exports, module) {
             this._constraints = [];
             this.isResetting = false;
 
-            this.invalidateLayout();
-
-            this.render();
-            this.triggerRichInvalidate();
+            if(this.root){
+                this.invalidateLayout();
+                this.render();
+                this.triggerRichInvalidate();
+            }
         },
 
         _renderWorkflow: function(){
