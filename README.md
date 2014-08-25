@@ -20,6 +20,7 @@ https://github.com/blitzagency/rich-bootstrap
 
 ## Demos
  * [Rich Demos](http://blitzagency.github.io/rich/demos/src/)
+ * [Standard Todo app](http://dinopetrone.github.io/rich-todo/src/)
 
 
 ## About
