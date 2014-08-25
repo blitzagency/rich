@@ -677,7 +677,7 @@ var FamousView = marionette.View.extend({
 
     _render: function(){
         var spec;
-
+        if(this._richDestroyed)return;
         if(!this._constraintsInitialized){
             this._initializeConstraints();
         }
