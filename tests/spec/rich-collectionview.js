@@ -497,6 +497,60 @@ describe('CollectionView:', function() {
 
     });
 
+    it('initializes from reset', function(done){
+
+        var AltView = RectangleView.extend({
+            size: [0, 50]
+        });
+
+        var color0 = new Rectangle({
+            color: 'green'
+        });
+
+        var color1 = new Rectangle({
+            color: 'red'
+        });
+
+        var color2 = new Rectangle({
+            color: colors[5]
+        });
+
+        var color3 = new Rectangle({
+            color: colors[4]
+        });
+
+
+        var collection = new backbone.Collection();
+
+        var layout = new rich.View({});
+
+        var collectionView = new rich.CollectionView({
+            collection: collection,
+            orientation: 'vertical',
+            childView: AltView,
+            spacing: 0,
+        });
+
+
+        layout.addSubview(collectionView);
+        root.addSubview(layout);
+
+        collection.reset([color0, color1, color2]);
+
+        collectionView.onShow = function(){
+            var targetWidth = window.innerWidth;
+            var targetHeight = 50;
+
+            collectionView.children.each(function(child){
+                expect(child._autolayout.width.value).toEqual(targetWidth);
+                expect(child._autolayout.height.value).toEqual(targetHeight);
+            });
+
+            done();
+        };
+
+    });
+
 
 }); // eof describe
 }); // eof define
