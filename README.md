@@ -41,7 +41,14 @@ We love vanilla Backbone but the the fact is you pretty much need to write somet
 ## What do I get?
 Rich follows the same ideology as [Marionette.js][] but due to how [Famo.us] rolls, we had to tweek a few things.  First off we don't have LayoutViews(Layouts for those using Marionette 1.x).  The concept of a layout isn't really needed due to Rich's constraints system.  Normally you would use a layout to hold containers for things and then position those containers where you want them.  This way you have sections of your site that you can swap content in and out of.  In Rich, we substitute that same concept with constraints and `subviews` (more on that later, but for now think of constraints as inspired by Apple's autolayout).
 
-With Rich you currently get View, ItemView, CollectionView, and Regions as your display primatives.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
+With Rich you currently get: 
+
+  * View
+  * ItemView 
+  * CollectionView
+  * Regions 
+
+as display primatives.  Each of them have slight tweeks and things you'll want to read up on.  More to come on each of these later.
 
 ## What are these constraints you speak of?
 [Famo.us] is powerful...very powerful.  But it can get a bit time consuming to position things in relation to other things, this is why we implemented constraints.  Constraints allow you to create a view, give it a height, width, top, right, bottom or left, and then if you want to have a 2nd view always be positioned in relation to that first view...done.
