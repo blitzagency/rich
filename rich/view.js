@@ -222,15 +222,9 @@ var FamousView = marionette.View.extend({
         if(superview.left)
             solver.addStay(superview.left, autolayout.weak);
 
-        if(!this._isRoot && !this.properties.size){
-            solver.addEditVar(vars.width);
-            solver.addEditVar(vars.height);
-            solver.beginEdit();
-            solver.suggestValue(vars.width, superview.width.value);
-            solver.suggestValue(vars.height, superview.height.value);
-            solver.resolve();
-            solver.endEdit();
-        }
+        if(!this._isRoot)
+            this._initializeSizeOverride(this.properties.size, solver);
+
 
         if(this.superview._isRoot) return;
 
@@ -247,6 +241,27 @@ var FamousView = marionette.View.extend({
                 this.superview._autolayout.height,
                 autolayout.weak, 0)
         );
+    },
+
+    _initializeSizeOverride: function(size, solver){
+        var variables;
+        var values;
+
+        if(!size){
+            variables = [this._autolayout.width, this._autolayout.height];
+            values = [this.superview._autolayout.width.value, this.superview._autolayout.height.value];
+        }else if(size[0] && !size[1]){
+            // height
+            variables = [this._autolayout.height];
+            values = [this.superview._autolayout.height.value];
+        }else if(size[1] && !size[0]){
+            // width
+            variables = [this._autolayout.width];
+            values = [this.superview._autolayout.width.value];
+        }else{
+            return;
+        }
+        this.updateVariables(variables, values);
     },
 
     _processIntrinsicConstraints: function(constraints){
@@ -677,7 +692,7 @@ var FamousView = marionette.View.extend({
 
     _render: function(){
         var spec;
-        if(this._richDestroyed)return;
+
         if(!this._constraintsInitialized){
             this._initializeConstraints();
         }
