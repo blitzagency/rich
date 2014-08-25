@@ -84,6 +84,7 @@ var FamousView = marionette.View.extend({
         _.extend(this, _.pick(options, viewOptions.concat(styleOptions, richOptions)));
         _.extend(this.properties, _.pick(options, propertyOptions));
 
+        // is now here so we can get access to superview when size is called
         this.properties.size = _.result(this.properties, 'size') || _.result(this, 'size');
         this.properties.properties.zIndex = this.zIndex;
 
@@ -246,7 +247,6 @@ var FamousView = marionette.View.extend({
     _initializeSizeOverride: function(size, solver){
         var variables;
         var values;
-
         if(!size){
             variables = [this._autolayout.width, this._autolayout.height];
             values = [this.superview._autolayout.width.value, this.superview._autolayout.height.value];
