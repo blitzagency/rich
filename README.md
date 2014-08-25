@@ -33,7 +33,7 @@ Did we get some things wrong? You bet. Did we get some things right? We don't kn
 It is an open source project, so please feel free to rant/rave/contribute as you see fit. Bugs are always welcome, as are better ways to handle some of the problems we are trying to solve. By no means, for example, are we masters of [Cassowary][] yet.
 
 ## Approach
-The intent behind Rich is to keep [Marionette.js][] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing.
+The intent behind Rich is to keep [Marionette.js][] intact where it makes sense but backing it with [Famo.us].  We have kept nearly all [Marionette.js][] logic and are currently built on top of the latest [Marionette.js][], 2.1.0 at the time of this writing. Marionette is put together very well, we did not have to fork it, all of the Rich's functionality is done by overriding. In fact one of our goals is explicitly not to fork Marionette. To that end, Marionette 2.x is a hard requirement. 
 
 ## Why Marionette?
 We love vanilla Backbone but the the fact is you pretty much need to write something like a [Marionette.js][] to make vanilla Backbone even more productive. Rather than write that ourselves, we'd rather stand on the shoulders of the people who have already considered the ins and outs of that. Additionally, we have standardized our own internal workflow when it comes to HTML UI around [Marionette.js][], so it made sense for us to keep our devs in familiar territory.
