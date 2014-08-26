@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     GenericSync.register({
         "touch": TouchSync,
         "scroll": ScrollSync,
-        // "mouse": MouseSync
+        "mouse": MouseSync
     });
 
     var DIRECTION_X = GenericSync.DIRECTION_X;
@@ -51,6 +51,8 @@ define(function(require, exports, module) {
             });
 
             this.contentSize = options.contentSize || this.contentSize || [0, 0];
+            this.scrollType = options.scrollType || this.scrollType || ['touch', 'wheel'];
+
 
             FamousView.prototype.constructor.apply(this, arguments);
             this._scrollHandler = new EventHandler();
@@ -264,8 +266,27 @@ define(function(require, exports, module) {
         },
 
         _bindScrollEvents: function() {
-            var events = ['touchstart', 'touchmove', 'touchend', 'mousewheel', 'wheel'];
             var self = this;
+            $(window).mouseout(function(e){
+                e = e.originalEvent;
+                var from = e.relatedTarget || e.toElement;
+                if (!from || from.nodeName == "HTML") {
+                    self._scrollHandler.emit('mouseup', e.originalEvent);
+                }
+            });
+            var events = [];
+
+            if(_.contains(this.scrollType, 'touch')){
+                events = events.concat(['touchstart', 'touchmove', 'touchend']);
+            }
+            if(_.contains(this.scrollType, 'wheel')){
+                events = events.concat(['mousewheel', 'wheel']);
+            }
+            if(_.contains(this.scrollType, 'mouse')){
+                events = events.concat(['mousedown', 'mousemove', 'mouseup']);
+            }
+
+
             _.each(events, function(type) {
                 this.$el.on(type, function(e) {
                     self._scrollType = type;
@@ -275,7 +296,10 @@ define(function(require, exports, module) {
 
             this.sync = new GenericSync({
                 "scroll": {},
-                "touch": {}
+                "touch": {},
+                "mouse": {
+                    scale: 5
+                }
             });
 
             if (this._scrollEnabled) {
@@ -336,10 +360,10 @@ define(function(require, exports, module) {
             // normalize the data based on direction
             if(this.direction == DIRECTION_Y){
                 position[0] = 0;
-                if(this._scrollDirection == 'x' && this.getDirectionalLockEnabled())return;
+                if(this._scrollDirection == 'x' && this.getDirectionalLockEnabled())return [0, 0];
             }else if(this.direction == DIRECTION_X){
                 position[1] = 0;
-                if(this._scrollDirection == 'y' && this.getDirectionalLockEnabled())return;
+                if(this._scrollDirection == 'y' && this.getDirectionalLockEnabled())return [0, 0];
             }
             return position;
         },

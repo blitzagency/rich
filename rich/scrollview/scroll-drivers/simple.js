@@ -61,8 +61,7 @@ var SimpleDriver = marionette.Controller.extend({
 
 
         // we only want to add velocity if you're touch or click
-        if(type == 'wheel')return;
-
+        if(type == 'wheel' || type == 'mouseup')return;
         if(this._throwMod){
             this._throwMod.callback();
         }
@@ -90,7 +89,7 @@ var SimpleDriver = marionette.Controller.extend({
 
         velocity = this.scrollView._normalizeVector(velocity);
         this._physicsEngine.attach([this._drag, this._friction], this.scrollView._particle);
-        this.scrollView._particle.setVelocity(velocity);
+        this.scrollView._particle.setVelocity([0, -10]);
 
     },
 
