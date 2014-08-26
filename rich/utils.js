@@ -23,7 +23,15 @@ function initializeRichContext(options){
         $el = options.el;
     }
 
-    context = Engine.createContext($el[0]);
+    // if you're adding the context to the body, lets intead let famous create
+    // a container for us to throw everything in.  they do some special things
+    // like creating a wrapper div for it that makes 3d stuff play nice...
+    if($el[0].tagName == 'BODY'){
+        context = Engine.createContext();
+    }else{
+        context = Engine.createContext($el[0]);
+    }
+
     contentView = new View({
         context: context,
         constraints: constraints,
@@ -38,7 +46,12 @@ function initializeRichContext(options){
 
 
     var resizeHandler = function(){
+
         var size = context.getSize();
+
+        if(!this._constraintsInitialized){
+            this._initializeConstraints();
+        }
 
         var variables = [
             this._autolayout.width,
