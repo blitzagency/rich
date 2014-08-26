@@ -66,7 +66,6 @@ define(function(require, exports, module) {
 
             this.perspective = options.perspective || false;
 
-            //Should be .on('context') TODO
             this.on('show', this.wantsSetPerspective);
 
             if (!_.isUndefined(options.directionalLockEnabled)) {
@@ -91,7 +90,11 @@ define(function(require, exports, module) {
 
         wantsSetPerspective: function() {
             if (this.perspective) {
-                this.container.context.setPerspective(this.perspective);
+                if(this.nestedSubviews){
+                    this.container.context.setPerspective(this.perspective);
+                }else{
+                    this.context.setPerspective(this.perspective);
+                }
             }
         },
 
@@ -131,7 +134,10 @@ define(function(require, exports, module) {
             FamousView.prototype.addSubview.apply(this, [this._scrollableView]);
         },
 
-        onElement: function() {
+        onShow: function() {
+            if(!this.$el && !this.nestedSubviews){
+                this.$el = $(this.context.container);
+            }
             if (this.hidesOverflow) {
                 this.$el.css({
                     overflow: 'hidden',
