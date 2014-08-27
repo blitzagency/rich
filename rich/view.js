@@ -299,11 +299,6 @@ var FamousView = marionette.View.extend({
             return;
         }
 
-        // if(constraints === undefined && this._constraints.length === 0){
-        //     this._mapAutolayout();
-        //     return;
-        // }
-
         if(constraints){
             constraints = this._processIntrinsicConstraints(constraints);
             key = hashConstraints(constraints, this);
