@@ -103,6 +103,15 @@ Region = Region.extend({
         this.triggerMethod('empty', view);
 
         delete this.currentView;
+    },
+
+    remove: function(){
+
+        if(this.currentView){
+            this.empty();
+        }
+
+        View.prototype.remove.apply(this, arguments);
     }
 });
 
