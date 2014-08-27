@@ -44,9 +44,7 @@ function initializeRichContext(options){
 
     context.add(contentView);
 
-
     var resizeHandler = function(){
-
         var size = context.getSize();
 
         if(!this._constraintsInitialized){
@@ -64,6 +62,11 @@ function initializeRichContext(options){
 
     contentView._resizeHandler = resizeHandler.bind(contentView);
     context.on('resize', contentView._resizeHandler);
+
+    contentView._richDestroy = function(){
+        context.removeListener('resize', contentView._resizeHandler);
+        View.prototype._richDestroy.apply(this, arguments);
+    };
 
     return contentView;
 }
