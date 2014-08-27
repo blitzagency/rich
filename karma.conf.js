@@ -31,11 +31,15 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
+    // browsers: ['Chrome'],
+    // browsers: ['Firefox'],
+    // browsers: ['Safari'],
     browsers: ['Chrome', 'Firefox'],
     singleRun: false,
     plugins : [
         'karma-chrome-launcher',
         'karma-firefox-launcher',
+        'karma-safari-launcher',
         'karma-jasmine',
         'karma-coverage',
         'karma-requirejs'
