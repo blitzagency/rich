@@ -188,60 +188,143 @@ var FamousView = marionette.View.extend({
         var superview = this.superview._autolayout;
 
         // add some loose constraints about top/left/bottom/right
-        var top = autolayout.geq(vars.top, 0, autolayout.weak, 1);
-        var right = autolayout.geq(vars.right, 0, autolayout.weak, 1);
-        var bottom = autolayout.geq(vars.bottom, 0, autolayout.weak, 1);
-        var left = autolayout.geq(vars.left, 0, autolayout.weak, 1);
-        var pullLeft = autolayout.eq(vars.left, 0, autolayout.weak, 1);
-        var pullTop = autolayout.eq(vars.top, 0, autolayout.weak, 1);
+        // var top = autolayout.geq(vars.top, 0, autolayout.weak, 1);
+        // var right = autolayout.geq(vars.right, 0, autolayout.weak, 1);
+        // var bottom = autolayout.geq(vars.bottom, 0, autolayout.weak, 1);
+        // var left = autolayout.geq(vars.left, 0, autolayout.weak, 1);
+        // var pullLeft = autolayout.eq(vars.left, 0, autolayout.weak, 1);
+        // var pullTop = autolayout.eq(vars.top, 0, autolayout.weak, 1);
 
-        solver.addStay(vars.width, autolayout.weak, 0);
-        solver.addStay(vars.height, autolayout.weak, 0);
+        // solver.addStay(vars.width, autolayout.weak, 0);
+        // solver.addStay(vars.height, autolayout.weak, 0);
 
-        solver.addConstraint(pullLeft);
-        solver.addConstraint(pullTop);
-        solver.addConstraint(left);
-        solver.addConstraint(top);
-        solver.addConstraint(right);
-        solver.addConstraint(bottom);
+        // solver.addConstraint(pullLeft);
+        // solver.addConstraint(pullTop);
+        // solver.addConstraint(left);
+        // solver.addConstraint(top);
+        // solver.addConstraint(right);
+        // solver.addConstraint(bottom);
 
         if(superview.width)
-            solver.addStay(superview.width, autolayout.weak);
+            solver.addStay(superview.width, autolayout.weak, 10);
 
         if(superview.height)
-            solver.addStay(superview.height, autolayout.weak);
+            solver.addStay(superview.height, autolayout.weak, 10);
 
         if(superview.top)
-            solver.addStay(superview.top, autolayout.weak);
+            solver.addStay(superview.top, autolayout.weak, 10);
 
         if(superview.right)
-            solver.addStay(superview.right, autolayout.weak);
+            solver.addStay(superview.right, autolayout.weak, 10);
 
         if(superview.bottom)
-            solver.addStay(superview.bottom, autolayout.weak);
+            solver.addStay(superview.bottom, autolayout.weak, 10);
 
         if(superview.left)
-            solver.addStay(superview.left, autolayout.weak);
+            solver.addStay(superview.left, autolayout.weak, 10);
 
-        if(!this._isRoot)
-            this._initializeSizeOverride(this.properties.size, solver);
+        if(this._isRoot){
+            solver.addStay(vars.width, autolayout.medium, 10);
+            solver.addStay(vars.height, autolayout.medium, 10);
+        } else {
+            this._initializeSize(this.properties.size, solver);
+        }
 
 
-        if(this.superview._isRoot) return;
+        // if(this.superview._isRoot) return;
 
-        solver.addConstraint(
-            autolayout.eq(
-                autolayout.plus(vars.width, vars.right).plus(vars.left),
-                this.superview._autolayout.width,
-                autolayout.weak, 0)
-        );
+        // solver.addConstraint(
+        //     autolayout.eq(
+        //         autolayout.plus(vars.width, vars.right).plus(vars.left),
+        //         this.superview._autolayout.width,
+        //         autolayout.weak, 0)
+        // );
 
-        solver.addConstraint(
-            autolayout.eq(
-                autolayout.plus(vars.height, vars.bottom).plus(vars.top),
-                this.superview._autolayout.height,
-                autolayout.weak, 0)
-        );
+        // solver.addConstraint(
+        //     autolayout.eq(
+        //         autolayout.plus(vars.height, vars.bottom).plus(vars.top),
+        //         this.superview._autolayout.height,
+        //         autolayout.weak, 0)
+        // );
+    },
+
+    _initializeSize: function(size, solver){
+        var vars = this._autolayout;
+        var superview = this.superview._autolayout;
+        var variables;
+        var superSize = this.superview.getSize();
+        var description = 0;
+
+        var obj = {
+            SUPERVIEW_WIDTH: 1 << 0,
+            SUPERVIEW_HEIGHT: 1 << 1,
+            INTRINSIC_WIDTH: 1 << 2,
+            INTRINSIC_HEIGHT: 1 << 3,
+        };
+
+        // size of our superview;
+        if(!size){
+
+            description = obj.SUPERVIEW_WIDTH | obj.SUPERVIEW_HEIGHT;
+            size = [superSize[0], superSize[1]];
+
+        // height of our superview;
+        } else if(size[0] && !size[1]){
+
+            description = obj.INTRINSIC_WIDTH | obj.SUPERVIEW_HEIGHT;
+            size = [size[0], superSize[1]];
+
+        // width of our superview;
+        } else if(!size[0] && size[1]){
+
+            description = obj.SUPERVIEW_WIDTH | obj.INTRINSIC_HEIGHT;
+            size = [superSize[0], size[1]];
+
+        // custom size;
+        } else {
+            description = obj.INTRINSIC_WIDTH | obj.INTRINSIC_HEIGHT;
+        }
+
+        variables = [vars.width, vars.height];
+        this.updateVariables(variables, size);
+
+
+        // solver.addStay(vars.width, autolayout.weak, 0);
+        // solver.addStay(vars.height, autolayout.weak, 0);
+        solver.addConstraint(autolayout.eq(vars.width, size[0], autolayout.weak, 0));
+        solver.addConstraint(autolayout.eq(vars.height, size[1], autolayout.weak, 0));
+
+        if(obj.SUPERVIEW_WIDTH & description){
+            var width = autolayout.minus(superview.width, autolayout.plus(vars.left, vars.right));
+            solver.addConstraint(autolayout.eq(vars.left, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.geq(vars.left, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.geq(vars.right, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.eq(vars.width, width, autolayout.weak, 0));
+
+            // solver.addConstraint(
+            //     autolayout.eq(
+            //         autolayout.plus(vars.width, vars.right).plus(vars.left),
+            //         superview.width,
+            //         autolayout.weak, 0
+            //     )
+            // );
+        }
+
+        if(obj.SUPERVIEW_HEIGHT & description){
+            var height = autolayout.minus(superview.height, autolayout.plus(vars.top, vars.bottom));
+            solver.addConstraint(autolayout.eq(vars.top, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.geq(vars.top, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.geq(vars.bottom, 0, autolayout.weak, 0));
+            solver.addConstraint(autolayout.eq(vars.height, height, autolayout.weak, 0));
+
+            // solver.addConstraint(
+            //     autolayout.eq(
+            //         autolayout.plus(vars.height, vars.bottom).plus(vars.top),
+            //         superview.height,
+            //         autolayout.weak, 0
+            //     )
+            // );
+        }
     },
 
     _initializeSizeOverride: function(size, solver){

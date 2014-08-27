@@ -12,7 +12,7 @@ var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
-
+var log = require('tests/utils/log');
 
 
 describe('Auto Layout:', function() {
@@ -51,7 +51,7 @@ describe('Auto Layout:', function() {
         expect(view._autolayout).not.toBe(undefined);
     });
 
-    xit('adds left constraint based on parents width', function(done){
+    it('adds left constraint based on parents width', function(done){
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -310,6 +310,7 @@ describe('Auto Layout:', function() {
 
         view.onShow = function(){
 
+            //log.autolayout(view.navigation, {label: 'navigation', nodes:'whtrbl'});
             expect(view.navigation._autolayout.right.value).toBe(920);
             expect(view.navigation._autolayout.left.value).toBe(0);
             expect(view.navigation._autolayout.width.value).toBe(80);

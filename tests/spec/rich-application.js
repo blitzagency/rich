@@ -18,7 +18,7 @@ var log = require('tests/utils/log');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('CollectionView:', function() {
+describe('Application:', function() {
     var root;
     var context;
     var $el;
@@ -79,6 +79,7 @@ describe('CollectionView:', function() {
             expect(size[1]).toEqual(100);
 
             context.setSize([500, 500]);
+
             root._resizeHandler();
 
             // layout._render = function(){
