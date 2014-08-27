@@ -3,6 +3,7 @@ node_js:
 - 0.1
 addons:
   sauce_connect:
-    username: "dinopetrone"
+    username:
+      secure: 'fBPmuMqtVczUMUdFUyBOz6HNKCHJz/VNdt4cpQyoX3bZLEGIjK4cYuEKlU5KbMt8M1JyGLt1J46O9XptJsX4wcN0Y+awOpYe64IeYmOG84YxxVetXmLm3+8h0ohi+LUYRMR89hX+syycqEXQadDm9jc/hyej6+e8fzynx2dp2hQ='
     access_key:
-      secure: "dsH1WNvaPcKLDQQSHZ9YJMJLMc5YqVWlxkf8N5CkJzMW5Vq3RrbodgjvP/e1tMKJnpSwIdbI7H07cQBqQJLSDH8phZbqlXacHLdbWpBmlI4jNE+NxJtYnQWUeXkl00ugGyBvLM5noHIXWWcXZox9x6zPKW6RqCdlPxukJd/j4Vo="
+      secure: 'dsH1WNvaPcKLDQQSHZ9YJMJLMc5YqVWlxkf8N5CkJzMW5Vq3RrbodgjvP/e1tMKJnpSwIdbI7H07cQBqQJLSDH8phZbqlXacHLdbWpBmlI4jNE+NxJtYnQWUeXkl00ugGyBvLM5noHIXWWcXZox9x6zPKW6RqCdlPxukJd/j4Vo=''
