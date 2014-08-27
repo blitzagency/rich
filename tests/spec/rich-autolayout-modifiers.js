@@ -15,320 +15,239 @@ var colors = require('tests/utils/colors').blue;
 var c = require('rich/autolayout/init').cassowary;
 var autolayout = require('rich/autolayout/init');
 var layoututils = require('rich/autolayout/utils');
+var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
-describe('Auto Layout:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
+describe('Auto Layout + Complex Layout:', function() {
 
     beforeEach(function() {
         loadFixtures('famous.html');
-
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
+    // xit('cassowary test', function(done){
+    //     var w = 0;
+    //     var h = 0;
+    //     var box0;
+    //     var box1;
+    //     var box2;
+    //     var viewport;
 
-    // it('generates layout modifiers', function(done){
-    //     var model = new Rectangle({
-    //         color: 'red'
-    //     });
+    //     function initializeAutoLayout(obj){
 
-    //     var view = new rich.View({
-    //         model: model,
-    //         constraints: [
+    //     }
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'left',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem: 'superview',
-    //                 toAttribute: 'top',
-    //                 constant: 10,
-    //             },
+    //     function initializeRelationships(obj){
+    //         console.log('_initializeRelationships -> ' + obj.name);
+    //         var solver = obj.solver = new c.SimplexSolver();
+    //         var superview = obj.superview._autolayout;
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'right',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem:'superview',
-    //                 toAttribute: 'width',
-    //                 constant: 0,
-    //                 multiplier: 0.5
-    //             },
+    //         var top = autolayout.geq(obj._autolayout.top, 0, autolayout.weak, 1);
+    //         var right = autolayout.geq(obj._autolayout.right, 0, autolayout.weak, 1);
+    //         var bottom = autolayout.geq(obj._autolayout.bottom, 0, autolayout.weak, 1);
+    //         var left = autolayout.geq(obj._autolayout.left, 0, autolayout.weak, 1);
+    //         var pullLeft = autolayout.eq(obj._autolayout.left, 0, autolayout.weak, 1);
+    //         var pullTop = autolayout.eq(obj._autolayout.top, 0, autolayout.weak, 1);
 
-    //             {
-    //                 item: 'navigation',
-    //                 attribute: 'top',
-    //                 relatedBy: '==', // '=|>=|<='
-    //                 toItem: 'superview',
-    //                 toAttribute: 'top',
-    //                 constant: 5,
-    //                 multiplier: 1
-    //             },
-    //         ]
-    //     });
+    //         solver.addStay(obj._autolayout.width, autolayout.weak, 0);
+    //         solver.addStay(obj._autolayout.height, autolayout.weak, 0);
 
-    //     view.navigation = new RectangleView({
-    //         model:model
-    //     });
+    //         solver.addConstraint(pullLeft);
+    //         solver.addConstraint(pullTop);
+    //         solver.addConstraint(left);
+    //         solver.addConstraint(top);
+    //         solver.addConstraint(right);
+    //         solver.addConstraint(bottom);
 
-    //     view.addSubview(view.navigation);
-    //     region.show(view);
+    //         if(superview.right)
+    //             solver.addStay(superview.right, autolayout.weak);
 
-    //     // this is questionable, setSize()
-    //     // don't think we use this anymore
-    //     view.setSize([200, 200]);
+    //         if(superview.left)
+    //             solver.addStay(superview.left, autolayout.weak);
 
-    //     view.onShow = function(){
+    //         if(superview.width)
+    //             solver.addStay(superview.width, autolayout.weak);
 
-    //         expect(view._autolayout.width.value).toBe(200);
-    //         expect(view._autolayout.height.value).toBe(200);
+    //         if(superview.height)
+    //             solver.addStay(superview.height, autolayout.weak);
 
-    //         expect(view.navigation._autolayout.top.value).toBe(5);
-    //         expect(view.navigation._autolayout.height.value).toBe(195);
-    //         expect(view.navigation._autolayout.width.value).toBe(90);
-    //         expect(view.navigation._autolayout.left.value).toBe(10);
-    //         done();
+    //         if(superview.top)
+    //             solver.addStay(superview.top, autolayout.weak);
+
+    //         if(superview.bottom)
+    //             solver.addStay(superview.bottom, autolayout.weak);
+
+    //         // No explicit size is set:
+    //         solver.addEditVar(obj._autolayout.width);
+    //         solver.addEditVar(obj._autolayout.height);
+    //         solver.beginEdit();
+    //         solver.suggestValue(obj._autolayout.width, superview.width.value);
+    //         solver.suggestValue(obj._autolayout.height, superview.height.value);
+    //         solver.resolve();
+    //         solver.endEdit();
+
+    //         solver.addConstraint(
+    //             autolayout.eq(
+    //                 autolayout.plus(obj._autolayout.width, obj._autolayout.right).plus(obj._autolayout.left),
+    //                 superview.width,
+    //                 autolayout.weak, 0)
+    //         );
+
+    //         solver.addConstraint(
+    //             autolayout.eq(
+    //                 autolayout.plus(obj._autolayout.height, obj._autolayout.bottom).plus(obj._autolayout.top),
+    //                 superview.height,
+    //                 autolayout.weak, 0)
+    //         );
+
+    //         solver.resolve();
+    //     }
+
+    //     function constraintsFromJson(list, view){
+    //         var data = [];
+    //         _.each(list, function(each){
+    //             data.push(layoututils.constraintsFromJson(each, view));
+    //         });
+
+    //         return data;
+    //     }
+
+    //     function applyConstraints(json, onView, toView){
+    //         console.log('Adding constraints[' + json.length +'] for -> ' + onView.name);
+    //         _.each(constraintsFromJson(json, onView), function(cn){
+    //             _.each(cn.stays, function(stay){
+    //                 toView.solver.addStay(stay, autolayout.weak, 10);
+    //             });
+
+    //             toView.solver.addConstraint(cn.constraint);
+    //         });
+    //     }
+
+    //     viewport = {
+    //          _autolayout: {
+    //             width: autolayout.cv('width', 1000),
+    //             height: autolayout.cv('width', 800),
+    //         }
     //     };
 
+    //     box0 = {
+    //         _autolayout: {
+    //             width: autolayout.cv('width', w),
+    //             height: autolayout.cv('height', h),
+    //             top: autolayout.cv('top', 0),
+    //             right: autolayout.cv('right', 0),
+    //             bottom: autolayout.cv('bottom', 0),
+    //             left: autolayout.cv('left', 0),
+    //         }
+    //     };
+
+    //     box1 = {
+    //         _autolayout: {
+    //             width: autolayout.cv('width', w),
+    //             height: autolayout.cv('height', h),
+    //             top: autolayout.cv('top', 0),
+    //             right: autolayout.cv('right', 0),
+    //             bottom: autolayout.cv('bottom', 0),
+    //             left: autolayout.cv('left', 0),
+    //         }
+    //     };
+
+    //     box2 = {
+    //         _autolayout: {
+    //             width: autolayout.cv('width', w),
+    //             height: autolayout.cv('height', h),
+    //             top: autolayout.cv('top', 0),
+    //             right: autolayout.cv('right', 0),
+    //             bottom: autolayout.cv('bottom', 0),
+    //             left: autolayout.cv('left', 0),
+    //         }
+    //     };
+
+
+
+    //     viewport.name = 'regionView';
+    //     box0.name = 'box0';
+    //     box1.name = 'box1';
+    //     box2.name = 'box2';
+
+    //     box0.superview = viewport;
+    //     box1.superview = box0;
+    //     box2.superview = box1;
+
+    //     box0.box1 = box1;
+    //     box1.box2 = box2;
+
+    //     initializeAutoLayout(box0);
+    //     initializeAutoLayout(box1);
+    //     initializeAutoLayout(box2);
+
+    //     initializeRelationships(box0);
+    //     initializeRelationships(box1);
+    //     initializeRelationships(box2);
+
+    //     var cn0 = [
+    //         {
+    //             item: 'box1',
+    //             attribute: 'bottom',
+    //             relatedBy: '==',
+    //             toItem: 'superview',
+    //             toAttribute: 'bottom',
+    //             constant: 0
+    //         },
+
+    //         {
+    //             item: 'box1',
+    //             attribute: 'height',
+    //             relatedBy: '==',
+    //             constant: 200
+    //         }
+    //     ];
+
+    //     var cn1 = [
+    //         {
+    //             item: 'box2',
+    //             attribute: 'bottom',
+    //             relatedBy: '==',
+    //             toItem: 'superview',
+    //             toAttribute: 'bottom',
+    //             constant: 0
+    //         },
+    //     ];
+
+    //     applyConstraints(cn0, box0, box1);
+    //     applyConstraints(cn1, box1, box2);
+
+    //     console.log('(box0) L:' + box0._autolayout.left.value);
+    //     console.log('(box0) R:' + box0._autolayout.right.value);
+    //     console.log('(box0) W:' + box0._autolayout.width.value);
+    //     console.log('(box0) H:' + box0._autolayout.height.value);
+    //     console.log('---');
+
+    //     console.log('(box1) L:' + box1._autolayout.left.value);
+    //     console.log('(box1) R:' + box1._autolayout.right.value);
+    //     console.log('(box1) W:' + box1._autolayout.width.value);
+    //     console.log('(box1) H:' + box1._autolayout.height.value);
+    //     console.log('(box1) T:' + box1._autolayout.top.value);
+    //     console.log('(box1) B:' + box1._autolayout.bottom.value);
+    //     console.log('---');
+
+    //     console.log('(box2) L:' + box2._autolayout.left.value);
+    //     console.log('(box2) R:' + box2._autolayout.right.value);
+    //     console.log('(box2) W:' + box2._autolayout.width.value);
+    //     console.log('(box2) H:' + box2._autolayout.height.value);
+    //     console.log('---');
+
+
+    //     done();
     // });
 
-    xit('cassowary test', function(done){
-        var w = 0;
-        var h = 0;
-        var box0;
-        var box1;
-        var box2;
-        var viewport;
-
-        function initializeAutoLayout(obj){
-
-        }
-
-        function initializeRelationships(obj){
-            console.log('_initializeRelationships -> ' + obj.name);
-            var solver = obj.solver = new c.SimplexSolver();
-            var superview = obj.superview._autolayout;
-
-            var top = autolayout.geq(obj._autolayout.top, 0, autolayout.weak, 1);
-            var right = autolayout.geq(obj._autolayout.right, 0, autolayout.weak, 1);
-            var bottom = autolayout.geq(obj._autolayout.bottom, 0, autolayout.weak, 1);
-            var left = autolayout.geq(obj._autolayout.left, 0, autolayout.weak, 1);
-            var pullLeft = autolayout.eq(obj._autolayout.left, 0, autolayout.weak, 1);
-            var pullTop = autolayout.eq(obj._autolayout.top, 0, autolayout.weak, 1);
-
-            solver.addStay(obj._autolayout.width, autolayout.weak, 0);
-            solver.addStay(obj._autolayout.height, autolayout.weak, 0);
-
-            solver.addConstraint(pullLeft);
-            solver.addConstraint(pullTop);
-            solver.addConstraint(left);
-            solver.addConstraint(top);
-            solver.addConstraint(right);
-            solver.addConstraint(bottom);
-
-            if(superview.right)
-                solver.addStay(superview.right, autolayout.weak);
-
-            if(superview.left)
-                solver.addStay(superview.left, autolayout.weak);
-
-            if(superview.width)
-                solver.addStay(superview.width, autolayout.weak);
-
-            if(superview.height)
-                solver.addStay(superview.height, autolayout.weak);
-
-            if(superview.top)
-                solver.addStay(superview.top, autolayout.weak);
-
-            if(superview.bottom)
-                solver.addStay(superview.bottom, autolayout.weak);
-
-            // No explicit size is set:
-            solver.addEditVar(obj._autolayout.width);
-            solver.addEditVar(obj._autolayout.height);
-            solver.beginEdit();
-            solver.suggestValue(obj._autolayout.width, superview.width.value);
-            solver.suggestValue(obj._autolayout.height, superview.height.value);
-            solver.resolve();
-            solver.endEdit();
-
-            solver.addConstraint(
-                autolayout.eq(
-                    autolayout.plus(obj._autolayout.width, obj._autolayout.right).plus(obj._autolayout.left),
-                    superview.width,
-                    autolayout.weak, 0)
-            );
-
-            solver.addConstraint(
-                autolayout.eq(
-                    autolayout.plus(obj._autolayout.height, obj._autolayout.bottom).plus(obj._autolayout.top),
-                    superview.height,
-                    autolayout.weak, 0)
-            );
-
-            solver.resolve();
-        }
-
-        function constraintsFromJson(list, view){
-            var data = [];
-            _.each(list, function(each){
-                data.push(layoututils.constraintsFromJson(each, view));
-            });
-
-            return data;
-        }
-
-        function applyConstraints(json, onView, toView){
-            console.log('Adding constraints[' + json.length +'] for -> ' + onView.name);
-            _.each(constraintsFromJson(json, onView), function(cn){
-                _.each(cn.stays, function(stay){
-                    toView.solver.addStay(stay, autolayout.weak, 10);
-                });
-
-                toView.solver.addConstraint(cn.constraint);
-            });
-        }
-
-        viewport = {
-             _autolayout: {
-                width: autolayout.cv('width', 1000),
-                height: autolayout.cv('width', 800),
-            }
-        };
-
-        box0 = {
-            _autolayout: {
-                width: autolayout.cv('width', w),
-                height: autolayout.cv('height', h),
-                top: autolayout.cv('top', 0),
-                right: autolayout.cv('right', 0),
-                bottom: autolayout.cv('bottom', 0),
-                left: autolayout.cv('left', 0),
-            }
-        };
-
-        box1 = {
-            _autolayout: {
-                width: autolayout.cv('width', w),
-                height: autolayout.cv('height', h),
-                top: autolayout.cv('top', 0),
-                right: autolayout.cv('right', 0),
-                bottom: autolayout.cv('bottom', 0),
-                left: autolayout.cv('left', 0),
-            }
-        };
-
-        box2 = {
-            _autolayout: {
-                width: autolayout.cv('width', w),
-                height: autolayout.cv('height', h),
-                top: autolayout.cv('top', 0),
-                right: autolayout.cv('right', 0),
-                bottom: autolayout.cv('bottom', 0),
-                left: autolayout.cv('left', 0),
-            }
-        };
-
-
-
-        viewport.name = 'regionView';
-        box0.name = 'box0';
-        box1.name = 'box1';
-        box2.name = 'box2';
-
-        box0.superview = viewport;
-        box1.superview = box0;
-        box2.superview = box1;
-
-        box0.box1 = box1;
-        box1.box2 = box2;
-
-        initializeAutoLayout(box0);
-        initializeAutoLayout(box1);
-        initializeAutoLayout(box2);
-
-        initializeRelationships(box0);
-        initializeRelationships(box1);
-        initializeRelationships(box2);
-
-        var cn0 = [
-            {
-                item: 'box1',
-                attribute: 'bottom',
-                relatedBy: '==',
-                toItem: 'superview',
-                toAttribute: 'bottom',
-                constant: 0
-            },
-
-            {
-                item: 'box1',
-                attribute: 'height',
-                relatedBy: '==',
-                constant: 200
-            }
-        ];
-
-        var cn1 = [
-            {
-                item: 'box2',
-                attribute: 'bottom',
-                relatedBy: '==',
-                toItem: 'superview',
-                toAttribute: 'bottom',
-                constant: 0
-            },
-        ];
-
-        applyConstraints(cn0, box0, box1);
-        applyConstraints(cn1, box1, box2);
-
-        console.log('(box0) L:' + box0._autolayout.left.value);
-        console.log('(box0) R:' + box0._autolayout.right.value);
-        console.log('(box0) W:' + box0._autolayout.width.value);
-        console.log('(box0) H:' + box0._autolayout.height.value);
-        console.log('---');
-
-        console.log('(box1) L:' + box1._autolayout.left.value);
-        console.log('(box1) R:' + box1._autolayout.right.value);
-        console.log('(box1) W:' + box1._autolayout.width.value);
-        console.log('(box1) H:' + box1._autolayout.height.value);
-        console.log('(box1) T:' + box1._autolayout.top.value);
-        console.log('(box1) B:' + box1._autolayout.bottom.value);
-        console.log('---');
-
-        console.log('(box2) L:' + box2._autolayout.left.value);
-        console.log('(box2) R:' + box2._autolayout.right.value);
-        console.log('(box2) W:' + box2._autolayout.width.value);
-        console.log('(box2) H:' + box2._autolayout.height.value);
-        console.log('---');
-
-
-        done();
-    });
-
     it('generates complex layout modifiers', function(done){
+        var context = new Setup(done);
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -390,7 +309,7 @@ describe('Auto Layout:', function() {
         box1.box2 = box2;
         box1.addSubview(box2);
 
-        region.show(box0);
+        context.region.show(box0);
 
         box0.onShow = function(){
             expect(box0._autolayout.left.value).toEqual(0);
@@ -412,12 +331,13 @@ describe('Auto Layout:', function() {
             expect(box2._autolayout.top.value).toEqual(0);
             expect(box2._autolayout.bottom.value).toEqual(0);
 
-            done();
+            context.done();
         };
 
     });
 
     it('generates common app layout', function(done){
+        var context = new Setup(done);
 
         var autolayoutTransition = {
             duration: 500
@@ -684,7 +604,7 @@ describe('Auto Layout:', function() {
         action3.action4 = action4;
         action3.addSubview(action4);
 
-        region.show(view);
+        context.region.show(view);
 
         //view.setSize([1000, 400]);
         function logValues(){
@@ -782,7 +702,7 @@ describe('Auto Layout:', function() {
             expect(action4._autolayout.top.value).toEqual(40);
             expect(action4._autolayout.bottom.value).toEqual(0);
 
-            done();
+            context.done();
         };
     });
 

@@ -14,38 +14,27 @@ var matrix = require('tests/utils/matrix');
 var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
+var Setup = require('tests/utils/setup').Setup;
 
 
 describe('View+Core:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
     it('renders view', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+        var $el = context.$el;
+
         var model = new Rectangle({
             size: [300, 500]
         });
@@ -53,17 +42,21 @@ describe('View+Core:', function() {
         var view = new RectangleView({model: model});
         view.context = context;
 
-        context.add(view);
+        root.addSubview(view);
 
         render().then(function(){
             expect(view.$el).not.toBe(undefined);
             expect($el.children().length).toBe(1);
-            done();
+            context.done();
         });
     });
 
 
     it('uses modifier', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle({
             size: [300, 500],
         });
@@ -75,7 +68,7 @@ describe('View+Core:', function() {
         var view = new RectangleView({model: model, modifier: modifier});
         view.context = context;
 
-        context.add(view);
+        root.addSubview(view);
 
         view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
@@ -84,11 +77,15 @@ describe('View+Core:', function() {
                 x: 10, y: 20, z: 30
             });
 
-            done();
+            context.done();
         };
     });
 
     it('uses modifier as function', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var obj = {
             action: function(){
                 return new Modifier({
@@ -100,8 +97,7 @@ describe('View+Core:', function() {
         var spy = spyOn(obj, 'action').and.callThrough();
         var view = new rich.View({nestedSubviews: true, modifier: obj.action});
 
-        view.context = context;
-        context.add(view);
+        root.addSubview(view);
 
         view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
@@ -111,11 +107,15 @@ describe('View+Core:', function() {
                 x: 10, y: 20, z: 0
             });
 
-            done();
+            context.done();
         };
     });
 
     it('uses modifier as array', function(done){
+
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var degrees = 45;
         var radians = degrees * Math.PI / 180;
@@ -131,8 +131,7 @@ describe('View+Core:', function() {
         //debugger;
         var view = new rich.View({nestedSubviews: true, modifier: modifiers});
 
-        view.context = context;
-        context.add(view);
+        root.addSubview(view);
 
         view.onShow = function(){
             var value = matrix.getTranslation(view.$el);
@@ -140,11 +139,15 @@ describe('View+Core:', function() {
                 x: 10, y: 10, z: 0
             });
 
-            done();
+            context.done();
         };
     });
 
     it('adds subviews', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var rect1 = new Rectangle({
             tx: 0,
             ty: 0,
@@ -174,8 +177,7 @@ describe('View+Core:', function() {
         rect2View.addSubview(rect3View);
         rect1View.addSubview(rect2View);
 
-        rect1View.context = context;
-        context.add(rect1View);
+        root.addSubview(rect1View);
 
         rect3View.onShow = function(){
             var value1 = matrix.getTranslation(rect1View.$el);
@@ -194,11 +196,14 @@ describe('View+Core:', function() {
                 x: 40, y: 40, z: 0
             });
 
-            done();
+            context.done();
         };
     });
 
     it('adds nested subviews', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var rect1 = new Rectangle({
             tx: 0,
@@ -232,8 +237,7 @@ describe('View+Core:', function() {
         view.addSubview(rect2View);
         view.addSubview(rect3View);
 
-        view.context = context;
-        context.add(view);
+        root.addSubview(view);
 
         view.onShow = function(){
             expect(view.$el).not.toBe(undefined);
@@ -258,12 +262,13 @@ describe('View+Core:', function() {
                 x: 20, y: 20, z: 0
             });
 
-            done();
+            context.done();
         }
     });
 
 
     it('invalidates subview layouts', function(){
+
         // top to bottom
         var view1 = new rich.View();
         var view2 = new rich.View();
@@ -307,7 +312,7 @@ describe('View+Core:', function() {
         view2.addSubview(view3);
         view3.addSubview(view4);
 
-        region.show(view1);
+
         view4.invalidateView();
 
         expect(view1.subviewDidChange.calls.count()).toBe(1);
@@ -316,6 +321,10 @@ describe('View+Core:', function() {
     });
 
     it('triggers onShow with subviews', function(done){
+
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -344,7 +353,7 @@ describe('View+Core:', function() {
         render(1000).then(function(){
             expect(spy0).toHaveBeenCalled();
             expect(spy1).toHaveBeenCalled();
-            done();
+            context.done();
         });
 
         region.show(box0);

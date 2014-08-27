@@ -14,38 +14,25 @@ var matrix = require('tests/utils/matrix');
 var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
-
+var Setup = require('tests/utils/setup').Setup;
 
 describe('View+ClassName:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
     it('uses className', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle({
             size: [300, 500]
         });
@@ -53,16 +40,20 @@ describe('View+ClassName:', function() {
         var view = new RectangleView({model: model, className: 'foo'});
         view.context = context;
 
-        context.add(view);
+        context.context.add(view);
 
         render().then(function(){
             expect(view.$el.hasClass('foo')).toBe(true);
-            done();
+            context.done();
         });
     });
 
 
     it('uses className as function', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle({
             size: [300, 500],
         });
@@ -74,11 +65,11 @@ describe('View+ClassName:', function() {
         var view = new RectangleView({model: model, className: className});
         view.context = context;
 
-        context.add(view);
+        context.context.add(view);
 
         view.onShow = function(){
             expect(view.$el.hasClass('bar')).toBe(true);
-            done();
+            context.done();
         };
     });
 

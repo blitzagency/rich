@@ -14,46 +14,36 @@ var matrix = require('tests/utils/matrix');
 var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
-
+var Setup = require('tests/utils/setup').Setup;
 
 describe('View+Size:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
     it('uses size', function(){
+        var context = new Setup();
+        var region = context.region;
+        var root = context.root;
 
         var view = new rich.View({size: [20, 20]});
-        view.context = context;
 
-        context.add(view);
+        root.addSubview(view);
+
         expect(view.getSize()).toEqual([20, 20]);
+        context.done();
     });
 
     it('uses size as function', function(){
+        var context = new Setup();
+        var region = context.region;
+        var root = context.root;
 
         var obj = {
             size: function(){
@@ -68,6 +58,7 @@ describe('View+Size:', function() {
 
         expect(spy).toHaveBeenCalled();
         expect(view.getSize()).toEqual([20, 20]);
+        context.done();
     });
 
 

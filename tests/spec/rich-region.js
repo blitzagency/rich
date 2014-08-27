@@ -16,40 +16,24 @@ var wait = require('tests/utils/time').wait;
 var css = require('tests/utils/css');
 var colors = require('tests/utils/colors').blue;
 var log = require('tests/utils/log');
+var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Region:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
+
 
     beforeEach(function() {
         loadFixtures('famous.html');
-
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
     it('view inherits size', function(done){
-
+        var context = new Setup(done);
         var color0 = new Rectangle({
             color: colors[7]
         });
@@ -61,14 +45,14 @@ describe('Region:', function() {
         box0.onShow = function(){
             var size = css.getSize(box0.$el);
             expect(size).toEqual([1000, 800]);
-            done();
+            context.done();
         };
 
-        region.show(box0);
+        context.region.show(box0);
     });
 
     it('uses constraints', function(done){
-
+        var context = new Setup(done);
         var color0 = new Rectangle({
             color: colors[7]
         });
@@ -77,7 +61,7 @@ describe('Region:', function() {
             model: color0,
         });
 
-        region.constraints = function(){
+        context.region.constraints = function(){
             return [
                 {
                     item: box0,
@@ -91,13 +75,16 @@ describe('Region:', function() {
         box0.onShow = function(){
             var size = css.getSize(box0.$el);
             expect(size).toEqual([1000, 100]);
-            done();
+            context.done();
         };
 
-        region.show(box0);
+        context.region.show(box0);
     });
 
     it('uses constraints after initial render', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -107,7 +94,7 @@ describe('Region:', function() {
             model: color0,
         });
 
-        root.constraints = function(){
+        context.root.constraints = function(){
             return [
 
                 {
@@ -123,18 +110,19 @@ describe('Region:', function() {
                     item: region,
                     attribute: 'height',
                     relatedBy: '==',
-                    toItem: root,
+                    toItem: context.root,
                     toAttribute: 'height',
                     constant: -100,
                 },
             ];
         };
 
+
         box0.onShow = function(){
             expect(region._autolayout.width.value).toEqual(1000);
             expect(region._autolayout.height.value).toEqual(700);
             expect(region._autolayout.top.value).toEqual(100);
-            done();
+            context.done();
         };
 
         render().then(function(){
@@ -147,6 +135,9 @@ describe('Region:', function() {
     });
 
     it('swaps views', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -187,7 +178,7 @@ describe('Region:', function() {
             render().then(function(){
                 var size = css.getSize(box1.$el);
                 expect(size).toEqual([1000, 100]);
-                done();
+                context.done();
             });
         });
 
@@ -195,7 +186,7 @@ describe('Region:', function() {
     });
 
     it('applies h/w constraints to subviews children', function(done){
-
+        var context = new Setup(done);
         var color0 = new Rectangle({
             color: colors[7]
         });
@@ -218,14 +209,14 @@ describe('Region:', function() {
         render().then(function(){
             expect(box0.getSize()).toEqual([1000, 800]);
             expect(box1.getSize()).toEqual([1000, 800]);
-            done();
+            context.done();
         });
 
-        region.show(box0);
+        context.region.show(box0);
     });
 
     it('applies h/w constraints to subviews children', function(done){
-
+        var context = new Setup(done);
         var color0 = new Rectangle({
             color: colors[7]
         });
@@ -251,14 +242,14 @@ describe('Region:', function() {
         render().then(function(){
             expect(box0.getSize()).toEqual([1000, 800]);
             expect(box1.getSize()).toEqual([1000, 800]);
-            done();
+            context.done();
         });
 
-        region.show(parent);
+        context.region.show(parent);
     });
 
     it('applies h/w constraints to subviews children with nestedSubviews', function(done){
-
+        var context = new Setup(done);
         var color0 = new Rectangle({
             color: colors[7]
         });
@@ -286,13 +277,16 @@ describe('Region:', function() {
         render().then(function(){
             expect(box0.getSize()).toEqual([1000, 800]);
             expect(box1.getSize()).toEqual([1000, 800]);
-            done();
+            context.done();
         });
 
-        region.show(parent);
+        context.region.show(parent);
     });
 
     it('applies h/w constraints to collection view', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var collection = new backbone.Collection();
 
@@ -301,12 +295,12 @@ describe('Region:', function() {
             childView: RectangleView
         });
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         render().then(function(){
             expect(region.getSize()).toEqual([1000, 800]);
             expect(collectionView.getSize()).toEqual([1000, 800]);
-            done();
+            context.done();
         });
     });
 

@@ -10,33 +10,27 @@ var EventsView = require('app/shared/views/events-view').EventsView;
 var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
+var Setup = require('tests/utils/setup').Setup;
 
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('ItemView UI:', function() {
-    var region;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        region = new rich.Region({
-            el: '#famous-context'
-        });
-
-        $el = region.el;
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        region.reset();
-        region = null;
+
     });
 
 
-
     it('checks UI object', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var ClickableRect = EventsView.extend({
             events: {
@@ -47,7 +41,7 @@ describe('ItemView UI:', function() {
         region.show(view);
 
         view.onShow = function(){
-            done();
+            context.done();
         };
 
     });

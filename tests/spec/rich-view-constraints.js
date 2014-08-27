@@ -14,42 +14,27 @@ var colors = require('tests/utils/colors').blue;
 var render = require('tests/utils/time').render;
 var css = require('tests/utils/css');
 var constraints = require('rich/autolayout/constraints');
+var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View + Constraints:', function() {
 
-    var root;
-    var region;
-    var context;
-    var $el;
-
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        region.name = 'region';
-
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
     it('updates with constraints', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -90,11 +75,15 @@ describe('View + Constraints:', function() {
             expect(box1._autolayout.bottom.value).toBe(600);
 
             expect(css.getSize(box1.$el)).toEqual([1000, 200]);
-            done();
+            context.done();
         };
     });
 
     it('updates layout after adding constraint with JSON', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -146,12 +135,16 @@ describe('View + Constraints:', function() {
                 expect(box1._autolayout.height.value).toBe(200);
                 expect(box1._autolayout.bottom.value).toBe(600);
                 expect(css.getSize(box1.$el)).toEqual([1000, 200]);
-                done();
+                context.done();
             });
         };
     });
 
     it('updates layout after adding constraint with VFL', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -198,12 +191,16 @@ describe('View + Constraints:', function() {
                 expect(box1._autolayout.height.value).toBe(200);
                 expect(box1._autolayout.bottom.value).toBe(600);
                 expect(css.getSize(box1.$el)).toEqual([1000, 200]);
-                done();
+                context.done();
             });
         };
     });
 
     it('removes constraint', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -278,7 +275,7 @@ describe('View + Constraints:', function() {
                     render().then(function(){
                         expect(box1._autolayout.width.value).toBe(1000);
                         expect(box1._autolayout.height.value).toBe(800);
-                        done();
+                        context.done();
                     });
                 });
 
@@ -287,6 +284,10 @@ describe('View + Constraints:', function() {
     });
 
     it('removes constraints', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -353,7 +354,7 @@ describe('View + Constraints:', function() {
                 render().then(function(){
                     expect(box1._autolayout.width.value).toBe(1000);
                     expect(box1._autolayout.height.value).toBe(800);
-                    done();
+                    context.done();
                 });
 
             });

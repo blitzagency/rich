@@ -15,38 +15,23 @@ var colors = require('tests/utils/colors').blue;
 var css = require('tests/utils/css');
 var matrix = require('tests/utils/matrix');
 var log = require('tests/utils/log');
+var Setup = require('tests/utils/setup').Setup;
+
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('CollectionView:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous-full.html');
-
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
     it('display views from initial collection (sizeForViewAtIndex)', function(done){
+        var context = new Setup(done);
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -80,21 +65,22 @@ describe('CollectionView:', function() {
             }
         });
 
-        region.name = 'region';
+        context.region.name = 'region';
         collectionView.name = 'collectionView';
 
 
-        region.constraints = function(){
+        context.region.constraints = function(){
             return [
                 'H:|[currentView]|',
                 'V:|[currentView]|',
             ];
         };
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         collectionView.onShow = function(){
             var targetHeight = 20; // sizeForViewAtIndex value
+            var $el = context.$el;
 
             expect($el.children().length).toEqual(4);
             var startColor = 7;
@@ -115,13 +101,13 @@ describe('CollectionView:', function() {
             });
 
 
-            done();
+            context.done();
         };
 
     });
 
     it('display views from initial collection (intrinsic size)', function(done){
-
+        var context = new Setup(done);
         var AltView = RectangleView.extend({
             size: [0, 50]
         });
@@ -154,23 +140,23 @@ describe('CollectionView:', function() {
             spacing: 5,
         });
 
-        region.name = 'region';
+        context.region.name = 'region';
         collectionView.name = 'collectionView';
 
 
-        region.constraints = function(){
+        context.region.constraints = function(){
             return [
                 'H:|[currentView]|',
                 'V:|[currentView]|',
             ];
         };
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         collectionView.onShow = function(){
             var targetHeight = 50;
             var targetWidth = window.innerWidth;
-
+            var $el = context.$el;
 
             expect($el.children().length).toEqual(4);
             var startColor = 7;
@@ -191,13 +177,13 @@ describe('CollectionView:', function() {
 
             });
 
-            done();
+            context.done();
         };
 
     });
 
     it('adds model', function(done){
-
+        var context = new Setup(done);
         var AltView = RectangleView.extend({
             size: [0, 50]
         });
@@ -229,18 +215,19 @@ describe('CollectionView:', function() {
             spacing: 5,
         });
 
-        region.constraints = function(){
+        context.region.constraints = function(){
             return [
                 'H:|[currentView]|',
                 'V:|[currentView]|',
             ];
         };
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         collectionView.onShow = function(){
             var targetHeight = 50;
             var targetWidth = window.innerWidth;
+            var $el = context.$el;
             var $child;
 
             $child = $($el.children()[0]);
@@ -267,13 +254,13 @@ describe('CollectionView:', function() {
                     expect($child.width()).toEqual(targetWidth);
                 });
 
-                done();
+                context.done();
             });
         };
     });
 
     it('removes model', function(done){
-
+        var context = new Setup(done);
         var AltView = RectangleView.extend({
             size: [0, 50]
         });
@@ -305,12 +292,13 @@ describe('CollectionView:', function() {
             spacing: 5,
         });
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         collectionView.onShow = function(){
             var targetHeight = 50;
             var targetWidth = window.innerWidth;
             var $child;
+            var $el = context.$el;
 
             expect($el.children().length).toEqual(4);
             expect(collectionView.children.length).toEqual(4);
@@ -350,14 +338,14 @@ describe('CollectionView:', function() {
                         expect($child.width()).toEqual(targetWidth);
                     });
 
-                    done();
+                    context.done();
                 });
             });
         };
     });
 
     it('resets', function(done){
-
+        var context = new Setup(done);
         var AltView = RectangleView.extend({
             size: [0, 50]
         });
@@ -389,12 +377,13 @@ describe('CollectionView:', function() {
         });
 
 
-        region.show(collectionView);
+        context.region.show(collectionView);
 
         collectionView.onShow = function(){
             var targetHeight = 50;
             var targetWidth = window.innerWidth;
             var $child;
+            var $el = context.$el;
 
             expect($el.children().length).toEqual(3);
             expect(collectionView.children.length).toEqual(3);
@@ -427,14 +416,14 @@ describe('CollectionView:', function() {
                     expect(color5).toEqual(colors[5]);
                     expect(color4).toEqual(colors[4]);
 
-                    done();
+                    context.done();
                 });
             });
         };
     });
 
     it('inherits vertical size for horizontal orientation', function(done){
-
+        var context = new Setup(done);
         var AltView = RectangleView.extend({
             size: [100, 0]
         });
@@ -485,19 +474,21 @@ describe('CollectionView:', function() {
 
 
         layout.addSubview(collectionView);
-        root.addSubview(layout);
+        context.root.addSubview(layout);
         collectionView.name = 'collectionView';
 
         layout.onShow = function(){
             var child = collectionView.children.findByIndex(0);
             expect(child._autolayout.width.value).toEqual(100);
             expect(child._autolayout.height.value).toEqual(100);
-            done();
+
+            context.done();
         };
 
     });
 
     it('initializes from reset', function(done){
+        var context = new Setup(done);
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -533,7 +524,7 @@ describe('CollectionView:', function() {
 
 
         layout.addSubview(collectionView);
-        root.addSubview(layout);
+        context.root.addSubview(layout);
 
         collection.reset([color0, color1, color2]);
 
@@ -546,7 +537,7 @@ describe('CollectionView:', function() {
                 expect(child._autolayout.height.value).toEqual(targetHeight);
             });
 
-            done();
+            context.done();
         };
 
     });

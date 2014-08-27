@@ -12,34 +12,17 @@ var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
+var Setup = require('tests/utils/setup').Setup;
 
 describe('Visual Format Language:', function() {
-
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
@@ -346,6 +329,10 @@ describe('Visual Format Language:', function() {
     });
 
     it('uses vfl when initializing view constraints', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -386,12 +373,17 @@ describe('Visual Format Language:', function() {
             expect(box1._autolayout.height.value).toBe(200);
             expect(box1._autolayout.top.value).toBe(600);
             expect(box1._autolayout.bottom.value).toBe(0);
-            done();
+
+            context.done();
         };
 
     });
 
     it('uses mixed vfl + json when initializing view constraints', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var color0 = new Rectangle({
             color: colors[0]
         });
@@ -442,7 +434,8 @@ describe('Visual Format Language:', function() {
             expect(box1._autolayout.height.value).toBe(200);
             expect(box1._autolayout.top.value).toBe(600);
             expect(box1._autolayout.bottom.value).toBe(0);
-            done();
+
+            context.done();
         };
 
     });

@@ -13,39 +13,27 @@ var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var LongView = require('app/shared/views/long-view').LongView;
+var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('Layout:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
+
 
     beforeEach(function() {
         loadFixtures('famous.html');
-
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toEqual(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
     it('basic driver scrolls to a scrolled position', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -68,12 +56,16 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                done();
+                context.done();
             });
         });
     });
 
     it('basic driver animates to a scrolled position', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -111,7 +103,7 @@ describe('Layout:', function() {
 
             wait(500).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                done();
+                context.done();
             });
 
 
@@ -119,6 +111,10 @@ describe('Layout:', function() {
     });
 
     it('bounce driver scrolls to a scrolled position', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -141,12 +137,16 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                done();
+                context.done();
             });
         });
     });
 
     it('bounce driver animates to a scrolled position', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -185,7 +185,7 @@ describe('Layout:', function() {
 
             wait(500).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                done();
+                context.done();
             });
 
 
@@ -193,6 +193,10 @@ describe('Layout:', function() {
     });
 
     it('basic driver scrolls to a scrolled position horizontally', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -215,12 +219,16 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([-500, 0, 0]);
-                done();
+                context.done();
             });
         });
     });
 
     it('basic driver animates to a scrolled position horizontally', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -258,7 +266,7 @@ describe('Layout:', function() {
 
             wait(500).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([-500, 0, 0]);
-                done();
+                context.done();
             });
 
 
@@ -266,6 +274,10 @@ describe('Layout:', function() {
     });
 
     it('bounce driver scrolls to a scrolled position horizontally', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -288,12 +300,16 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([-500, 0, 0]);
-                done();
+                context.done();
             });
         });
     });
 
     it('bounce driver animates to a scrolled position horizontally', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
         var model = new Rectangle();
         var view = new LongView({
             model: model,
@@ -332,7 +348,7 @@ describe('Layout:', function() {
 
             wait(500).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([-500, 0, 0]);
-                done();
+                context.done();
             });
 
 

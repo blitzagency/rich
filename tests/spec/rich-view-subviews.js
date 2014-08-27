@@ -16,35 +16,19 @@ var css = require('tests/utils/css');
 var render = require('tests/utils/time').render;
 var colors = require('tests/utils/colors').blue;
 var scroll = require('rich/scrollview/scrollview');
+var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
 describe('View Subview:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
 
     beforeEach(function() {
         loadFixtures('famous.html');
 
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
 
@@ -129,6 +113,9 @@ describe('View Subview:', function() {
     });
 
     it('builds correct spec based on view with child', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -167,11 +154,14 @@ describe('View Subview:', function() {
             // target 2 = subviews constraint modifier
             // target 3 = subviews modifier
             expect(spec.target.target.target).toBe(subview1.getFamousId());
-            done();
+            context.done();
         });
     });
 
     it('builds correct spec based on view with multiple children', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -212,11 +202,14 @@ describe('View Subview:', function() {
             expect(spec.target[0].target.target).toBe(subview1.getFamousId());
             expect(spec.target[1].target.target).toBe(subview2.getFamousId());
 
-            done();
+            context.done();
         });
     });
 
     it('builds correct spec after invalidate based on view with child', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -256,11 +249,14 @@ describe('View Subview:', function() {
             // target 2 = subviews constraint modifier
             // target 3 = subviews modifier
             expect(spec.target.target.target).toBe(subview1.getFamousId());
-            done();
+            context.done();
         });
     });
 
     it('builds correct spec after invalidate based on view with multiple children', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -302,11 +298,14 @@ describe('View Subview:', function() {
             //             V         V      V
             expect(spec.target[0].target.target).toBe(subview1.getFamousId());
             expect(spec.target[1].target.target).toBe(subview2.getFamousId());
-            done();
+            context.done();
         });
     });
 
     it('builds correct spec after render, based on view with multiple children', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -348,12 +347,15 @@ describe('View Subview:', function() {
                 //             V         V      V
                 expect(spec.target[0].target.target).toBe(subview1.getFamousId());
                 expect(spec.target[1].target.target).toBe(subview2.getFamousId());
-                done();
+                context.done();
             });
         });
     });
 
     it('builds correct spec after render, based on child with multiple modifiers', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -394,12 +396,15 @@ describe('View Subview:', function() {
                 var spec = view.render();
                 expect(spec.target[0].target.target).toBe(subview1.getFamousId());
                 expect(spec.target[1].target.target.target.target).toBe(subview2.getFamousId());
-                done();
+                context.done();
             });
         });
     });
 
     it('builds correct spec after render, based on child and parent with multiple modifiers', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
 
         var blue = new Rectangle({
             color: 'blue'
@@ -442,7 +447,7 @@ describe('View Subview:', function() {
                 expect(firstArr[0]).toBe(subview1.getFamousId());
                 expect(firstArr[1].target.target.target.target[0]).toBe(subview2.getFamousId());
                 expect(firstArr[1].target.target.target.target[1].target.target.target.target).toBe(subview3.getFamousId());
-                done();
+                context.done();
             });
         });
     });

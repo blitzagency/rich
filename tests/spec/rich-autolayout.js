@@ -13,45 +13,34 @@ var render = require('tests/utils/time').render;
 var wait = require('tests/utils/time').wait;
 var colors = require('tests/utils/colors').blue;
 var log = require('tests/utils/log');
+var Setup = require('tests/utils/setup').Setup;
 
 
-describe('Auto Layout:', function() {
-    var root;
-    var region;
-    var context;
-    var $el;
+describe('Auto Layout + Layout:', function() {
 
     beforeEach(function() {
         loadFixtures('famous.html');
-
-        root = utils.initializeRichContext({
-            el: '#famous-context'
-        });
-
-        region = new rich.Region();
-        root.addSubview(region);
-
-        $el = $(root.context.container);
-        context = root.context;
-
-        expect($el.length).toBe(1);
     });
 
     afterEach(function() {
-        utils.disposeRichContext(root);
-        region = null;
-        root = null;
+
     });
 
-
     it('initializes autolayout', function(){
+        var context = new Setup();
+
         var model = new Rectangle();
         var view = new RectangleView({model: model});
-        region.show(view);
+
+        context.region.show(view);
         expect(view._autolayout).not.toBe(undefined);
+
+        context.done();
     });
 
     it('adds left constraint based on parents width', function(done){
+        var context = new Setup(done);
+
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -72,7 +61,7 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             // console.log(view._autolayout.width.value)
@@ -82,31 +71,37 @@ describe('Auto Layout:', function() {
             // console.log('should be 250')
             expect(view.navigation._autolayout.left.value).toBe(250);
 
-            done();
-        };
+            context.done();
+        }
 
     });
 
     it('sets explicit size on subview', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
 
         var view = new RectangleView({
             model: model,
         });
+
         view.navigation = new RectangleView({
             model:model,
             size: [100, 200]
         });
+
         view.addSubview(view.navigation);
-        region.show(view);
+
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([100, 200]);
-            done();
+
+            context.done();
         };
     });
 
     it('inherits size', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -116,16 +111,18 @@ describe('Auto Layout:', function() {
         view.navigation = new rich.View({});
         view.addSubview(view.navigation);
 
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([1000, 800]);
-            done();
+
+            context.done();
         };
     });
 
     // the concept for this test is fundamentally wrong.
     it('ignores size over constraints', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -151,21 +148,24 @@ describe('Auto Layout:', function() {
                 }
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
             size: [100, 200]
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([500, 400]);
-            done();
+
+            context.done();
         };
     });
 
     it('uses constraints with superview, ==, and width', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
 
         var view = new RectangleView({
@@ -197,15 +197,17 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([500, 400]);
-            done();
+
+            context.done();
         };
     });
 
     it('handles multiple simple constraints', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -238,20 +240,23 @@ describe('Auto Layout:', function() {
 
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation.getSize()).toEqual([100, 100]);
-            done();
+
+            context.done();
         };
     });
 
     it('handles left simple constraint', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -267,20 +272,22 @@ describe('Auto Layout:', function() {
 
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(20);
-            done();
+            context.done();
         };
     });
 
     it('handles width simple constraint', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -306,7 +313,7 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
 
@@ -318,11 +325,13 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.bottom.value).toBe(720);
             expect(view.navigation._autolayout.top.value).toBe(0);
             expect(view.navigation._autolayout.height.value).toBe(80);
-            done();
+
+            context.done();
         };
     });
 
     it('handles right simple constraint', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -352,7 +361,7 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.right.value).toBe(80);
@@ -362,11 +371,13 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.bottom.value).toBe(80);
             expect(view.navigation._autolayout.top.value).toBe(0);
             expect(view.navigation._autolayout.height.value).toBe(720);
-            done();
+
+            context.done();
         };
     });
 
     it('handles top and bottom simple constraint', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -395,18 +406,20 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.bottom.value).toBe(80);
             expect(view.navigation._autolayout.top.value).toBe(80);
             expect(view.navigation._autolayout.height.value).toBe(640);
-            done();
+
+            context.done();
         };
     });
 
 
     it('handles constraints outside of bounds of parent', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -441,12 +454,13 @@ describe('Auto Layout:', function() {
                 },
             ]
         });
+
         view.navigation = new RectangleView({
             model:model,
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(800);
@@ -456,11 +470,13 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.top.value).toBe(800);
             expect(view.navigation._autolayout.height.value).toBe(800);
             expect(view.navigation._autolayout.bottom.value).toBe(-800);
-            done();
+
+            context.done();
         };
     });
 
     it('adds constraints based on parent', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -491,7 +507,7 @@ describe('Auto Layout:', function() {
         });
 
         view.addSubview(view.navigation);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(0);
@@ -501,11 +517,13 @@ describe('Auto Layout:', function() {
             expect(view.navigation._autolayout.top.value).toBe(0);
             expect(view.navigation._autolayout.height.value).toBe(440);
             expect(view.navigation._autolayout.bottom.value).toBe(360);
-            done();
+
+            context.done();
         };
     });
 
     it('adds constraints based on sibling', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -547,7 +565,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(0);
@@ -557,12 +575,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.left.value).toBe(460);
             expect(view.button._autolayout.right.value).toBe(500);
             expect(view.button._autolayout.width.value).toBe(40);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on sibling out of sequence', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -617,7 +637,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(10);
@@ -627,12 +647,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.left.value).toBe(470);
             expect(view.button._autolayout.right.value).toBe(490);
             expect(view.button._autolayout.width.value).toBe(40);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with right/right', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -672,13 +694,14 @@ describe('Auto Layout:', function() {
         view.navigation = new RectangleView({
             model:model,
         });
+
         view.button = new RectangleView({
             model:model,
         });
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(250);
@@ -687,12 +710,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.left.value).toBe(300);
             expect(view.button._autolayout.right.value).toBe(650);
             expect(view.button._autolayout.width.value).toBe(50);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with left/left', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -739,7 +764,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(250);
@@ -748,12 +773,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.left.value).toBe(250);
             expect(view.button._autolayout.right.value).toBe(700);
             expect(view.button._autolayout.width.value).toBe(50);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with bottom/bottom', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -800,7 +827,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.top.value).toBe(250);
@@ -809,12 +836,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.top.value).toBe(300);
             expect(view.button._autolayout.bottom.value).toBe(450);
             expect(view.button._autolayout.height.value).toBe(50);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with top/top', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -860,7 +889,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.top.value).toBe(250);
@@ -869,12 +898,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.top.value).toBe(250);
             expect(view.button._autolayout.bottom.value).toBe(500);
             expect(view.button._autolayout.height.value).toBe(50);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with left/left', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -921,7 +952,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.left.value).toBe(850);
@@ -930,12 +961,14 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.left.value).toBe(850);
             expect(view.button._autolayout.right.value).toBe(100);
             expect(view.button._autolayout.width.value).toBe(50);
-            done();
+
+            context.done();
         };
 
     });
 
     it('adds constraints based on siblings with top/top', function(done){
+        var context = new Setup(done);
         var model = new Rectangle();
         var view = new RectangleView({
             model: model,
@@ -982,7 +1015,7 @@ describe('Auto Layout:', function() {
 
         view.addSubview(view.navigation);
         view.addSubview(view.button);
-        region.show(view);
+        context.region.show(view);
 
         view.onShow = function(){
             expect(view.navigation._autolayout.top.value).toBe(450);
@@ -991,7 +1024,8 @@ describe('Auto Layout:', function() {
             expect(view.button._autolayout.top.value).toBe(450);
             expect(view.button._autolayout.bottom.value).toBe(305);
             expect(view.button._autolayout.height.value).toBe(45);
-            done();
+
+            context.done();
         };
 
     });
