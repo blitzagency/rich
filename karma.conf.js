@@ -10,6 +10,16 @@ module.exports = function(config) {
     }
   };
 
+  if (!process.env.SAUCE_USERNAME) {
+    if (!fs.existsSync('sauce.json')) {
+      console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
+      process.exit(1);
+    } else {
+      process.env.SAUCE_USERNAME = require('./sauce').username;
+      process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
+    }
+  }
+
   config.set({
     frameworks: ['jasmine', 'requirejs'],
 
@@ -58,6 +68,7 @@ module.exports = function(config) {
     sauceLabs: {
         testName: 'Web App Unit Tests'
     },
+    captureTimeout: 120000,
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
   });
