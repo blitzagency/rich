@@ -291,10 +291,18 @@ var FamousView = marionette.View.extend({
         this._constraintsInitialized = true;
         this._initializeRelationships();
 
-        if(constraints === undefined && this._constraints.length === 0){
+        var hasNoConstraints = constraints === null || constraints === undefined;
+        hasNoConstraints = hasNoConstraints ? this._constraints.length === 0 : false;
+
+        if(hasNoConstraints){
             this._mapAutolayout();
             return;
         }
+
+        // if(constraints === undefined && this._constraints.length === 0){
+        //     this._mapAutolayout();
+        //     return;
+        // }
 
         if(constraints){
             constraints = this._processIntrinsicConstraints(constraints);
