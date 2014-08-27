@@ -1,12 +1,9 @@
 language: node_js
 node_js:
 - 0.1
-# before_script:
-# - export DISPLAY=:99.0
-# - sh -e /etc/init.d/xvfb start
-env:
-  global:
-  - secure: FBOaX6uA+T4BTCeNce6F+TXIye7qR5c/MvtrAvIOPf9H4AMwcIsCP5u4vkY6EjbjCpvMyVIHZHJNuUuEkHIG4YC3d5ZTi2hN4gO+6wwrw26nsfH5iOj44sVQsxq/nUirIgripC9zLytdA35edibDJeGfc0ExgAMMAr8JDPOtwGM=
-  - secure: MePEDrmHCmbhSGx7bOcYeOLqdRquppMvi3UugOLQ6s++hi6qIKaaweWJZqvsLKhQVjjmaWlZhEMNqzsLiAjt/E27wkOCW3NrTsppYAtYI4Hm8zl8WJhGkOR+bFgDlLf2AIBeK/obry5cZdPbDSdYX7q3rSbvAhaXvkkPAVdmizs=
 addons:
   sauce_connect: true
+env:
+  global:
+  - secure: QH+fWEG985uqaA2vrr2ZbvM8Xfgyj1blnCUjnL3gLwF6GFvcE8nyIcTcTFxa/xeqY8WOtlzn9sudGFBraS1ZUo6dA0v8wf0CO06T/ju8HXFLviG2CcSca9zt1T5++6zMbaq0Nyo9t6cxbxAUwpCpbtc8OHEM/O9d5PYl6R9JTAw=
+  - secure: gk+OrWkQSEzwuO6rdFLvH3UcEmKx68MCW313O/UbGmci9VWVfh5m++9PwmNHNvDYRlNjal7eY4W26M4G0Zvd62K2TseueKSsOMhMNHAKzHICCozxjvKHRW6+di2c3xe5R61/ar4rGQwIbmIwrS+0jSGY3rW+OtoTDm3hzxt8DDg=
