@@ -1,6 +1,12 @@
 language: node_js
 node_js:
-  - 0.10
+- 0.1
 before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+env:
+  global:
+  - secure: FBOaX6uA+T4BTCeNce6F+TXIye7qR5c/MvtrAvIOPf9H4AMwcIsCP5u4vkY6EjbjCpvMyVIHZHJNuUuEkHIG4YC3d5ZTi2hN4gO+6wwrw26nsfH5iOj44sVQsxq/nUirIgripC9zLytdA35edibDJeGfc0ExgAMMAr8JDPOtwGM=
+  - secure: MePEDrmHCmbhSGx7bOcYeOLqdRquppMvi3UugOLQ6s++hi6qIKaaweWJZqvsLKhQVjjmaWlZhEMNqzsLiAjt/E27wkOCW3NrTsppYAtYI4Hm8zl8WJhGkOR+bFgDlLf2AIBeK/obry5cZdPbDSdYX7q3rSbvAhaXvkkPAVdmizs=
+addons:
+  sauce_connect: true

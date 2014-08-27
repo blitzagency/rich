@@ -1,5 +1,15 @@
 // karma.conf.js
 module.exports = function(config) {
+
+  var customLaunchers = {
+    sl_chrome: {
+      base: 'SauceLabs',
+      browserName: 'chrome',
+      platform: 'OS X 10.9',
+      version: '35'
+    }
+  };
+
   config.set({
     frameworks: ['jasmine', 'requirejs'],
 
@@ -26,24 +36,29 @@ module.exports = function(config) {
         '**/karma.conf.js'
     ],
 
-    reporters: ['dots'],
+    reporters: ['dots', 'saucelabs'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    autoWatch: true,
+    // autoWatch: true,
     // browsers: ['Chrome'],
     // browsers: ['Firefox'],
     // browsers: ['Safari'],
-    browsers: ['Chrome', 'Firefox'],
+    // browsers: ['Chrome', 'Firefox'],
     singleRun: false,
     plugins : [
         'karma-chrome-launcher',
         'karma-firefox-launcher',
         'karma-safari-launcher',
+        'karma-sauce-launcher',
         'karma-jasmine',
         'karma-coverage',
         'karma-requirejs'
     ],
-
+    sauceLabs: {
+        testName: 'Web App Unit Tests'
+    },
+    customLaunchers: customLaunchers,
+    browsers: Object.keys(customLaunchers),
   });
 };
