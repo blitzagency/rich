@@ -33,6 +33,6 @@
     "url": "https://github.com/blitzagency/rich/issues"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run"
+    "test": "./node_modules/.bin/karma start karma.conf-ci.js"
   }
 }
