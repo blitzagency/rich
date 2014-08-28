@@ -28,7 +28,6 @@
     "url": "https://github.com/blitzagency/rich/issues"
   },
   "scripts": {
-    "test": "karma start karma.conf-ci.js",
-    "postinstall": "node install.js"
+    "test": "karma start karma.conf-ci.js"
   }
 }
