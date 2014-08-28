@@ -16,11 +16,9 @@ module.exports = function(config) {
 
   // Browsers to run on Sauce Labs
   var customLaunchers = {
-    sl_chrome: {
+    'SL_Chrome': {
       base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'OS X 10.9',
-      version: '35'
+      browserName: 'chrome'
     }
   };
 
@@ -67,7 +65,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
 
     sauceLabs: {
       testName: 'Rich and Famous'
