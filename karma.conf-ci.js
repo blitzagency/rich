@@ -1,4 +1,3 @@
-
 var fs = require('fs');
 
 module.exports = function(config) {
@@ -35,10 +34,8 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
-    exclude: [
-        '**/karma.conf.js'
-    ],
+    frameworks: ['jasmine'],
+
 
     // list of files / patterns to load in the browser
     files: [
@@ -73,7 +70,7 @@ module.exports = function(config) {
     logLevel: config.LOG_DEBUG,
 
     sauceLabs: {
-      testName: 'Rich and Famous'
+      testName: 'Rich'
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
