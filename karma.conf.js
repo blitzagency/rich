@@ -46,21 +46,17 @@ module.exports = function(config) {
         '**/karma.conf.js'
     ],
 
-    reporters: ['dots', 'saucelabs'],
+    reporters: ['dots'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    // autoWatch: true,
-    // browsers: ['Chrome'],
-    // browsers: ['Firefox'],
-    // browsers: ['Safari'],
-    // browsers: ['Chrome', 'Firefox'],
+    autoWatch: true,
+    browsers: ['Chrome'],
     singleRun: false,
     plugins : [
         'karma-chrome-launcher',
         'karma-firefox-launcher',
         'karma-safari-launcher',
-        'karma-sauce-launcher',
         'karma-jasmine',
         'karma-coverage',
         'karma-requirejs'
@@ -68,8 +64,6 @@ module.exports = function(config) {
     sauceLabs: {
         testName: 'Web App Unit Tests'
     },
-    captureTimeout: 120000,
-    customLaunchers: customLaunchers,
-    browsers: Object.keys(customLaunchers),
+    browsers: ['Chrome']
   });
 };

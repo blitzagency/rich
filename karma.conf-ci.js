@@ -17,12 +17,19 @@ module.exports = function(config) {
   var customLaunchers = {
     'SL_Chrome': {
       base: 'SauceLabs',
-      browserName: 'chrome'
+      browserName: 'chrome',
+      version: '35'
     },
     'SL_Firefox': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '26'
+      version: '30'
+    },
+    'SL_IE_11': {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      platform: 'Windows 8.1',
+      version: '11'
     }
   };
 
@@ -67,7 +74,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_ERROR,
 
     sauceLabs: {
       testName: 'Rich and Famous Tests'
