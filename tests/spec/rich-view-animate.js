@@ -205,18 +205,26 @@ describe('View Animation:', function() {
         view.box0 = box0;
         view.addSubview(box0);
         region.show(view);
-
+        var arr;
         render().then(function(){
-            expect(css.getOrigin(box0.$el)).toEqual([0, 0]);
+            arr = css.getOrigin(box0.$el);
+            expect(arr[0]).toEqual(0);
+            expect(arr[1]).toEqual(0);
             wait(200).then(function(){
-                expect(css.getOrigin(box0.$el)).not.toEqual([0, 0]);
-                expect(css.getOrigin(box0.$el)).not.toEqual([100, 100]);
+                arr = css.getOrigin(box0.$el);
+                expect(arr[0]).not.toEqual(0);
+                expect(arr[1]).not.toEqual(0);
+                arr = css.getOrigin(box0.$el);
+                expect(arr[0]).not.toEqual(100);
+                expect(arr[1]).not.toEqual(100);
             });
             box0.setOrigin(
                 [1, 1],
                 {duration: 400}
             ).then(function(){
-                expect(css.getOrigin(box0.$el)).toEqual([100, 100]);
+                arr = css.getOrigin(box0.$el);
+                expect(arr[0]).toEqual(100);
+                expect(arr[1]).toEqual(100);
                 context.done();
             });
         });
@@ -245,13 +253,17 @@ describe('View Animation:', function() {
         view.box0 = box0;
         view.addSubview(box0);
         region.show(view);
-
+        var arr;
         render().then(function(){
-            expect(css.getOrigin(box0.$el)).toEqual([0, 0]);
+            arr = css.getOrigin(box0.$el);
+            expect(arr[0]).toEqual(0);
+            expect(arr[1]).toEqual(0);
             box0.setOrigin(
                 [1, 1]
             ).then(function(){
-                expect(css.getOrigin(box0.$el)).toEqual([100, 100]);
+                arr = css.getOrigin(box0.$el);
+                expect(arr[0]).toEqual(100);
+                expect(arr[1]).toEqual(100);
                 context.done();
             });
         });

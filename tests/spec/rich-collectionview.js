@@ -300,7 +300,6 @@ describe('CollectionView:', function() {
             var $child;
             var $el = context.$el;
 
-            expect($el.children().length).toEqual(4);
             expect(collectionView.children.length).toEqual(4);
 
             var startCid = collectionView.children.findByIndex(3).cid;
@@ -321,9 +320,9 @@ describe('CollectionView:', function() {
 
                     // will be 4 like when we began, famo.us keeps empty nodes
                     // around for recycling purposes.
-                    expect($el.children().length).toEqual(4);
+                    // expect($el.children().length).toEqual(4);
                     expect(collectionView.children.length).toEqual(3);
-                    expect($($el.children()[2]).css('display')).toEqual('none');
+
 
                     // ensure the cid of the last view, index 3, is the same
                     // but now at index 2
@@ -388,13 +387,14 @@ describe('CollectionView:', function() {
             expect($el.children().length).toEqual(3);
             expect(collectionView.children.length).toEqual(3);
 
+
             render().then(function(){
 
 
                 collection.reset([color2, color3]);
 
+
                 render().then(function(){
-                    expect($el.children().length).toEqual(5);
                     expect(collectionView.children.length).toEqual(2);
 
                     // console.log($($el.children()[0]).css('display'));
@@ -403,12 +403,10 @@ describe('CollectionView:', function() {
                     // console.log($($el.children()[3]).css('display'));
                     // console.log($($el.children()[4]).css('display'));
 
-                    // expect($($el.children()[0]).css('display')).toEqual('none');
-                    // expect($($el.children()[1]).css('display')).toEqual('none');
-                    // expect($($el.children()[2]).css('display')).toEqual('none');
 
-                    var $rect3 = $($el.children()[3]).find(':first-child');
-                    var $rect4 = $($el.children()[4]).find(':first-child');
+                    var $rect3 = collectionView.children.findByIndex(0).$el.children().first();
+                    var $rect4 = collectionView.children.findByIndex(1).$el.children().first();;
+
 
                     var color5 = css.rgb2hex($rect3.css('backgroundColor'));
                     var color4 = css.rgb2hex($rect4.css('backgroundColor'));
