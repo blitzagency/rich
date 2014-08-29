@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
     var marionette = require('marionette');
+    var rich = require('rich');
     var Surface = require('famous/core/Surface');
     var FamousView = require('../view').FamousView;
     var GenericSync = require('famous/inputs/GenericSync');
@@ -12,6 +13,7 @@ define(function(require, exports, module) {
     var Transitionable = require("famous/transitions/Transitionable");
     var events = require('../events');
     var SimpleDriver = require('./scroll-drivers/simple').SimpleDriver;
+    var constraints = require('rich/autolayout/constraints');
 
 
     GenericSync.register({
@@ -31,6 +33,14 @@ define(function(require, exports, module) {
         _directionalLockEnabled: true,
         _scrollEnabled: true,
 
+        constraints: function() {
+            if(!this._scrollableView) return;
+            return [
+                'H:|[_scrollableView]|',
+                'V:|[_scrollableView]|',
+            ];
+        },
+
         constructor: function(options) {
             options || (options = {});
             _.bindAll(this, '_onScrollUpdate', '_onScrollStart', '_onScrollEnd', 'triggerScrollUpdate');
@@ -46,7 +56,7 @@ define(function(require, exports, module) {
             this.bindParticle();
 
             // scrollable wrapper
-            this._scrollableView = new FamousView({
+            this._scrollableView = new rich.Region({
                 modifier: this._particle
             });
 
@@ -55,6 +65,9 @@ define(function(require, exports, module) {
 
 
             FamousView.prototype.constructor.apply(this, arguments);
+
+            this.addSubview(this._scrollableView);
+
             this._scrollHandler = new EventHandler();
 
             // set up the scroll driver
@@ -128,12 +141,6 @@ define(function(require, exports, module) {
 
         getContentSize: function() {
             return _.result(this, 'contentSize');
-        },
-
-        onContext: function() {
-            // had to put this here to not get a backbone error...not sure why
-            // it can't go in onRender but w/e
-            FamousView.prototype.addSubview.apply(this, [this._scrollableView]);
         },
 
         onShow: function() {
@@ -229,12 +236,12 @@ define(function(require, exports, module) {
 
 
 
-        addSubview: function(view) {
-            this._scrollableView.addSubview(view);
+        show: function(view) {
+            this._scrollableView.show(view);
         },
 
-        removeSubview: function(v) {
-            this._scrollableView.removeSubview(view);
+        reset: function() {
+            this._scrollableView.reset();
             this.update();
         },
 

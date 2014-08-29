@@ -45,7 +45,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -76,7 +76,7 @@ describe('Layout:', function() {
             direction: scroll.DIRECTION_Y
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -126,7 +126,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -158,7 +158,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -209,7 +209,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -239,7 +239,7 @@ describe('Layout:', function() {
             direction: scroll.DIRECTION_X
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -289,7 +289,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -321,7 +321,7 @@ describe('Layout:', function() {
             scrollDriver: BounceDriver
         });
 
-        scrollView.addSubview(view);
+        scrollView.show(view);
 
         region.show(scrollView);
 
@@ -386,7 +386,7 @@ describe('Layout:', function() {
     //     scrollView.name = 'scrollView;';
     //     scrollView._scrollableView.name = '_scrollableView';
     //     view.name = 'longview';
-    //     scrollView.addSubview(view);
+    //     scrollView.show(view);
 
     //     region.show(scrollView);
 
