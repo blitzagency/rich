@@ -1,24 +1,24 @@
 // karma.conf.js
 module.exports = function(config) {
 
-  var customLaunchers = {
-    sl_chrome: {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'OS X 10.9',
-      version: '35'
-    }
-  };
+  // var customLaunchers = {
+  //   sl_chrome: {
+  //     base: 'SauceLabs',
+  //     browserName: 'chrome',
+  //     platform: 'OS X 10.9',
+  //     version: '35'
+  //   }
+  // };
 
-  if (!process.env.SAUCE_USERNAME) {
-    if (!fs.existsSync('sauce.json')) {
-      console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
-      process.exit(1);
-    } else {
-      process.env.SAUCE_USERNAME = require('./sauce').username;
-      process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
-    }
-  }
+  // if (!process.env.SAUCE_USERNAME) {
+  //   if (!fs.existsSync('sauce.json')) {
+  //     console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
+  //     process.exit(1);
+  //   } else {
+  //     process.env.SAUCE_USERNAME = require('./sauce').username;
+  //     process.env.SAUCE_ACCESS_KEY = require('./sauce').accessKey;
+  //   }
+  // }
 
   config.set({
     frameworks: ['jasmine', 'requirejs'],
@@ -46,12 +46,12 @@ module.exports = function(config) {
         '**/karma.conf.js'
     ],
 
-    reporters: ['dots', 'saucelabs'],
+    reporters: ['dots'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    // autoWatch: true,
-    // browsers: ['Chrome'],
+    autoWatch: true,
+    browsers: ['Chrome'],
     // browsers: ['Firefox'],
     // browsers: ['Safari'],
     // browsers: ['Chrome', 'Firefox'],
@@ -65,11 +65,11 @@ module.exports = function(config) {
         'karma-coverage',
         'karma-requirejs'
     ],
-    sauceLabs: {
-        testName: 'Web App Unit Tests'
-    },
-    captureTimeout: 120000,
-    customLaunchers: customLaunchers,
-    browsers: Object.keys(customLaunchers),
+    // sauceLabs: {
+    //     testName: 'Web App Unit Tests'
+    // },
+    // captureTimeout: 120000,
+    // customLaunchers: customLaunchers,
+    // browsers: Object.keys(customLaunchers),
   });
 };

@@ -43,7 +43,7 @@ describe('Auto Layout + Constraints:', function() {
             toAttribute: null,
             constant: 200,
             multiplier: 1,
-            priority: 2
+            priority: 5
          };
 
          var vfl = 'V:[foo(200)]';

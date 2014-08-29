@@ -17,6 +17,24 @@ define(function (require, exports, module) {
         this.region = this.initializeRegion(this.root);
         this.context = this.root.context;
         this.$el = $(this.context.container);
+
+        this.root.constraints = [
+            {
+                item: this.region,
+                attribute: 'width',
+                relatedBy: '==',
+                toItem: this.root,
+                toAttribute: 'width'
+            },
+
+            {
+                item: this.region,
+                attribute: 'height',
+                relatedBy: '==',
+                toItem: this.root,
+                toAttribute: 'height'
+            }
+        ];
     }
 
     Setup.prototype.initializeRoot = function(el){

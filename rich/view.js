@@ -16,6 +16,7 @@ var autolayout = require('./autolayout/init');
 var hashConstraints = require('rich/autolayout/utils').hashConstraints;
 var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
 var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
+var Constraint = require('rich/autolayout/constraints').Constraint;
 
 // only the props we need for the modifier
 var CONSTRAINT_PROPS = ['width', 'height', 'top', 'left'];
@@ -181,8 +182,12 @@ var FamousView = marionette.View.extend({
         if(this._relationshipsInitialized || !this.superview) return;
 
         this._relationshipsInitialized = true;
-        // console.log('_initializeRelationships -> ' + this.name);
         var solver = this._solver = new autolayout.cassowary.SimplexSolver();
+        var self = this;
+
+        this._solver.addConstraint = function(){
+            autolayout.cassowary.SimplexSolver.prototype.addConstraint.apply(solver, arguments);
+        };
 
         var vars = this._autolayout;
         var superview = this.superview._autolayout;
@@ -220,69 +225,113 @@ var FamousView = marionette.View.extend({
         var superSize = this.superview.getSize();
         var description = 0;
 
-        var obj = {
-            SUPERVIEW_WIDTH: 1 << 0,
-            SUPERVIEW_HEIGHT: 1 << 1,
-            INTRINSIC_WIDTH: 1 << 2,
-            INTRINSIC_HEIGHT: 1 << 3,
-        };
+        // var obj = {
+        //     SUPERVIEW_WIDTH: 1 << 0,
+        //     SUPERVIEW_HEIGHT: 1 << 1,
+        //     INTRINSIC_WIDTH: 1 << 2,
+        //     INTRINSIC_HEIGHT: 1 << 3,
+        // };
 
         // size of our superview;
-        if(!size){
+        // if(!size){
 
-            description = obj.SUPERVIEW_WIDTH | obj.SUPERVIEW_HEIGHT;
-            size = [superSize[0], superSize[1]];
+        //     description = obj.SUPERVIEW_WIDTH | obj.SUPERVIEW_HEIGHT;
+        //     size = superSize;
 
-        // height of our superview;
-        } else if(size[0] && !size[1]){
+        // // height of our superview;
+        // } else if(size[0] && !size[1]){
 
-            description = obj.INTRINSIC_WIDTH | obj.SUPERVIEW_HEIGHT;
-            size = [size[0], superSize[1]];
+        //     description = obj.INTRINSIC_WIDTH | obj.SUPERVIEW_HEIGHT;
+        //     size = [size[0], superSize[1]];
 
-        // width of our superview;
-        } else if(!size[0] && size[1]){
+        // // width of our superview;
+        // } else if(!size[0] && size[1]){
 
-            description = obj.SUPERVIEW_WIDTH | obj.INTRINSIC_HEIGHT;
-            size = [superSize[0], size[1]];
+        //     description = obj.SUPERVIEW_WIDTH | obj.INTRINSIC_HEIGHT;
+        //     size = [superSize[0], size[1]];
 
-        // custom size;
-        } else {
-            description = obj.INTRINSIC_WIDTH | obj.INTRINSIC_HEIGHT;
+        // // custom size;
+        // } else {
+        //     description = obj.INTRINSIC_WIDTH | obj.INTRINSIC_HEIGHT;
+        // }
+
+        // solver.addStay(vars.width, autolayout.weak, 0);
+        // solver.addStay(vars.height, autolayout.weak, 0);
+
+        //vars.width.value = size[0];
+        //vars.height.value = size[1];
+        //variables = [vars.width, vars.height];
+        //this.updateVariables(variables, size);
+
+        // console.log()
+
+        //solver.addConstraint(autolayout.eq(vars.width, size[0], autolayout.weak, 0));
+        //solver.addConstraint(autolayout.eq(vars.height, size[1], autolayout.weak, 0));
+
+
+
+        // [0, 0] should be Top Left
+        solver.addConstraint(autolayout.eq(vars.top, 0, autolayout.weak, 0));
+        solver.addConstraint(autolayout.eq(vars.left, 0, autolayout.weak, 0));
+
+        if(size && size[0]){
+            solver.addConstraint(autolayout.eq(vars.width, size[0], autolayout.weak, 0));
         }
 
-        variables = [vars.width, vars.height];
-        this.updateVariables(variables, size);
-
-        solver.addConstraint(autolayout.eq(vars.width, size[0], autolayout.weak, 0));
-        solver.addConstraint(autolayout.eq(vars.height, size[1], autolayout.weak, 0));
-
-        if(obj.SUPERVIEW_WIDTH & description){
-            solver.addConstraint(autolayout.eq(vars.left, 0, autolayout.weak, 0));
-            solver.addConstraint(autolayout.geq(vars.left, 0, autolayout.weak, 0));
-            solver.addConstraint(autolayout.geq(vars.right, 0, autolayout.weak, 0));
-
-            solver.addConstraint(
-                autolayout.eq(
-                    autolayout.plus(vars.width, vars.right).plus(vars.left),
-                    superview.width,
-                    autolayout.weak, 0
-                )
-            );
+        if(size && size[1]){
+            solver.addConstraint(autolayout.eq(vars.height, size[1], autolayout.weak, 0));
         }
 
-        if(obj.SUPERVIEW_HEIGHT & description){
-            solver.addConstraint(autolayout.eq(vars.top, 0, autolayout.weak, 0));
-            solver.addConstraint(autolayout.geq(vars.top, 0, autolayout.weak, 0));
-            solver.addConstraint(autolayout.geq(vars.bottom, 0, autolayout.weak, 0));
+        // if(obj.SUPERVIEW_WIDTH & description){
 
-            solver.addConstraint(
-                autolayout.eq(
-                    autolayout.plus(vars.height, vars.bottom).plus(vars.top),
-                    superview.height,
-                    autolayout.weak, 0
-                )
-            );
-        }
+        //     //solver.addConstraint(autolayout.geq(vars.left, 0, autolayout.weak, 0));
+        //     //solver.addConstraint(autolayout.geq(vars.right, 0, autolayout.weak, 0));
+
+        //     // var right = autolayout.minus(superview.width, autolayout.plus(vars.width, vars.left));
+        //     // solver.addConstraint(autolayout.eq(vars.right, right, autolayout.weak, 3));
+
+        //     // solver.addConstraint(
+        //     //     autolayout.eq(
+        //     //         autolayout.plus(vars.width, vars.right).plus(vars.left),
+        //     //         superview.width,
+        //     //         autolayout.weak, 0
+        //     //     )
+        //     // );
+        // }
+
+        // if(obj.SUPERVIEW_HEIGHT & description){
+
+        //     //solver.addConstraint(autolayout.geq(vars.top, 0, autolayout.weak, 0));
+        //     //solver.addConstraint(autolayout.geq(vars.bottom, 0, autolayout.weak, 0));
+
+        //     // var bottom = autolayout.minus(superview.height, autolayout.plus(vars.height, vars.top));
+        //     // solver.addConstraint(autolayout.eq(vars.bottom, bottom, autolayout.weak, 3));
+
+        //     // solver.addConstraint(
+        //     //     autolayout.eq(
+        //     //         autolayout.plus(vars.height, vars.bottom).plus(vars.top),
+        //     //         superview.height,
+        //     //         autolayout.weak, 0
+        //     //     )
+        //     // );
+        // }
+
+        // if(obj.INTRINSIC_WIDTH & description){
+        //     var right = autolayout.minus(superview.width, autolayout.plus(vars.width, vars.left));
+        //     var bottom = autolayout.minus(superview.height.value, autolayout.plus(vars.height, vars.top));
+
+        //     solver.addConstraint(autolayout.eq(vars.right, right, autolayout.weak, 3));
+        //     solver.addConstraint(autolayout.eq(vars.bottom, bottom, autolayout.weak, 3));
+
+        // }
+
+        // if(obj.INTRINSIC_HEIGHT & description){
+            var right = autolayout.minus(superview.width, autolayout.plus(vars.width, vars.left));
+            var bottom = autolayout.minus(superview.height.value, autolayout.plus(vars.height, vars.top));
+
+            solver.addConstraint(autolayout.eq(vars.right, right, autolayout.weak, 0));
+            solver.addConstraint(autolayout.eq(vars.bottom, bottom, autolayout.weak, 0));
+        // }
     },
 
     _processIntrinsicConstraints: function(constraints){
@@ -295,6 +344,10 @@ var FamousView = marionette.View.extend({
 
             if(_.isString(each)){
                 tmp = tmp.concat(constraintsWithVFL(each));
+
+            } else if (each instanceof Constraint){
+                tmp.push(each);
+
             } else {
                 tmp.push(constraintWithJSON(each));
             }
@@ -445,6 +498,7 @@ var FamousView = marionette.View.extend({
 
         for(i = 0; i < constraints.length; i++){
             each = constraints[i];
+
             each.prepare(this);
 
             this._processAffectedRelationships(each.attributes, changes);

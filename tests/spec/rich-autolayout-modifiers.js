@@ -15,6 +15,7 @@ var colors = require('tests/utils/colors').blue;
 var c = require('rich/autolayout/init').cassowary;
 var autolayout = require('rich/autolayout/init');
 var layoututils = require('rich/autolayout/utils');
+var log = require('tests/utils/log');
 var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
@@ -247,6 +248,7 @@ describe('Auto Layout + Complex Layout:', function() {
 
     it('generates complex layout modifiers', function(done){
         var context = new Setup(done);
+        var root = context.root;
 
         var color0 = new Rectangle({
             color: colors[0]
@@ -263,35 +265,16 @@ describe('Auto Layout + Complex Layout:', function() {
         var box0 = new RectangleView({
             model: color0,
             constraints: [
-                {
-                    item: 'box1',
-                    attribute: 'bottom',
-                    relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'bottom',
-                    constant: 0
-                },
-
-                {
-                    item: 'box1',
-                    attribute: 'height',
-                    relatedBy: '==',
-                    constant: 200
-                }
+                'H:|[box1]|',
+                'V:[box1(200)]|',
             ]
         });
 
         var box1 = new RectangleView({
             model: color1,
             constraints: [
-                {
-                    item: 'box2',
-                    attribute: 'bottom',
-                    relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'bottom',
-                    constant: 0
-                },
+                'H:|[box2]|',
+                'V:|[box2]|',
             ]
         });
 
@@ -309,7 +292,26 @@ describe('Auto Layout + Complex Layout:', function() {
         box1.box2 = box2;
         box1.addSubview(box2);
 
-        context.region.show(box0);
+        root.constraints = [
+
+            {
+                item: box0,
+                attribute: 'width',
+                relatedBy: '==',
+                toItem: root,
+                toAttribute: 'width'
+            },
+
+            {
+                item: box0,
+                attribute: 'height',
+                relatedBy: '==',
+                toItem: root,
+                toAttribute: 'height'
+            }
+        ];
+
+        context.root.addSubview(box0);
 
         box0.onShow = function(){
             expect(box0._autolayout.left.value).toEqual(0);
@@ -374,30 +376,90 @@ describe('Auto Layout + Complex Layout:', function() {
         var view = new rich.View({
             autolayoutTransition: autolayoutTransition,
             constraints: [
-                {
-                    item: 'column',
-                    attribute: 'width',
-                    relatedBy: '==',
-                    constant: 200
-                },
+                // {
+                //     item: 'column',
+                //     attribute: 'left',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'left'
+                // },
 
-                {
-                    item: 'column',
-                    attribute: 'left',
-                    relatedBy: '==',
-                    toItem: 'superview',
-                    toAttribute: 'left',
-                    constant: 0
-                },
+                // {
+                //     item: 'column',
+                //     attribute: 'width',
+                //     relatedBy: '==',
+                //     constant: 200
+                // },
 
-                {
-                    item: 'content',
-                    attribute: 'left',
-                    relatedBy: '==',
-                    toItem: 'column',
-                    toAttribute: 'right',
-                    constant: 0
-                },
+                // {
+                //     item: 'column',
+                //     attribute: 'height',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'height'
+                // },
+
+                // {
+                //     item: 'content',
+                //     attribute: 'left',
+                //     relatedBy: '==',
+                //     toItem: 'column',
+                //     toAttribute: 'right',
+                // },
+
+                // {
+                //     item: 'content',
+                //     attribute: 'height',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'height',
+                // },
+
+                // {
+                //     item: 'content',
+                //     attribute: 'right',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'right',
+                // }
+
+                'V:|[column]|',
+                '[column(200)]', // |[column(200)] will fail. We need to see why.
+                '[column][content]',
+                'V:|[content]|',
+                '[content]|'
+
+                // {
+                //     item: 'column',
+                //     attribute: 'width',
+                //     relatedBy: '==',
+                //     constant: 200
+                // },
+
+                // {
+                //     item: 'column',
+                //     attribute: 'left',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'left',
+                // },
+
+                // {
+                //     item: 'content',
+                //     attribute: 'left',
+                //     relatedBy: '==',
+                //     toItem: 'column',
+                //     toAttribute: 'right',
+                // },
+
+                // {
+                //     item: 'content',
+                //     attribute: 'width',
+                //     relatedBy: '==',
+                //     toItem: 'superview',
+                //     toAttribute: 'width',
+                //     constant: -200
+                // },
             ]
         });
 
@@ -604,58 +666,35 @@ describe('Auto Layout + Complex Layout:', function() {
         action3.action4 = action4;
         action3.addSubview(action4);
 
-        context.region.show(view);
+        context.root.constraints = [
+            {
+                item: view,
+                attribute: 'width',
+                relatedBy: '==',
+                toItem: context.root,
+                toAttribute: 'width'
+            },
 
-        //view.setSize([1000, 400]);
-        function logValues(){
-            console.log('-- rich-autolayout-modifiers.js [Line 677]');
-            console.log('(content) L:' + content._autolayout.left.value);
-            console.log('(content) R:' + content._autolayout.right.value);
-            console.log('(content) W:' + content._autolayout.width.value);
-            console.log('(content) H:' + content._autolayout.height.value);
+            {
+                item: view,
+                attribute: 'height',
+                relatedBy: '==',
+                toItem: context.root,
+                toAttribute: 'height'
+            }
+        ];
 
-            console.log('---');
+        context.root.addSubview(view);
 
-            console.log('(column) L:' + column._autolayout.left.value);
-            console.log('(column) R:' + column._autolayout.right.value);
-            console.log('(column) W:' + column._autolayout.width.value);
-            console.log('(column) H:' + column._autolayout.height.value);
-
-            console.log('---');
-
-            console.log('(footer) L:' + footer._autolayout.left.value);
-            console.log('(footer) R:' + footer._autolayout.right.value);
-            console.log('(footer) W:' + footer._autolayout.width.value);
-            console.log('(footer) H:' + footer._autolayout.height.value);
-            console.log('(footer) T:' + footer._autolayout.top.value);
-
-            console.log('---');
-
-            console.log('(action1) L:' + action1._autolayout.left.value);
-            console.log('(action1) R:' + action1._autolayout.right.value);
-            console.log('(action1) W:' + action1._autolayout.width.value);
-
-            console.log('---');
-
-            console.log('(action2) L:' + action2._autolayout.left.value);
-            console.log('(action2) R:' + action2._autolayout.right.value);
-            console.log('(action2) W:' + action2._autolayout.width.value);
-            console.log('---');
-
-            console.log('(action3) L:' + action3._autolayout.left.value);
-            console.log('(action3) R:' + action3._autolayout.right.value);
-
-            console.log('---');
-
-            console.log('(action4) L:' + action4._autolayout.left.value);
-            console.log('(action4) R:' + action4._autolayout.right.value);
-            console.log('(action4) T:' + action4._autolayout.top.value);
-            console.log('(action4) W:' + action4._autolayout.width.value);
-            console.log('(action4) H:' + action4._autolayout.height.value);
-        }
 
         view.onShow = function(){
-            //logValues();
+            // log.autolayout(column, {label: 'column'});
+            // log.autolayout(content, {label: 'content'});
+            // log.autolayout(action1, {label: 'action1'});
+            // log.autolayout(footer, {label: 'footer'});
+            // log.autolayout(action2, {label: 'action2'});
+            // log.autolayout(action3, {label: 'action3'});
+            // log.autolayout(action4, {label: 'action4'});
 
             expect(content._autolayout.left.value).toEqual(200);
             expect(content._autolayout.right.value).toEqual(0);

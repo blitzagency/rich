@@ -48,6 +48,9 @@ describe('Region:', function() {
             context.done();
         };
 
+        // by default, regions have their
+        // 'currentView' constaints set
+        // to match xit's superview.
         context.region.show(box0);
     });
 
@@ -63,6 +66,14 @@ describe('Region:', function() {
 
         context.region.constraints = function(){
             return [
+                {
+                    item: box0,
+                    attribute: 'width',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width',
+                },
+
                 {
                     item: box0,
                     attribute: 'height',
@@ -96,6 +107,13 @@ describe('Region:', function() {
 
         context.root.constraints = function(){
             return [
+                {
+                    item: region,
+                    attribute: 'width',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width'
+                },
 
                 {
                     item: region,
@@ -163,6 +181,14 @@ describe('Region:', function() {
             return [
                 {
                     item: 'currentView',
+                    attribute: 'width',
+                    relatedBy: '==',
+                    toItem: 'superview',
+                    toAttribute: 'width'
+                },
+
+                {
+                    item: 'currentView',
                     attribute: 'height',
                     relatedBy: '==',
                     constant: 100
@@ -183,125 +209,6 @@ describe('Region:', function() {
         });
 
         region.show(box0);
-    });
-
-    it('applies h/w constraints to subviews children', function(done){
-        var context = new Setup(done);
-        var color0 = new Rectangle({
-            color: colors[7]
-        });
-
-        var box0 = new RectangleView({
-            model: color0,
-        });
-
-
-        var color1 = new Rectangle({
-            color: 'red'
-        });
-
-        var box1 = new RectangleView({
-            model: color1,
-        });
-
-        box0.addSubview(box1);
-
-        render().then(function(){
-            expect(box0.getSize()).toEqual([1000, 800]);
-            expect(box1.getSize()).toEqual([1000, 800]);
-            context.done();
-        });
-
-        context.region.show(box0);
-    });
-
-    it('applies h/w constraints to subviews children', function(done){
-        var context = new Setup(done);
-        var color0 = new Rectangle({
-            color: colors[7]
-        });
-
-        var box0 = new RectangleView({
-            model: color0,
-        });
-
-
-        var color1 = new Rectangle({
-            color: 'red'
-        });
-
-        var box1 = new RectangleView({
-            model: color1,
-        });
-
-        var parent = new rich.View();
-
-        parent.addSubview(box0);
-        box0.addSubview(box1);
-
-        render().then(function(){
-            expect(box0.getSize()).toEqual([1000, 800]);
-            expect(box1.getSize()).toEqual([1000, 800]);
-            context.done();
-        });
-
-        context.region.show(parent);
-    });
-
-    it('applies h/w constraints to subviews children with nestedSubviews', function(done){
-        var context = new Setup(done);
-        var color0 = new Rectangle({
-            color: colors[7]
-        });
-
-        var box0 = new RectangleView({
-            model: color0,
-        });
-
-
-        var color1 = new Rectangle({
-            color: 'red'
-        });
-
-        var box1 = new RectangleView({
-            model: color1,
-        });
-
-        var parent = new rich.View({
-            nestedSubviews: true
-        });
-
-        parent.addSubview(box0);
-        box0.addSubview(box1);
-
-        render().then(function(){
-            expect(box0.getSize()).toEqual([1000, 800]);
-            expect(box1.getSize()).toEqual([1000, 800]);
-            context.done();
-        });
-
-        context.region.show(parent);
-    });
-
-    it('applies h/w constraints to collection view', function(done){
-        var context = new Setup(done);
-        var region = context.region;
-        var root = context.root;
-
-        var collection = new backbone.Collection();
-
-        var collectionView = new rich.CollectionView({
-            collection: collection,
-            childView: RectangleView
-        });
-
-        context.region.show(collectionView);
-
-        render().then(function(){
-            expect(region.getSize()).toEqual([1000, 800]);
-            expect(collectionView.getSize()).toEqual([1000, 800]);
-            context.done();
-        });
     });
 
 
