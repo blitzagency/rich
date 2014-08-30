@@ -6,12 +6,12 @@
     browsers: Chrome, Safari, Firefox, IE 11
 
   * Views no longer attempt to fill their parent by default. Contraints
-    must be specified for all views. *WARNING: This is a backwards
-    incompatible change*
+    must be specified for all views. **WARNING: This is a backwards
+    incompatible change**
 
   * `rich.Region` has now sets an intrinsic constriant on `currentView`
     with: `V:|[currentView]|` `H:|[currentView]|`, thus only the region's
-    width, height, top, etc constraints need be set. The *shown* view will
+    width, height, top, etc constraints need be set. The **shown** view will
     automatically fill up the space allocated to the region.
 
   * `rich.autolayout.constraints.constraintsWithVFL` now takes a second,
