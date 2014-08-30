@@ -11,7 +11,7 @@ var tests = [
     'tests/spec/rich-collectionview',
     'tests/spec/rich-itemview-events',
     'tests/spec/rich-region',
-    // 'tests/spec/rich-scrollview',
+    'tests/spec/rich-scrollview',
     'tests/spec/rich-utils',
     'tests/spec/rich-vfl',
     'tests/spec/rich-view-animate',
