@@ -15,6 +15,7 @@ var colors = require('tests/utils/colors').blue;
 var css = require('tests/utils/css');
 var matrix = require('tests/utils/matrix');
 var log = require('tests/utils/log');
+var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
 var Setup = require('tests/utils/setup').Setup;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
@@ -33,6 +34,7 @@ describe('Application:', function() {
 
     it('handles resize', function(done){
         var context = new Setup(done);
+        var root = context.root;
 
         var color0 = new Rectangle({
             color: colors[7]
@@ -60,7 +62,11 @@ describe('Application:', function() {
         });
 
         layout.addSubview(box0);
-        context.root.addSubview(layout);
+        root.addSubview(layout);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: layout});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: layout});
+        root.constraints = [].concat(c1, c2);
 
         box0.onShow = function(){
 
@@ -92,6 +98,7 @@ describe('Application:', function() {
 
     it('handles CollectionView Horizontal Resize', function(done){
         var context = new Setup(done);
+        var root = context.root;
 
         var AltView = RectangleView.extend({
             size: [100, 0]
@@ -143,7 +150,12 @@ describe('Application:', function() {
 
 
         layout.addSubview(collectionView);
-        context.root.addSubview(layout);
+        root.addSubview(layout);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: layout});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: layout});
+        root.constraints = [].concat(c1, c2);
+
         collectionView.name = 'collectionView';
 
         layout.onShow = function(){

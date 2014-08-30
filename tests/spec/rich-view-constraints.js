@@ -15,6 +15,8 @@ var render = require('tests/utils/time').render;
 var css = require('tests/utils/css');
 var constraints = require('rich/autolayout/constraints');
 var Setup = require('tests/utils/setup').Setup;
+var log = require('tests/utils/log');
+var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -46,7 +48,8 @@ describe('View + Constraints:', function() {
         var box0 = new RectangleView({
             model: color0,
             constraints: [
-                'V:[box1(200)]'
+                'V:[box1(200)]',
+                'H:|[box1]|'
             ]
         });
 
@@ -60,7 +63,12 @@ describe('View + Constraints:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
+
         box0.onShow = function(){
 
             expect(box0._autolayout.left.value).toBe(0);
@@ -94,6 +102,9 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
+            constraints: [
+                'H:|[box1]|'
+            ]
         });
 
         var box1 = new RectangleView({
@@ -106,7 +117,11 @@ describe('View + Constraints:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
 
         box0.onShow = function(){
 
@@ -118,9 +133,9 @@ describe('View + Constraints:', function() {
             expect(box1._autolayout.left.value).toBe(0);
             expect(box1._autolayout.right.value).toBe(0);
             expect(box1._autolayout.width.value).toBe(1000);
-            expect(box1._autolayout.height.value).toBe(800);
+            expect(box1._autolayout.height.value).toBe(0);
 
-            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
+            expect(css.getSize(box1.$el)).toEqual([1000, 0]);
 
             var c = constraints.constraintWithJSON({
                 item: box1,
@@ -155,6 +170,9 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
+            constraints: [
+                'H:|[box1]|'
+            ]
         });
 
         var box1 = new RectangleView({
@@ -167,7 +185,11 @@ describe('View + Constraints:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
 
         box0.onShow = function(){
 
@@ -179,9 +201,9 @@ describe('View + Constraints:', function() {
             expect(box1._autolayout.left.value).toBe(0);
             expect(box1._autolayout.right.value).toBe(0);
             expect(box1._autolayout.width.value).toBe(1000);
-            expect(box1._autolayout.height.value).toBe(800);
+            expect(box1._autolayout.height.value).toBe(0);
 
-            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
+            expect(css.getSize(box1.$el)).toEqual([1000, 0]);
 
             var c = constraints.constraintsWithVFL('V:[box1(200)]');
 
@@ -211,7 +233,7 @@ describe('View + Constraints:', function() {
 
         var box0 = new RectangleView({
             model: color0,
-            className: 'foo'
+            className: 'foo',
         });
 
         var box1 = new RectangleView({
@@ -225,8 +247,11 @@ describe('View + Constraints:', function() {
         box0.addSubview(box1);
 
 
-        region.show(box0);
+        root.addSubview(box0);
 
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
 
         box0.onShow = function(){
 
@@ -235,12 +260,14 @@ describe('View + Constraints:', function() {
             expect(box0._autolayout.width.value).toBe(1000);
             expect(box0._autolayout.height.value).toBe(800);
 
+            expect(box1._autolayout.width.value).toBe(0);
+            expect(box1._autolayout.height.value).toBe(0);
+            expect(box1._autolayout.top.value).toBe(0);
+            expect(box1._autolayout.right.value).toBe(1000);
+            expect(box1._autolayout.bottom.value).toBe(800);
             expect(box1._autolayout.left.value).toBe(0);
-            expect(box1._autolayout.right.value).toBe(0);
-            expect(box1._autolayout.width.value).toBe(1000);
-            expect(box1._autolayout.height.value).toBe(800);
 
-            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
+            expect(css.getSize(box1.$el)).toEqual([0, 0]);
 
             var c1 = constraints.constraintWithJSON({
                 item: box1,
@@ -267,14 +294,14 @@ describe('View + Constraints:', function() {
                 box0.removeConstraint(c1);
 
                 render().then(function(){
-                    expect(box1._autolayout.width.value).toBe(1000);
+                    expect(box1._autolayout.width.value).toBe(0);
                     expect(box1._autolayout.height.value).toBe(200);
 
                     box0.removeConstraint(c2);
 
                     render().then(function(){
-                        expect(box1._autolayout.width.value).toBe(1000);
-                        expect(box1._autolayout.height.value).toBe(800);
+                        expect(box1._autolayout.width.value).toBe(0);
+                        expect(box1._autolayout.height.value).toBe(0);
                         context.done();
                     });
                 });
@@ -310,7 +337,11 @@ describe('View + Constraints:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
 
 
         box0.onShow = function(){
@@ -321,11 +352,12 @@ describe('View + Constraints:', function() {
             expect(box0._autolayout.height.value).toBe(800);
 
             expect(box1._autolayout.left.value).toBe(0);
-            expect(box1._autolayout.right.value).toBe(0);
-            expect(box1._autolayout.width.value).toBe(1000);
-            expect(box1._autolayout.height.value).toBe(800);
+            expect(box1._autolayout.right.value).toBe(1000);
+            expect(box1._autolayout.width.value).toBe(0);
+            expect(box1._autolayout.height.value).toBe(0);
+            expect(box1._autolayout.bottom.value).toBe(800);
 
-            expect(css.getSize(box1.$el)).toEqual([1000, 800]);
+            expect(css.getSize(box1.$el)).toEqual([0, 0]);
 
             var c1 = constraints.constraintWithJSON({
                 item: box1,
@@ -352,8 +384,8 @@ describe('View + Constraints:', function() {
                 box0.removeConstraints([c1, c2]);
 
                 render().then(function(){
-                    expect(box1._autolayout.width.value).toBe(1000);
-                    expect(box1._autolayout.height.value).toBe(800);
+                    expect(box1._autolayout.width.value).toBe(0);
+                    expect(box1._autolayout.height.value).toBe(0);
                     context.done();
                 });
 

@@ -12,6 +12,15 @@ var Region = View.extend(obj);
 
 Region = Region.extend({
 
+    constraints: function() {
+        if(!this.currentView) return;
+
+        return [
+            'H:|[currentView]|',
+            'V:|[currentView]|',
+        ];
+    },
+
     // Displays a backbone view instance inside of the region.
     // Handles calling the `render` method for you. Reads content
     // directly from the `el` attribute. Also calls an optional

@@ -87,6 +87,7 @@ exports.constraintsFromJson = function(json, view){
     var strength = autolayout.weak;
     var stays = [];
     var priority = json.priority || 2;
+    var apply = true;
 
     if(json.toItem == 'superview'){
         toItem = view;
@@ -128,6 +129,7 @@ exports.constraintsFromJson = function(json, view){
         // left/right/top/bottom, as those in relative space will
         // always be 0's
         rightExpression = constant;
+        apply = false;
     } else {
         var result = buildExpression(item, itemAttribute, toItem, toAttribute, multiplier, constant);
         rightExpression = result.rightExpression;
@@ -159,7 +161,8 @@ exports.constraintsFromJson = function(json, view){
         constraint: constraint,
         stays: stays,
         item: item,
-        json: json
+        json: json,
+        apply: apply
     };
 };
 

@@ -12,6 +12,7 @@ var Rectangle = require('app/shared/models/rectangle').Rectangle;
 var RectangleView = require('app/shared/views/rectangle-view').RectangleView;
 var colors = require('tests/utils/colors').blue;
 var VFLToJSON = require('rich/autolayout/utils').VFLToJSON;
+var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
 var Setup = require('tests/utils/setup').Setup;
 
 describe('Visual Format Language:', function() {
@@ -344,7 +345,8 @@ describe('Visual Format Language:', function() {
         var box0 = new RectangleView({
             model: color0,
             constraints: [
-                'V:[box1(200)]|'
+                'V:[box1(200)]|',
+                'H:|[box1]|'
             ]
         });
 
@@ -358,7 +360,11 @@ describe('Visual Format Language:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
 
         box0.onShow = function(){
 
@@ -396,6 +402,7 @@ describe('Visual Format Language:', function() {
             model: color0,
             constraints: [
                 '|-20-[box1]',
+                '[box1]|',
 
                 {
                     item: 'box1',
@@ -419,7 +426,12 @@ describe('Visual Format Language:', function() {
         box0.box1 = box1;
         box0.addSubview(box1);
 
-        region.show(box0);
+        root.addSubview(box0);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: box0});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: box0});
+        root.constraints = [].concat(c1, c2);
+
 
         box0.onShow = function(){
 
@@ -441,17 +453,9 @@ describe('Visual Format Language:', function() {
     });
 
 
-    //
-    // // xit('converts crazy to JSON', function(){
-    //     var vfl = '';
-    //     var json = VFLToJSON(vfl);
-
-    //     // var output = ;
-
-    //     // console.log(vfl)
-    //     console.log(JSON.stringify(json, null, '\t'));
-    //     // expect(JSON.stringify(json)).toEqual(JSON.stringify(output));
-    // });
+    // TODO needs to test
+    // V:|[view]|
+    // H:|[view(200)]
 
 }); // eof describe
 }); // eof define

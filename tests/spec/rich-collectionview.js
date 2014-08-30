@@ -15,6 +15,7 @@ var colors = require('tests/utils/colors').blue;
 var css = require('tests/utils/css');
 var matrix = require('tests/utils/matrix');
 var log = require('tests/utils/log');
+var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
 var Setup = require('tests/utils/setup').Setup;
 
 
@@ -67,14 +68,6 @@ describe('CollectionView:', function() {
 
         context.region.name = 'region';
         collectionView.name = 'collectionView';
-
-
-        context.region.constraints = function(){
-            return [
-                'H:|[currentView]|',
-                'V:|[currentView]|',
-            ];
-        };
 
         context.region.show(collectionView);
 
@@ -142,15 +135,6 @@ describe('CollectionView:', function() {
 
         context.region.name = 'region';
         collectionView.name = 'collectionView';
-
-
-        context.region.constraints = function(){
-            return [
-                'H:|[currentView]|',
-                'V:|[currentView]|',
-            ];
-        };
-
         context.region.show(collectionView);
 
         collectionView.onShow = function(){
@@ -214,13 +198,6 @@ describe('CollectionView:', function() {
             childView: AltView,
             spacing: 5,
         });
-
-        context.region.constraints = function(){
-            return [
-                'H:|[currentView]|',
-                'V:|[currentView]|',
-            ];
-        };
 
         context.region.show(collectionView);
 
@@ -422,6 +399,8 @@ describe('CollectionView:', function() {
 
     it('inherits vertical size for horizontal orientation', function(done){
         var context = new Setup(done);
+        var root = context.root;
+
         var AltView = RectangleView.extend({
             size: [100, 0]
         });
@@ -465,6 +444,14 @@ describe('CollectionView:', function() {
                         attribute: 'height',
                         relatedBy: '==',
                         constant: 100,
+                    },
+
+                    {
+                        item: collectionView,
+                        attribute: 'width',
+                        relatedBy: '==',
+                        toItem: 'superview',
+                        toAttribute: 'width'
                     }
                 ];
             }
@@ -472,11 +459,17 @@ describe('CollectionView:', function() {
 
 
         layout.addSubview(collectionView);
-        context.root.addSubview(layout);
+        root.addSubview(layout);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: layout});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: layout});
+        root.constraints = [].concat(c1, c2);
+
         collectionView.name = 'collectionView';
 
         layout.onShow = function(){
             var child = collectionView.children.findByIndex(0);
+
             expect(child._autolayout.width.value).toEqual(100);
             expect(child._autolayout.height.value).toEqual(100);
 
@@ -487,6 +480,7 @@ describe('CollectionView:', function() {
 
     it('initializes from reset', function(done){
         var context = new Setup(done);
+        var root = context.root;
 
         var AltView = RectangleView.extend({
             size: [0, 50]
@@ -511,7 +505,26 @@ describe('CollectionView:', function() {
 
         var collection = new backbone.Collection();
 
-        var layout = new rich.View({});
+        var layout = new rich.View({
+            constraints: function(){
+                return [
+                    {
+                        item: collectionView,
+                        attribute: 'width',
+                        relatedBy: '==',
+                        constant: 50,
+                    },
+
+                    {
+                        item: collectionView,
+                        attribute: 'width',
+                        relatedBy: '==',
+                        toItem: 'superview',
+                        toAttribute: 'width'
+                    }
+                ];
+            }
+        });
 
         var collectionView = new rich.CollectionView({
             collection: collection,
@@ -522,7 +535,11 @@ describe('CollectionView:', function() {
 
 
         layout.addSubview(collectionView);
-        context.root.addSubview(layout);
+        root.addSubview(layout);
+
+        var c1 = constraintsWithVFL('H:|[view]|', {view: layout});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: layout});
+        root.constraints = [].concat(c1, c2);
 
         collection.reset([color0, color1, color2]);
 

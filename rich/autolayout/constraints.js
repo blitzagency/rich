@@ -9,13 +9,21 @@ define(function (require, exports, module) {
     }
 
 
-    function constraintsWithVFL(vfl){
+    function constraintsWithVFL(vfl, views){
         var result = [];
         json = utils.VFLToJSON(vfl);
 
         for(var i = 0; i < json.length; i++){
-            result.push(constraintWithJSON(json[i]));
+            var each = json[i];
+
+            if(views){
+                each.item = views[each.item] || each.item;
+                each.toItem = views[each.toItem] || each.toItem;
+            }
+
+            result.push(constraintWithJSON(each));
         }
+
 
         return result;
     }
@@ -34,7 +42,7 @@ define(function (require, exports, module) {
             toAttribute: null,
             constant: 0,
             multiplier: 1,
-            priority: 2,
+            priority: 5,
         },
 
         constructor: function(){
