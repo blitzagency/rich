@@ -1,4 +1,4 @@
-### v0.0.3 _PENDING RELEASE_ [view commit logs] https://github.com/blitzagency/rich/compare/v0.0.2...HEAD
+### v0.0.3 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.2...HEAD)
 
 * Features
 
@@ -35,7 +35,7 @@
 
 
 
-### v0.0.2 [view commit logs] https://github.com/blitzagency/rich/compare/v0.0.1...v0.0.2
+### v0.0.2 [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.1...v0.0.2)
 
 * Fixes
 
