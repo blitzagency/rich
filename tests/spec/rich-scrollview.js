@@ -42,7 +42,6 @@ describe('Layout:', function() {
         var scrollView = new scroll.ScrollView({
             contentSize: [800, 4000],
             direction: scroll.DIRECTION_Y,
-            scrollDriver: BounceDriver
         });
 
         scrollView.show(view);
@@ -56,12 +55,12 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                // context.done();
+                context.done();
             });
         });
     });
 
-    xit('basic driver animates to a scrolled position', function(done){
+    it('basic driver animates to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -110,7 +109,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('bounce driver scrolls to a scrolled position', function(done){
+    it('bounce driver scrolls to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -142,7 +141,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('bounce driver animates to a scrolled position', function(done){
+    it('bounce driver animates to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -192,7 +191,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('basic driver scrolls to a scrolled position horizontally', function(done){
+    it('basic driver scrolls to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -224,7 +223,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('basic driver animates to a scrolled position horizontally', function(done){
+    it('basic driver animates to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -273,7 +272,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('bounce driver scrolls to a scrolled position horizontally', function(done){
+    it('bounce driver scrolls to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -305,7 +304,7 @@ describe('Layout:', function() {
         });
     });
 
-    xit('bounce driver animates to a scrolled position horizontally', function(done){
+    it('bounce driver animates to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -354,53 +353,6 @@ describe('Layout:', function() {
 
         });
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // xit('basic driver scrolls to a scrolled position', function(done){
-    //     var model = new Rectangle();
-    //     var view = new LongView({
-    //         model: model,
-    //         isVerticle: false
-    //     });
-    //     var scrollView = new scroll.ScrollView({
-    //         contentSize: [4000, 4000],
-    //         direction: scroll.DIRECTION_X,
-    //         // scrollDriver: BounceDriver
-    //     });
-    //     scrollView.name = 'scrollView;';
-    //     scrollView._scrollableView.name = '_scrollableView';
-    //     view.name = 'longview';
-    //     scrollView.show(view);
-
-    //     region.show(scrollView);
-
-    //     render().then(function(){
-    //         var initPos = scrollView._particle.getPosition();
-    //         scrollView.setScrollPosition(0, -500);
-
-    //         wait(100).then(function(){
-    //             expect(initPos).toEqual([0, 0, 0]);
-    //             expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-    //             // done();
-    //         });
-    //     });
-    // });
 
 }); // eof describe
 }); // eof define

@@ -5,6 +5,7 @@ var PhysicsEngine = require('famous/physics/PhysicsEngine');
 var Spring = require('famous/physics/forces/Spring');
 var Drag = require('famous/physics/forces/Drag');
 var Engine = require('famous/core/Engine');
+var utils = require('../utils');
 
 var SimpleDriver = marionette.Controller.extend({
     scrollDamp: 0.4,
@@ -28,6 +29,8 @@ var SimpleDriver = marionette.Controller.extend({
         });
 
         this._physicsEngine = options.physicsEngine;
+        this._direction = options.direction;
+        this._particle = options.particle;
     },
 
     shouldLimitPastBounds: function(){
@@ -53,13 +56,13 @@ var SimpleDriver = marionette.Controller.extend({
         }
     },
 
-    wantsThrow: function(velocity, type){
+    wantsThrow: function(velocity, type, direction){
         if(type == 'wheel' || type == 'mouseup')return;
         if(this._throwMod){
             this._throwMod.callback();
         }
         this._physicsEngine.detachAll();
-        this.scrollView._particle.setVelocity(0);
+        this._particle.setVelocity(0);
 
         var strength = type == 'touchend' ? this.mobileStrength : this.strength;
 
@@ -78,21 +81,22 @@ var SimpleDriver = marionette.Controller.extend({
             this.scrollView.bindParticle();
         }.bind(this));
 
-        velocity = this.scrollView._normalizeVector(velocity);
-        this._physicsEngine.attach([this._drag, this._friction], this.scrollView._particle);
-        this.scrollView._particle.setVelocity(velocity);
+        velocity = utils.normalizeVector(velocity, this._direction);
+        this._physicsEngine.detachAll();
+        this._physicsEngine.attach([this._drag, this._friction], this._particle);
+        this._particle.setVelocity(velocity);
 
     },
 
     _updateScrollviewVariables: function(){
         var delta = [];
-        var pos = this.scrollView._particle.getPosition();
-        delta[0] = this.scrollView._positionX.get() - pos[0];
-        delta[1] = this.scrollView._positionY.get() - pos[1];
+        var pos = this._particle.getPosition();
+        delta[0] = this.scrollView.positionX.get() - pos[0];
+        delta[1] = this.scrollView.positionY.get() - pos[1];
         var boundsInfo = this.scrollView.getBoundsInfo(delta);
         if(!boundsInfo.isPastLimits){
-            this.scrollView._positionX.set(pos[0]);
-            this.scrollView._positionY.set(pos[1]);
+            this.scrollView.positionX.set(pos[0]);
+            this.scrollView.positionY.set(pos[1]);
         }
         return delta;
     },
@@ -106,15 +110,15 @@ var SimpleDriver = marionette.Controller.extend({
 
             if(boundsInfo.isPastLimits && !this._thrownPastLimits){
                 this._physicsEngine.detachAll();
-                this.scrollView._particle.setVelocity(0);
+                this._particle.setVelocity(0);
                 this.scrollView.setScrollPosition(boundsInfo.anchorPoint[0], boundsInfo.anchorPoint[1]);
                 callback();
                 this._thrownPastLimits = true;
             }
 
-            this.scrollView._scrollableView.invalidateView();
+            this.scrollView.invalidate();
             this.scrollView.triggerScrollUpdate();
-            var v = this.scrollView._particle.getVelocity();
+            var v = this._particle.getVelocity();
             if(Math.abs(v[0]) < 0.001 && Math.abs(v[1]) < 0.001){
                 callback();
             }
