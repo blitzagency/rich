@@ -74,7 +74,6 @@ var BounceDriver = SimpleDriver.extend({
         if(this._throwMod){
             this._throwMod.callback();
         }
-        // we only want to add velocity if you're touch or click
         this._physicsEngine.detachAll();
         this.scrollView._particle.setVelocity(0);
 
