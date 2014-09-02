@@ -27,6 +27,9 @@
     array of `rich.autolayout.constraints.Constraint` objects in
     addition to VFL or JSON.
 
+  * Clean up on rich scrollview codebase, made driver reach into scrollview
+    less by passing it's required variables in via options.
+
 * Fixes
 
   * When the root view is destroyed, the resize listener will be removed.
