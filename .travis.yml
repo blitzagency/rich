@@ -3,6 +3,8 @@ node_js:
 - '0.10'
 notifications:
   email: false
+  slack:
+    secure: hK1qML1GyTdk7FA8HUqkA/8H0+DCoLaCbbL42xKuKp5n9NVlgSIR8Dtwuh0d9tfeqcUD5jd3C1ONv/nau6H9qXRCwiwvqLJNpSK7xB+qLKYyTB6dRdFXJldO5W8kwDVfhjM2CJLXk2iw+5AjDzza8dCsIb+dj+EdFsHYaUto6d8=
 before_script: npm install -g karma-cli
 env:
   global:
@@ -10,5 +12,5 @@ env:
   - secure: wLL6jEV6A2/WGWpQ4bLx0A+5S7nwE4kVdewrrRG32QedFUTVSphXJRNwWBxGRa54EqPYVfBIBQPnFkKyqX2WiiMrqK+O/pcTuhSPMI/zdp//hRfmm8SSV+4591vPDqemRkeOVgDIqkrBYIWhEQMIdX3NWViBFcDO3/dbLKfAg78=
 branches:
   only:
-    - master
-    - develop
+  - master
+  - develop
