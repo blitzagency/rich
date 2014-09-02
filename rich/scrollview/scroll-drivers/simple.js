@@ -11,9 +11,9 @@ var SimpleDriver = marionette.Controller.extend({
     mobileScrollDamp: 1,
     strength: 0.005,
     mobileStrength:0.003,
-    constructor: function(scrollView) {
+    constructor: function(options) {
         marionette.Controller.prototype.constructor.apply(this, arguments);
-        this.scrollView = scrollView;
+        this.scrollView = options.scrollView;
         this._spring = new Spring({
             period: 300,
             dampingRatio: 1
@@ -27,10 +27,7 @@ var SimpleDriver = marionette.Controller.extend({
             forceFunction: Drag.FORCE_FUNCTIONS.QUADRATIC,
         });
 
-        // you must add a particle to a phyisics engine to have it work
-        // correctly
-        this._physicsEngine = new PhysicsEngine();
-        this._physicsEngine.addBody(this.scrollView._particle);
+        this._physicsEngine = options.physicsEngine;
     },
 
     shouldLimitPastBounds: function(){
@@ -56,10 +53,7 @@ var SimpleDriver = marionette.Controller.extend({
         }
     },
 
-    wantsThrow: function(velocity){
-        var type = this.scrollView._scrollType;
-
-
+    wantsThrow: function(velocity, type){
         // we only want to add velocity if you're touch or click
         if(type == 'wheel' || type == 'mouseup')return;
         if(this._throwMod){
@@ -89,7 +83,7 @@ var SimpleDriver = marionette.Controller.extend({
 
         velocity = this.scrollView._normalizeVector(velocity);
         this._physicsEngine.attach([this._drag, this._friction], this.scrollView._particle);
-        this.scrollView._particle.setVelocity([0, -10]);
+        this.scrollView._particle.setVelocity(velocity);
 
     },
 

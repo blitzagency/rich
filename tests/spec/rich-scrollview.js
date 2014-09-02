@@ -56,12 +56,12 @@ describe('Layout:', function() {
             wait(100).then(function(){
                 expect(initPos).toEqual([0, 0, 0]);
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
-                context.done();
+                // context.done();
             });
         });
     });
 
-    it('basic driver animates to a scrolled position', function(done){
+    xit('basic driver animates to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -110,7 +110,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce driver scrolls to a scrolled position', function(done){
+    xit('bounce driver scrolls to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -142,7 +142,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce driver animates to a scrolled position', function(done){
+    xit('bounce driver animates to a scrolled position', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -192,7 +192,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('basic driver scrolls to a scrolled position horizontally', function(done){
+    xit('basic driver scrolls to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -224,7 +224,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('basic driver animates to a scrolled position horizontally', function(done){
+    xit('basic driver animates to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -273,7 +273,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce driver scrolls to a scrolled position horizontally', function(done){
+    xit('bounce driver scrolls to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -305,7 +305,7 @@ describe('Layout:', function() {
         });
     });
 
-    it('bounce driver animates to a scrolled position horizontally', function(done){
+    xit('bounce driver animates to a scrolled position horizontally', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -372,7 +372,7 @@ describe('Layout:', function() {
 
 
 
-    // it('basic driver scrolls to a scrolled position', function(done){
+    // xit('basic driver scrolls to a scrolled position', function(done){
     //     var model = new Rectangle();
     //     var view = new LongView({
     //         model: model,

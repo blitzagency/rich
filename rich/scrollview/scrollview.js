@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var GenericSync = require('famous/inputs/GenericSync');
     var Engine = require('famous/core/Engine');
     var Particle = require('famous/physics/bodies/Particle');
+    var PhysicsEngine = require('famous/physics/PhysicsEngine');
     var TouchSync = require('famous/inputs/TouchSync');
     var ScrollSync = require('famous/inputs/ScrollSync');
     var MouseSync = require('famous/inputs/MouseSync');
@@ -50,7 +51,8 @@ define(function(require, exports, module) {
 
             // physics
             this._particle = new Particle();
-
+            this._physicsEngine = new PhysicsEngine();
+            this._physicsEngine.addBody(this._particle);
 
             // transitionables setup
             this.bindParticle();
@@ -72,7 +74,10 @@ define(function(require, exports, module) {
 
             // set up the scroll driver
             var ScrollDriver = options.scrollDriver || SimpleDriver;
-            this._driver = new ScrollDriver(this);
+            this._driver = new ScrollDriver({
+                scrollView: this,
+                physicsEngine: this._physicsEngine
+            });
 
             // options
             this.direction = options.direction;
@@ -180,6 +185,7 @@ define(function(require, exports, module) {
         },
 
         setScrollPosition: function(x, y, transition, limit) {
+            this._scrollableView.setNeedsDisplay(true);
             limit = _.isUndefined(limit) ? true : limit;
             if (limit) {
                 var pos = this._cleanScrollPosition(x, y);
@@ -320,7 +326,7 @@ define(function(require, exports, module) {
         },
 
         _onScrollStart: function(data) {
-            this._scrollableView.setNeedsDisplay(true);
+            // this._scrollableView.setNeedsDisplay(true);
             this._scrollDirection = null;
             this._idleIncrement = 0;
             this.trigger('scroll:start', this.getScrollPosition());
@@ -329,7 +335,7 @@ define(function(require, exports, module) {
 
         _onScrollEnd: function(data) {
             this.trigger('scroll:end', this.getScrollPosition());
-            this._driver.wantsThrow(data.velocity);
+            this._driver.wantsThrow(data.velocity, this._scrollType);
         },
 
         _setScrollDirection: function(delta) {
@@ -345,7 +351,7 @@ define(function(require, exports, module) {
         },
 
         triggerScrollUpdate: function(){
-            this._scrollableView.setNeedsDisplay(true);
+            // this._scrollableView.setNeedsDisplay(true);
             this.trigger('scroll:update', this.getScrollPosition());
         },
 

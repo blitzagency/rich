@@ -16,7 +16,7 @@ var BounceDriver = SimpleDriver.extend({
     _hasSpring: false,
     mobileStrength:0.003,
     strength: 0.005,
-    constructor: function(scrollView) {
+    constructor: function(options) {
         SimpleDriver.prototype.constructor.apply(this, arguments);
         this._spring = new Spring({
             period: 300,
@@ -69,20 +69,14 @@ var BounceDriver = SimpleDriver.extend({
         }
     },
 
-    wantsThrow: function(velocity){
-        var type = this.scrollView._scrollType;
-        // remove all previous physics
-        // console.log('detatch')
+    wantsThrow: function(velocity, type){
         if(type == 'wheel')return;
-
         if(this._throwMod){
             this._throwMod.callback();
         }
         // we only want to add velocity if you're touch or click
-
         this._physicsEngine.detachAll();
         this.scrollView._particle.setVelocity(0);
-
 
         var strength = type == 'touchend' ? this.mobileStrength : this.strength;
 
@@ -94,16 +88,14 @@ var BounceDriver = SimpleDriver.extend({
             strength: strength
         });
 
-
         this.scrollView.unbindParticle();
         this._throwMod = this._prepareThrowModification();
 
         this._throwMod.deferred.then(function(){
             this.scrollView.bindParticle();
         }.bind(this));
-        // TODO, make this work horizontally
-        velocity[0] = 0;
-        // velocity[1] = -velocity[1];
+
+        velocity = this.scrollView._normalizeVector(velocity);
         this._physicsEngine.attach([this._drag, this._friction], this.scrollView._particle);
         this.scrollView._particle.setVelocity(velocity);
 
