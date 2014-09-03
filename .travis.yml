@@ -11,7 +11,6 @@ env:
   - secure: QRWA7QU3VP8cYwLxy3UXPP7OWsMG+6aW5YGu919yGrv2kwYifcTOnkxu1tWob9Es5zlg78id213b92NOcQ/vTfVZesCPTBYetdJ5fwjQ34aQ/7mMHmyh8mqHwXr0Q9eZWLXiji89eVf66fRR7d2ktxA2q3ck0VR/J3csDo7u9es=
   - secure: wLL6jEV6A2/WGWpQ4bLx0A+5S7nwE4kVdewrrRG32QedFUTVSphXJRNwWBxGRa54EqPYVfBIBQPnFkKyqX2WiiMrqK+O/pcTuhSPMI/zdp//hRfmm8SSV+4591vPDqemRkeOVgDIqkrBYIWhEQMIdX3NWViBFcDO3/dbLKfAg78=
 branches:
-  only:
-  - master
-  - develop
-  - /^v*$/
+  except:
+  - /^feature-*$/
+  - gh-pages
