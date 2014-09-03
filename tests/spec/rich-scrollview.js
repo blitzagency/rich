@@ -100,7 +100,7 @@ describe('Layout:', function() {
                 position = scrollView._particle.getPosition();
             });
 
-            wait(500).then(function(){
+            wait(600).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
                 context.done();
             });
@@ -263,7 +263,7 @@ describe('Layout:', function() {
                 position = scrollView._particle.getPosition();
             });
 
-            wait(510).then(function(){
+            wait(600).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([-500, 0, 0]);
                 context.done();
             });
