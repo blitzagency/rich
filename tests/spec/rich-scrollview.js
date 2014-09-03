@@ -182,7 +182,7 @@ describe('Layout:', function() {
                 position = scrollView._particle.getPosition();
             });
 
-            wait(500).then(function(){
+            wait(530).then(function(){
                 expect(scrollView._particle.getPosition()).toEqual([0, -500, 0]);
                 context.done();
             });
