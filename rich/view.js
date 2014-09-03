@@ -310,7 +310,7 @@ var FamousView = marionette.View.extend({
     },
 
     updateVariables: function(variables, values){
-
+        if(variables.length === 0 || values.length === 0)return;
         var solver = this._solver;
 
         _.each(variables, function(each, index){
@@ -385,7 +385,11 @@ var FamousView = marionette.View.extend({
                 }
 
                 _.each(target.keys(), function(key){
-                    var each = this.children.findByCid(key);
+                    // because the key could be a sibling or a child,
+                    // we need to look in both places for it
+                    var each = this.children.findByCid(key) ||
+                               view.children.findByCid(key);
+
                     each.updateVariables(variables, values);
                 }, this);
 
@@ -681,7 +685,6 @@ var FamousView = marionette.View.extend({
     _render: function(){
         if(this.isDestroyed) return;
         var spec;
-
         if(!this._constraintsInitialized){
             this._initializeConstraints();
         }
