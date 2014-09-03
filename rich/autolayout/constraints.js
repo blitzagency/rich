@@ -51,6 +51,9 @@ define(function (require, exports, module) {
 
         prepare: function(view){
             var obj = utils.constraintsFromJson(this.attributes, view);
+            // ensures that if you are adding a constraint,
+            // we have first initialized it's relationships and it's solver
+            obj.item._initializeRelationships();
             this._constraint = obj.constraint;
             this._stays = obj.stays;
             this._solver = obj.item._solver;

@@ -393,5 +393,57 @@ describe('View + Constraints:', function() {
         };
     });
 
+    it('fills parent view using fillWithSubview', function(done){
+        var context = new Setup(done);
+
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var view = new RectangleView({
+            model: color0,
+        });
+
+        root.fillWithSubview(view);
+
+        view.onShow = function(){
+            expect(view._autolayout.left.value).toBe(0);
+            expect(view._autolayout.right.value).toBe(0);
+            expect(view._autolayout.width.value).toBe(1000);
+            expect(view._autolayout.height.value).toBe(800);
+            context.done();
+        };
+
+    });
+
+    it('fills parent view using fillWithSubview after render', function(done){
+        var context = new Setup(done);
+
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var view = new RectangleView({
+            model: color0,
+        });
+
+        render().then(function(){
+            root.fillWithSubview(view);
+
+            view.onShow = function(){
+                expect(view._autolayout.left.value).toBe(0);
+                expect(view._autolayout.right.value).toBe(0);
+                expect(view._autolayout.width.value).toBe(1000);
+                expect(view._autolayout.height.value).toBe(800);
+                context.done();
+            };
+        });
+
+    });
+
 }); // eof describe
 }); // eof define

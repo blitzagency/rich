@@ -398,7 +398,6 @@ var FamousView = marionette.View.extend({
     },
 
     addConstraints: function(constraints){
-
         var i;
         var each;
         var result;
@@ -414,7 +413,6 @@ var FamousView = marionette.View.extend({
             each = constraints[i];
 
             each.prepare(this);
-
             this._processAffectedRelationships(each.attributes, changes);
 
             this._constraintsIndex[each.cid] = this._constraints.length;
@@ -813,6 +811,7 @@ var FamousView = marionette.View.extend({
 
     prepareSubviewAdd: function(view, zIndex){
         view.superview = this;
+        // view._initializeRelationships();
         this._richDestroyed = false;
 
         function setZIndex(value){
@@ -836,6 +835,14 @@ var FamousView = marionette.View.extend({
         if(this.root){
             this.invalidateView();
         }
+    },
+
+    fillWithSubview: function(view, zIndex){
+        this.addSubview(view, zIndex);
+        // view._initializeRelationships();
+        var c1 = constraintsWithVFL('|[view]|', {view: view});
+        var c2 = constraintsWithVFL('V:|[view]|', {view: view});
+        this.addConstraints([].concat(c1, c2));
     },
 
     prepareSubviewRemove: function(view){
