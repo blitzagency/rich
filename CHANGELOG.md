@@ -1,4 +1,10 @@
-### v0.0.3 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.2...HEAD)
+### v0.0.4 [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.3...v0.0.4)
+
+* Fixes
+  * Fixes critical error in constraint dependancies (_resolveConstraintDependencies)
+
+
+### v0.0.3 [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.2...v0.0.3)
 
 * Features
 
