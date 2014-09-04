@@ -1,8 +1,10 @@
 ### v0.0.5 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...HEAD)
 
 * Features
-  * view now has a utility function for telling it's children to fill up the size
-    of their parent:  `view.fillWithSubview(view, zIndex)`
+  * View now has a utility function for telling it's children to fill up the size
+    of their parent:  `view.fillWithSubview(otherView, zIndex)`
+
+  * Cleaned up methods for updating modifier to make them DRY.
 
 
 ### v0.0.4 [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.3...v0.0.4)

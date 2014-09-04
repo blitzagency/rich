@@ -567,7 +567,7 @@ var FamousView = marionette.View.extend({
         return {deferred: deferred.promise(), callback: callback};
     },
 
-    setTransform: function(transform, transition, index){
+    _animateModifier: function(type, args, transition, index){
         index || (index = 0);
 
         var target;
@@ -582,85 +582,29 @@ var FamousView = marionette.View.extend({
         }
 
         if(!duration){
-            target.setTransform(transform);
+            target[type](args);
             this.invalidateView();
         }else{
-            target.setTransform(transform, transition, obj.callback);
+            target[type](args, transition, obj.callback);
         }
 
         return obj.deferred;
+    },
+
+    setTransform: function(transform, transition, index){
+        return this._animateModifier('setTransform', transform, transition, index);
     },
 
     setOpacity: function(opacity, transition, index){
-        index || (index = 0);
-
-        var target;
-        var duration = transition && transition.duration ? transition.duration : 0;
-
-        var obj = this._prepareModification(duration);
-
-        if(_.isArray(this._modifier)){
-            target = this._modifier[index];
-        } else {
-            target = this._modifier;
-        }
-
-        if(!duration){
-            target.setOpacity(opacity);
-            this.invalidateView();
-        }else{
-            target.setOpacity(opacity, transition, obj.callback);
-        }
-
-        return obj.deferred;
+        return this._animateModifier('setOpacity', opacity, transition, index);
     },
 
     setOrigin: function(origin, transition, index){
-        index || (index = 0);
-
-        var target;
-        var duration = transition && transition.duration ? transition.duration : 0;
-
-        var obj = this._prepareModification(duration);
-
-        if(_.isArray(this._modifier)){
-            target = this._modifier[index];
-        } else {
-            target = this._modifier;
-        }
-
-        if(!duration){
-            target.setOrigin(origin);
-            this.invalidateView();
-        }else{
-            target.setOrigin(origin, transition, obj.callback);
-        }
-
-        return obj.deferred;
+        return this._animateModifier('setOrigin', origin, transition, index);
     },
 
     setAlign: function(align, transition, index){
-        index || (index = 0);
-
-        var target;
-        var duration = transition && transition.duration ? transition.duration : 0;
-
-        var obj = this._prepareModification(duration);
-
-        if(_.isArray(this._modifier)){
-            target = this._modifier[index];
-        } else {
-            target = this._modifier;
-        }
-
-        if(!duration){
-            target.setAlign(align);
-            this.invalidateView();
-        }else{
-            target.setAlign(align, transition, obj.callback);
-        }
-
-        return obj.deferred;
+        return this._animateModifier('setAlign', align, transition, index);
     },
 
     getFamousId: function(){
