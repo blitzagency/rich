@@ -1,4 +1,4 @@
-### v0.0.5 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...HEAD)
+### v.NEXT _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...HEAD)
 
 * Features
   * View now has a utility function for telling it's children to fill up the size
