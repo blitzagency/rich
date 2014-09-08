@@ -72,6 +72,15 @@ define(function(require, exports, module) {
 
             this._scrollHandler = new EventHandler();
 
+
+
+            // options
+            this.direction = options.direction;
+
+            this.hidesOverflow = _.isUndefined(options.hidesOverflow) ? true : options.hidesOverflow;
+
+            this.perspective = options.perspective || false;
+
             // set up the scroll driver
             var ScrollDriver = options.scrollDriver || SimpleDriver;
             this._driver = new ScrollDriver({
@@ -80,13 +89,6 @@ define(function(require, exports, module) {
                 particle: this._particle,
                 direction: this.direction
             });
-
-            // options
-            this.direction = options.direction;
-
-            this.hidesOverflow = _.isUndefined(options.hidesOverflow) ? true : options.hidesOverflow;
-
-            this.perspective = options.perspective || false;
 
             this.on('show', this.wantsSetPerspective);
 
