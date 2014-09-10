@@ -140,11 +140,17 @@ var FamousView = marionette.View.extend({
             // this isn't a literal return because we are in an _.each, it'll just kick out this loop
             if(this._autolayoutTransitionables[prop].get() == this._autolayout[prop].value) return;
             var animation = this.getAutolayoutTransitionForProperty(prop);
+
             if(this._hasSetInitialProp && animation && animation.duration){
                 var mod = this._prepareModification(animation.duration, false);
+
+                mod.deferred.then(function(){
+                    this.trigger('autolayoutTransition:complete', this, prop);
+                }.bind(this));
+
                 this._autolayoutTransitionables[prop].halt();
                 this._autolayoutTransitionables[prop].set(this._autolayout[prop].value, animation, mod.callback);
-            }else{
+            } else {
                 this._autolayoutTransitionables[prop].set(this._autolayout[prop].value);
             }
         }, this);
