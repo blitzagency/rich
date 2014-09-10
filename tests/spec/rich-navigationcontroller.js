@@ -30,7 +30,7 @@ describe('NavigationController:', function() {
 
     });
 
-    xit('navigation view', function(done){
+    it('navigation controller', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -59,13 +59,15 @@ describe('NavigationController:', function() {
 
         setTimeout(function(){
             nav.pushView(box1);
-        }, 2000);
+        }, 500);
 
         setTimeout(function(){
             nav.popView();
-            context.done();
-        }, 4000);
+        }, 1000);
 
+        setTimeout(function(){
+            context.done();
+        }, 1500);
     });
 
 

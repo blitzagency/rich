@@ -1,26 +1,14 @@
 define(function (require, exports, module) {
     var _ = require('underscore');
     var Easing = require('famous/transitions/Easing');
-    var RenderNode = require('famous/core/RenderNode');
-    var StateModifier = require('famous/modifiers/StateModifier');
-    var Transform = require('famous/core/Transform');
     var View = require('../view').FamousView;
-    var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
     var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
     var utils = require('rich/utils');
 
     var NavigationController = View.extend({
         topView: null,
-        name: 'NavigationController',
-
-        transitionDuration: 200,
-        _transitionNodes: null,
-        _isPop: false,
-        _isPush: false,
-        _sequence: null,
-        _index: -1,
+        transitionDuration: 230,
         _views: null,
-
 
         constructor: function(options){
             View.prototype.constructor.apply(this, arguments);
@@ -81,7 +69,7 @@ define(function (require, exports, module) {
             this.topView = view;
 
             view.autolayoutTransition = {
-                duration: 1000,
+                duration: this.transitionDuration,
                 curve: Easing.outQuad
             };
 

@@ -10,6 +10,7 @@ var tests = [
     'tests/spec/rich-autolayout',
     'tests/spec/rich-collectionview',
     'tests/spec/rich-itemview-events',
+    // 'tests/spec/rich-navigationcontroller',
     'tests/spec/rich-region',
     'tests/spec/rich-scrollview',
     'tests/spec/rich-utils',
