@@ -68,6 +68,7 @@ define(function (require, exports, module) {
             this._isPush = true;
             this.topView = view;
 
+            view.navigationController = this;
             view.autolayoutTransition = {
                 duration: this.transitionDuration,
                 curve: Easing.outQuad
@@ -106,7 +107,7 @@ define(function (require, exports, module) {
                 });
 
                 this.listenTo(this.topView, 'autolayoutTransition:complete', function(view, prop){
-
+                    view.navigationController = null;
                     view.destroy();
 
                     this.prepareSubviewRemove(view);
