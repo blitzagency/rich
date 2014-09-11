@@ -272,11 +272,16 @@ var FamousView = marionette.View.extend({
         return tmp;
     },
 
+    _resetConstraints: function(){
+        this._constraints = [];
+        this._constraintsIndex = {};
+    },
+
     _initializeConstraints: function(){
         var constraints = _.result(this, 'constraints');
         var wantsInitialize;
         var shouldClearConstraints = false;
-        var key;
+        var key = null;
 
         this._constraintsInitialized = true;
         this._initializeRelationships();
@@ -292,18 +297,32 @@ var FamousView = marionette.View.extend({
         if(constraints){
             constraints = this._processIntrinsicConstraints(constraints);
             key = hashConstraints(constraints, this);
-            shouldClearConstraints = key != this._currentConstraintKey;
+            shouldClearConstraints =  this._currentConstraintKey !== undefined &&
+                                      (key != this._currentConstraintKey) ? true: false;
         }
+
+        this._currentConstraintKey = key;
 
         if(shouldClearConstraints) {
-            this._currentConstraintKey = key;
-            wantsInitialize = constraints;
-        } else {
-            wantsInitialize = this._constraints;
-        }
+            this._resetConstraints();
 
-        this._constraints = [];
-        this._constraintsIndex = {};
+            // Provide the user an opportunity to add back in
+            // any constriants that may need.
+
+            // Temporary set _relationshipsInitialized to false so
+            // that any call to addConstraint(s), will just push into
+            // the _constaints array. See addConstraint and addConstraints
+            // for where this flag is used.
+            this._relationshipsInitialized = false;
+            this.triggerMethod('constraints:reset');
+            this._relationshipsInitialized = true;
+            wantsInitialize = [].concat(constraints, this._constraints);
+
+        } else {
+            constraints || (constraints = []);
+            wantsInitialize = [].concat(constraints, this._constraints);
+            this._resetConstraints();
+        }
 
         this.children.each(function(child){
             child._initializeRelationships();
@@ -408,6 +427,7 @@ var FamousView = marionette.View.extend({
         var each;
         var result;
         var changes = {};
+        var hasNoRoot = this.root ? false : true;
 
         var addStay = function(solver){
             return function(stay){
@@ -415,12 +435,10 @@ var FamousView = marionette.View.extend({
             };
         };
 
-        var hasNoRoot = this.root ? true : false;
-
         for(i = 0; i < constraints.length; i++){
             each = constraints[i];
 
-            if(hasNoRoot){
+            if(hasNoRoot && this._relationshipsInitialized !== true){
                 this._constraintsIndex[each.cid] = this._constraints.length;
                 this._constraints.push(each);
                 continue;
@@ -448,6 +466,7 @@ var FamousView = marionette.View.extend({
     },
 
     addConstraint: function(constraint){
+        var hasNoRoot = this.root ? true : false;
         var changes = {};
 
         var addStay = function(solver){
@@ -455,6 +474,12 @@ var FamousView = marionette.View.extend({
                 solver.addStay(stay, autolayout.weak, 10);
             };
         };
+
+        if(hasNoRoot && this._relationshipsInitialized !== true){
+            this._constraintsIndex[each.cid] = this._constraints.length;
+            this._constraints.push(each);
+            return;
+        }
 
         constraint.prepare(this);
 
@@ -946,6 +971,10 @@ var FamousView = marionette.View.extend({
         if(this.root){
             this.invalidateLayout();
         }
+    },
+
+    getConstraints: function(){
+        return this._constraints;
     },
 
     getSize: function(){

@@ -394,7 +394,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    xit('fills parent view using fillWithSubview', function(done){
+    it('fills parent view using fillWithSubview', function(done){
         var context = new Setup(done);
 
         var root = context.root;
@@ -491,32 +491,114 @@ describe('View + Constraints:', function() {
             color: colors[0]
         });
 
-        var view1 = new RectangleView({
+        var view0 = new RectangleView({
             model: color0,
         });
 
         var c1 = constraintWithJSON({
-            item: view1,
+            item: view0,
             attribute: 'width',
             relatedBy: '==',
             constant: 50
         });
 
         var c2 = constraintWithJSON({
-            item: view1,
+            item: view0,
             attribute: 'height',
             relatedBy: '==',
             constant: 75
         });
 
-        root.addSubview(view1);
+        root.addSubview(view0);
         root.addConstraints([c1, c2]);
 
-        view1.onShow = function(){
-            expect(view1._autolayout.left.value).toBe(0);
-            expect(view1._autolayout.width.value).toBe(50);
-            expect(view1._autolayout.height.value).toBe(75);
+        view0.onShow = function(){
+            expect(view0._autolayout.left.value).toBe(0);
+            expect(view0._autolayout.width.value).toBe(50);
+            expect(view0._autolayout.height.value).toBe(75);
             context.done();
+        };
+    });
+
+    it('calls onConstraintsReset', function(done){
+        var context = new Setup(done);
+        var root = context.root;
+        var swap = false;
+
+        var color0 = new Rectangle({
+            color: colors[7]
+        });
+
+        var color1 = new Rectangle({
+            color: colors[0]
+        });
+
+        // intentionally created first, as we need it below.
+        var view1 = new RectangleView({
+            model: color1,
+        });
+
+        var view0 = new RectangleView({
+            model: color0,
+            constraints: function(){
+                if(!swap) {
+                    return [];
+                } else {
+                    return [
+                        {
+                            item: view1,
+                            attribute: 'width',
+                            relatedBy: '==',
+                            constant: 50
+                        }
+                    ];
+                }
+            }
+        });
+
+        view0.onConstraintsReset = function(){ /*noop*/}.bind(view0);
+        spyOn(view0, 'onConstraintsReset');
+
+        var c1 = constraintWithJSON({
+            item: view0,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 100
+        });
+
+        var c2 = constraintWithJSON({
+            item: view0,
+            attribute: 'height',
+            relatedBy: '==',
+            constant: 100
+        });
+
+        view0.name = 'view0';
+        view1.name = 'view1';
+        view0.addSubview(view1);
+        root.addSubview(view0);
+        root.addConstraints([c1, c2]);
+
+        view0.onShow = function(){
+            swap = true;
+
+            expect(view0.onConstraintsReset).not.toHaveBeenCalled();
+
+            expect(view0._autolayout.left.value).toBe(0);
+            expect(view0._autolayout.width.value).toBe(100);
+            expect(view0._autolayout.height.value).toBe(100);
+
+            expect(view1._autolayout.left.value).toBe(0);
+            expect(view1._autolayout.width.value).toBe(0);
+
+            root.invalidateLayout();
+            render().then(function(){
+                expect(view0.onConstraintsReset).toHaveBeenCalled();
+
+                expect(view1._autolayout.left.value).toBe(0);
+                expect(view1._autolayout.width.value).toBe(50);
+                context.done();
+            });
         };
     });
 
@@ -542,17 +624,49 @@ describe('View + Constraints:', function() {
         });
 
 
-        root.
-        render().then(function(){
-            root.fillWithSubview(view);
+        var c1 = constraintWithJSON({
+            item: view1,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        });
 
-            view.onShow = function(){
-                expect(view._autolayout.left.value).toBe(0);
-                expect(view._autolayout.right.value).toBe(0);
-                expect(view._autolayout.width.value).toBe(1000);
-                expect(view._autolayout.height.value).toBe(800);
-                context.done();
-            };
+        var c2 = constraintWithJSON({
+            item: view1,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        });
+
+        var c3 = constraintWithJSON({
+            item: view2,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        });
+
+        var c4 = constraintWithJSON({
+            item: view2,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        });
+
+        root.addSubview(view1);
+        root.addSubview(view2);
+        // debugger;
+        root.addConstraints([c1, c2, c3, c4]);
+
+        render().then(function(){
+            expect(root.getConstraints().length).toEqual(4);
+            context.done();
+            // view.onShow = function(){
+            //     expect(view._autolayout.left.value).toBe(0);
+            //     expect(view._autolayout.right.value).toBe(0);
+            //     expect(view._autolayout.width.value).toBe(1000);
+            //     expect(view._autolayout.height.value).toBe(800);
+            //     context.done();
+            // };
         });
     });
 
