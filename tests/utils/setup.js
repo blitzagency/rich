@@ -49,6 +49,7 @@ define(function (require, exports, module) {
 
     Setup.prototype.initializeRegion = function(root){
         var region = new rich.Region();
+        region.name = 'setup.region';
         root.addSubview(region);
         return region;
     };
