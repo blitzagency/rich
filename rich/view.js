@@ -1045,6 +1045,17 @@ var FamousView = marionette.View.extend({
         }
     },
 
+    getBounds: function(){
+        return {
+            width: this._autolayout.width.value,
+            height: this._autolayout.height.value,
+            top: this._autolayout.top.value,
+            right: this._autolayout.right.value,
+            bottom: this._autolayout.bottom.value,
+            left: this._autolayout.left.value,
+        };
+    },
+
     getConstraints: function(){
         return this._constraints;
     },
