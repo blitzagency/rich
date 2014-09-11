@@ -301,8 +301,6 @@ var FamousView = marionette.View.extend({
                                       (key != this._currentConstraintKey) ? true: false;
         }
 
-        this._currentConstraintKey = key;
-
         if(shouldClearConstraints) {
             this._resetConstraints();
 
@@ -319,10 +317,21 @@ var FamousView = marionette.View.extend({
             wantsInitialize = [].concat(constraints, this._constraints);
 
         } else {
-            constraints || (constraints = []);
-            wantsInitialize = [].concat(constraints, this._constraints);
+            // 1st pass though, we merge the constraints and this._constraints
+            // after that, this._constraints will host the intrinsic
+            // constraints, unless those intrinsic constraints change, in
+            // which case we won't be in this `else` anyway, we will be
+            // above.
+
+            if(this._currentConstraintKey === undefined && constraints){
+                this._constraints = this._constraints.concat(constraints);
+            }
+
+            wantsInitialize = this._constraints;
             this._resetConstraints();
         }
+
+        this._currentConstraintKey = key;
 
         this.children.each(function(child){
             child._initializeRelationships();
@@ -438,6 +447,38 @@ var FamousView = marionette.View.extend({
         for(i = 0; i < constraints.length; i++){
             each = constraints[i];
 
+            // WARNING: It's going to look very strange ahead, there
+            // is ALMOST CERTAINLY a better way to handle this, but
+            // time prevents it at the moment. Anyway, be sure to read
+            // the comments below to help understand the WHY of what's
+            // happening.
+
+            // If there is a root AND the relationships have been
+            // initialized that means we will be calling invalidateLayout()
+            // below. That will trigger a call to _initializeConstriants()
+            // which calls addConstraints(). Yes, it will come right back
+            // here. `this.root` will be null on that pass though.
+            //
+            // Since we know we will be coming right back here, lets put up
+            // a guard to prevent us from doing the song and dance below
+            // this 2x. On the second time around for the render, `this.root`
+            // will be null and `this._relationshipsInitialized` will
+            // be true. In other words this block won't get used 2x.
+            if(this.root && this._relationshipsInitialized){
+                this._constraintsIndex[each.cid] = this._constraints.length;
+                this._constraints.push(each);
+                continue;
+            }
+
+            // Similar to above, if we have no root, we know that a render
+            // pass is forthcoming. There is no need to run the song and
+            // dance below this 2x. So this the guard to prevent that.
+            // On a render pass here, `this.root` will be null but
+            // `this._relationshipsInitialized` will be true. In other words
+            // this block won't get used 2x.
+            //
+            // _initializeConstraints calls _initializeRelationships ,
+            // which then calls addConstaints, which is where we are at now.
             if(hasNoRoot && this._relationshipsInitialized !== true){
                 this._constraintsIndex[each.cid] = this._constraints.length;
                 this._constraints.push(each);
@@ -466,35 +507,23 @@ var FamousView = marionette.View.extend({
     },
 
     addConstraint: function(constraint){
-        var hasNoRoot = this.root ? true : false;
-        var changes = {};
+        var hasNoRoot = this.root ? false : true;
 
-        var addStay = function(solver){
-            return function(stay){
-                solver.addStay(stay, autolayout.weak, 10);
-            };
-        };
+        // See the notes in `addConstraints` above for why
+        // these 2 if blocks exist they way they do.
+        // No return here because we need it to call invalidateLayout()
+        // below, which will call _initializeConstraints()
+        // which will call addConstraint(s) above.
+        if(this.root && this._relationshipsInitialized){
+            this._constraintsIndex[constraint.cid] = this._constraints.length;
+            this._constraints.push(constraint);
+        }
 
         if(hasNoRoot && this._relationshipsInitialized !== true){
-            this._constraintsIndex[each.cid] = this._constraints.length;
-            this._constraints.push(each);
+            this._constraintsIndex[constraint.cid] = this._constraints.length;
+            this._constraints.push(constraint);
             return;
         }
-
-        constraint.prepare(this);
-
-        this._processAffectedRelationships(constraint.attributes, changes);
-
-        this._constraintsIndex[constraint.cid] = this._constraints.length;
-        this._constraints.push(constraint);
-
-        if(constraint._stays){
-            _.each(constraint._stays, addStay(constraint._solver));
-        }
-
-        constraint._solver.addConstraint(constraint._constraint);
-
-        this._resolveConstraintDependencies(changes);
 
         if(this.root){
             this.invalidateLayout();
@@ -828,9 +857,52 @@ var FamousView = marionette.View.extend({
         this.addConstraints([].concat(c1, c2));
     },
 
+    _removeConstraintsForView: function(view){
+        var toRemove = [];
+        var externalRemove = [];
+        var leafRelationships = 0;
+        var constraints = this.getConstraints();
+
+        for(var i = 0; i < constraints.length; i++){
+            var each = constraints[i];
+            var json = each.attributes;
+
+            if(json.item == view){
+                toRemove.push(each);
+
+                if(json.toItem && json.toItem.superview == view.superview){
+                    leafRelationships++;
+                }
+
+            } else if (json.toItem == view){
+                toRemove.push(each);
+
+                if(json.item.superview == view.superview){
+                    leafRelationships++;
+                }
+            }
+        }
+
+        // prevent invalidateView/invalidateLayout invocation
+        // that comes with this.removeConstraints()
+        var root = this.root;
+        this.root = null;
+
+        this.removeConstraints(toRemove);
+
+        // restore the root
+        this.root = root;
+
+        if(this.root && leafRelationships > 0){
+            this.invalidateLayout();
+        }
+    },
+
     prepareSubviewRemove: function(view){
         this.children.remove(view);
         this.stopListening(view, events.INVALIDATE, this.subviewDidChange);
+
+        this._removeConstraintsForView(view);
 
         utils.defer(function(){
             view.invalidateLayout();
