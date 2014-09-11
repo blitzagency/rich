@@ -415,8 +415,16 @@ var FamousView = marionette.View.extend({
             };
         };
 
+        var hasNoRoot = this.root ? true : false;
+
         for(i = 0; i < constraints.length; i++){
             each = constraints[i];
+
+            if(hasNoRoot){
+                this._constraintsIndex[each.cid] = this._constraints.length;
+                this._constraints.push(each);
+                continue;
+            }
 
             each.prepare(this);
             this._processAffectedRelationships(each.attributes, changes);
