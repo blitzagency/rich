@@ -17,6 +17,7 @@ var constraints = require('rich/autolayout/constraints');
 var Setup = require('tests/utils/setup').Setup;
 var log = require('tests/utils/log');
 var constraintsWithVFL = require('rich/autolayout/constraints').constraintsWithVFL;
+var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -32,7 +33,7 @@ describe('View + Constraints:', function() {
     });
 
 
-    it('updates with constraints', function(done){
+    xit('updates with constraints', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -87,7 +88,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('updates layout after adding constraint with JSON', function(done){
+    xit('updates layout after adding constraint with JSON', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -155,7 +156,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('updates layout after adding constraint with VFL', function(done){
+    xit('updates layout after adding constraint with VFL', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -218,7 +219,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('removes constraint', function(done){
+    xit('removes constraint', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -310,7 +311,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('removes constraints', function(done){
+    xit('removes constraints', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -393,7 +394,7 @@ describe('View + Constraints:', function() {
         };
     });
 
-    it('fills parent view using fillWithSubview', function(done){
+    xit('fills parent view using fillWithSubview', function(done){
         var context = new Setup(done);
 
         var root = context.root;
@@ -443,6 +444,116 @@ describe('View + Constraints:', function() {
             };
         });
 
+    });
+
+    it('adds constraint with no root', function(done){
+        var context = new Setup(done);
+
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var view1 = new RectangleView({
+            model: color0,
+        });
+
+        root.addSubview(view1);
+        root.addConstraint(constraintWithJSON({
+            item: view1,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        }));
+
+        root.addConstraint(constraintWithJSON({
+            item: view1,
+            attribute: 'height',
+            relatedBy: '==',
+            constant: 75
+        }));
+
+        view1.onShow = function(){
+            expect(view1._autolayout.left.value).toBe(0);
+            expect(view1._autolayout.width.value).toBe(50);
+            expect(view1._autolayout.height.value).toBe(75);
+            context.done();
+        };
+    });
+
+    it('adds constraint(s) with no root', function(done){
+        var context = new Setup(done);
+
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var view1 = new RectangleView({
+            model: color0,
+        });
+
+        var c1 = constraintWithJSON({
+            item: view1,
+            attribute: 'width',
+            relatedBy: '==',
+            constant: 50
+        });
+
+        var c2 = constraintWithJSON({
+            item: view1,
+            attribute: 'height',
+            relatedBy: '==',
+            constant: 75
+        });
+
+        root.addSubview(view1);
+        root.addConstraints([c1, c2]);
+
+        view1.onShow = function(){
+            expect(view1._autolayout.left.value).toBe(0);
+            expect(view1._autolayout.width.value).toBe(50);
+            expect(view1._autolayout.height.value).toBe(75);
+            context.done();
+        };
+    });
+
+    xit('removes constraints when subview is removed', function(done){
+        var context = new Setup(done);
+
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var color1 = new Rectangle({
+            color: colors[1]
+        });
+
+        var view1 = new RectangleView({
+            model: color0,
+        });
+
+        var view2 = new RectangleView({
+            model: color0,
+        });
+
+
+        root.
+        render().then(function(){
+            root.fillWithSubview(view);
+
+            view.onShow = function(){
+                expect(view._autolayout.left.value).toBe(0);
+                expect(view._autolayout.right.value).toBe(0);
+                expect(view._autolayout.width.value).toBe(1000);
+                expect(view._autolayout.height.value).toBe(800);
+                context.done();
+            };
+        });
     });
 
 }); // eof describe
