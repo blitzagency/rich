@@ -7,7 +7,19 @@ var Transform = require('famous/core/Transform');
 var View = require('rich/view').FamousView;
 
 function defer(callback){
-    window.requestAnimationFrame(callback);
+    var id = null;
+
+    function action(){
+        id = null;
+        callback();
+    }
+
+    id = requestAnimationFrame(action);
+
+    return function(cb){
+        if(id) cancelAnimationFrame(id);
+        return defer(cb);
+    };
 }
 
 function initializeRichContext(options){
