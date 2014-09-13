@@ -34,6 +34,7 @@ var FamousView = marionette.View.extend({
     _isRoot: false,
     _spec: null,
     _needsDisplay: false,
+    _firstRender: null,
 
     // we need to own initialize, this includes marionette.View()
     // AND backbone.View()
@@ -444,6 +445,7 @@ var FamousView = marionette.View.extend({
             };
         };
 
+        var views = {};
         for(i = 0; i < constraints.length; i++){
             each = constraints[i];
 
@@ -496,13 +498,26 @@ var FamousView = marionette.View.extend({
             }
 
             each._solver.addConstraint(each._constraint);
+
+            if(!each._item._firstRender)
+                views[each._item.cid] = each._item;
+        }
+
+        for(var key in views){
+            var obj = views[key];
+
+            var action = function(prop){
+                obj._autolayoutTransitionables[prop].set(obj._autolayout[prop].value);
+            };
+
+            _.each(CONSTRAINT_PROPS, action);
+            obj._firstRender = true;
         }
 
         this._resolveConstraintDependencies(changes);
 
         if(this.root){
-            this.invalidateLayout();
-            this.invalidateView();
+            this.invalidateAll();
         }
     },
 
@@ -526,8 +541,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(this.root){
-            this.invalidateLayout();
-            this.invalidateView();
+            this.invalidateAll();
         }
     },
 
@@ -565,8 +579,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(this.root){
-            this.invalidateLayout();
-            this.invalidateView();
+            this.invalidateAll();
         }
     },
 
@@ -599,8 +612,7 @@ var FamousView = marionette.View.extend({
         }
 
         if(this.root){
-            this.invalidateLayout();
-            this.invalidateView();
+            this.invalidateAll();
         }
     },
 
@@ -906,7 +918,7 @@ var FamousView = marionette.View.extend({
 
         utils.defer(function(){
             view.invalidateLayout();
-            view._richDestroy();
+            view.remove();
         });
     },
 
@@ -1104,6 +1116,19 @@ var FamousView = marionette.View.extend({
         this.triggerMethod('element', this);
     },
 
+    invalidateAll: function(){
+
+        var invalidate = function(){
+            this.invalidateLayout();
+            this.invalidateView();
+        }.bind(this);
+
+        var action = utils.defer(invalidate);
+
+        this.invalidateAll = function(){
+            action = action(invalidate);
+        };
+    },
 
     invalidateLayout: function(){
         // this is rather destructive and it's results are
@@ -1135,22 +1160,28 @@ var FamousView = marionette.View.extend({
     },
 
     _richDestroy: function(){
+        if(this._richDestroyed) return;
         this._isShown = false;
         this.superview = null;
         this.context = null;
         this.root = null;
-        this.children = null;
+        this.children = new backbone.ChildViewContainer();
         this._richAutolayoutDestroy();
         this._richDestroyed = true;
+        this._firstRender = null
     },
 
     _richAutolayoutDestroy: function(){
         this._solver = null;
-        this._autolayout = {};
-        this._constraints = [];
-        this._constraintsIndex = {};
+
+        if(this.isDestroyed){
+            this._autolayout = null;
+        } else {
+            this._initializeAutolayout();
+        }
+
+        this._resetConstraints();
         this._constraintRelations = null;
-        this._superviewConstraints = [];
     },
 
     // override Backbone.View.remove()
@@ -1161,6 +1192,7 @@ var FamousView = marionette.View.extend({
         // Backbone.View.remove()
 
         // this.$el.remove();
+        this.unbindUIElements();
 
         if(this.$el){
             this.undelegateEvents();
@@ -1170,6 +1202,18 @@ var FamousView = marionette.View.extend({
 
         if(!this._richDestroyed)
             this._richDestroy();
+
+        this.$el = null;
+        this.el = null;
+
+        if(this.isDestroyed){
+            this.renderable = null;
+            this._html = null;
+        }
+
+        _.each(CONSTRAINT_PROPS, function(prop){
+            this._autolayoutTransitionables[prop].halt();
+        }, this);
 
         return this;
     },
