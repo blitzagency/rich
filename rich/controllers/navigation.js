@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     var constraintWithJSON = require('rich/autolayout/constraints').constraintWithJSON;
     var utils = require('rich/utils');
 
+
     var NavigationController = rich.View.extend({
         topView: null,
         transitionDuration: 230,
@@ -22,34 +23,20 @@ define(function (require, exports, module) {
 
                 this.prepareSubviewAdd(view);
                 this.preparePushView(view);
-
-                setTimeout(function(){
-                    console.log(this.getSize());
-                    this.addConstraints(constraints);
-                }.bind(this), 1000);
-                // utils.defer(function(){
-
-
-                // });
+                this.addConstraints(constraints);
             }
         },
 
-        _initializeConstraints: function(){
-            //debugger;
-            rich.View.prototype._initializeConstraints.apply(this, arguments);
-        },
-
         pushView: function(view){
-            var outConstraint;
+            var wantsOut = false;
             var inConstraint = this.preparePushInConstraint(view);
 
             if(this.topView){
-                outConstraint = this.preparePushOutConstraint(this.topView);
-
                 var index = this._views.length - 1;
-                var tmp = this._views[index];
-
-                tmp.positionConstraint = outConstraint;
+                wantsOut = {
+                    view: this._views[index].view,
+                    index: index
+                };
             }
 
             var constraints = [].concat(
@@ -59,15 +46,19 @@ define(function (require, exports, module) {
 
             this.preparePushView(view);
             this.prepareSubviewAdd(view);
+
             this.addConstraints(constraints);
 
             utils.defer(function(){
                 this.removeConstraint(inConstraint);
 
-                if(outConstraint){
+                if(wantsOut){
+
+                    var outConstraint = this.preparePushOutConstraint(wantsOut.view);
+                    var tmp = this._views[wantsOut.index];
+                    tmp.positionConstraint = outConstraint;
                     this.addConstraint(outConstraint);
                 }
-
             }.bind(this));
         },
 
@@ -78,12 +69,10 @@ define(function (require, exports, module) {
 
                 var outConstraint = this.preparePopOutConstraint(this.topView);
 
-                this.listenTo(this.topView, 'autolayoutTransition:complete', function(view, prop){
+                this.listenToOnce(this.topView, 'autolayoutTransition:complete', function(view, prop){
                     view.navigationController = null;
-                    view.destroy();
-
                     this.prepareSubviewRemove(view);
-                    this.topView = views[previousIndex];
+                    this.topView = views[previousIndex].view;
                     this.invalidateView();
                     views.pop();
 
@@ -98,9 +87,18 @@ define(function (require, exports, module) {
             this.topView = view;
 
             view.navigationController = this;
-            view.autolayoutTransition = {
+
+            var autolayoutTransition = {
                 duration: this.transitionDuration,
                 curve: Easing.outQuad
+            };
+
+            view.getAutolayoutTransitionForProperty = function(property){
+                if(property == 'left' || property == 'right'){
+                    return autolayoutTransition;
+                }
+
+                return null;
             };
 
             this._views.push({
