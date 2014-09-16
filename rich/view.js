@@ -401,20 +401,24 @@ var FamousView = marionette.View.extend({
                 if(_.has(value, 'right') || _.has(value, 'left')){
 
                     variables = variables.concat([
+                        view._autolayout.width,
                         view._autolayout.left,
                         view._autolayout.right]);
 
                     values = values.concat([
+                        view._autolayout.width.value,
                         view._autolayout.left.value,
                         view._autolayout.right.value]);
                 }
 
                 if(_.has(value, 'top') || _.has(value, 'bottom')){
                     variables = variables.concat([
+                        view._autolayout.height,
                         view._autolayout.top,
                         view._autolayout.bottom]);
 
                     values = values.concat([
+                        view._autolayout.height.value,
                         view._autolayout.top.value,
                         view._autolayout.bottom.value]);
                 }
