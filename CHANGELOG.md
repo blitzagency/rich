@@ -14,7 +14,7 @@
   
   * Views now have a `getBounds` which will return an object in the form:
     ```javascript
-    {width: N, height: N, top: N, right: N, bottom: N, left: N}
+    {width: #, height: #, top: #, right: #, bottom: #, left: #}
     ```
   
   * The `rich.utils.defer` function has been updated to alow it to also enable debouncing
