@@ -4,7 +4,43 @@
   * View now has a utility function for telling it's children to fill up the size
     of their parent:  `view.fillWithSubview(otherView, zIndex)`
 
+  * Autolayout transitions now trigger autolayoutTransition:complete passing the view and prop (top, left, etc)
+  
+  * When intrinsic constraints are changed `onConstraintsReset` will be triggered on the view.
+  
+  * When a subview is removed, it will now remove any constraints that were applied to it.
+  
+  * New controller: NavigationController (might be renamed to PushPopViewController)
+  
+  * Views now have a `getBounds` which will return an object in the form:
+    ```javascript
+    {width: N, height: N, top: N, right: N, bottom: N, left: N}
+    ```
+  
+  * The `rich.utils.defer` function has been updated to alow it to also enable debouncing
+  
+  * New view function `invalidateAll` is a debounced way to invalidate both layout and view
+
+* Fixes
   * Cleaned up methods for updating modifier to make them DRY.
+  
+  * Fixes bug in scrollview where the type of scroll was not being passed
+  
+  * Defers processing of added constraints if no root is present
+  
+  * Add/remove constraint(s) now calls `invalidateAll`
+  
+  * `View.remove` is more complete
+  
+  * `_richAutolayoutDestroy` will rebuild the _autolayout object if the view has not been destroyed.
+  
+  * `_richDestroy` has been cleaned up
+  
+  * When applying constriants for the first time, the _autolayoutTransitionables will be updated to the latest values     if the the view has not been rendered previously.
+  
+  * When constraint dependencies are resolved, width and height are now passed in addition to top/bottom or right/left
+  
+  * Constraint dependencies are resolved earlier in the constraint pipeline
 
 
 ### v0.0.4 [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.3...v0.0.4)
