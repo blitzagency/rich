@@ -388,59 +388,58 @@ var FamousView = marionette.View.extend({
         var variables;
         var values;
 
-        if(!_.isEmpty(changes)){
+        if(_.isEmpty(changes)) return;
 
-            _.each(changes, function(value, key){
-                view = this.children.findByCid(key);
-                target = view._constraintRelations;
+        _.each(changes, function(value, key){
+            view = this.children.findByCid(key);
+            target = view._constraintRelations;
 
-                variables = [];
-                values = [];
+            variables = [];
+            values = [];
 
-                // create the companion attrs:
-                if(_.has(value, 'right') || _.has(value, 'left')){
+            // create the companion attrs:
+            if(_.has(value, 'right') || _.has(value, 'left')){
 
-                    variables = variables.concat([
-                        view._autolayout.width,
-                        view._autolayout.left,
-                        view._autolayout.right]);
+                variables = variables.concat([
+                    view._autolayout.width,
+                    view._autolayout.left,
+                    view._autolayout.right]);
 
-                    values = values.concat([
-                        view._autolayout.width.value,
-                        view._autolayout.left.value,
-                        view._autolayout.right.value]);
-                }
+                values = values.concat([
+                    view._autolayout.width.value,
+                    view._autolayout.left.value,
+                    view._autolayout.right.value]);
+            }
 
-                if(_.has(value, 'top') || _.has(value, 'bottom')){
-                    variables = variables.concat([
-                        view._autolayout.height,
-                        view._autolayout.top,
-                        view._autolayout.bottom]);
+            if(_.has(value, 'top') || _.has(value, 'bottom')){
+                variables = variables.concat([
+                    view._autolayout.height,
+                    view._autolayout.top,
+                    view._autolayout.bottom]);
 
-                    values = values.concat([
-                        view._autolayout.height.value,
-                        view._autolayout.top.value,
-                        view._autolayout.bottom.value]);
-                }
+                values = values.concat([
+                    view._autolayout.height.value,
+                    view._autolayout.top.value,
+                    view._autolayout.bottom.value]);
+            }
 
-                _.each(target.keys(), function(key){
-                    // because the key could be a sibling or a child,
-                    // we need to look in both places for it
-                    var each = this.children.findByCid(key) ||
-                               view.children.findByCid(key);
+            _.each(target.keys(), function(key){
+                // because the key could be a sibling or a child,
+                // we need to look in both places for it
+                var each = this.children.findByCid(key) ||
+                           view.children.findByCid(key);
 
-                    each.updateVariables(variables, values);
-                }, this);
-
+                each.updateVariables(variables, values);
             }, this);
-        }
+
+        }, this);
     },
 
     addConstraints: function(constraints){
         var i;
         var each;
         var result;
-        var changes = {};
+        var changes;
         var hasNoRoot = this.root ? false : true;
 
         var addStay = function(solver){
@@ -451,6 +450,7 @@ var FamousView = marionette.View.extend({
 
         var views = {};
         for(i = 0; i < constraints.length; i++){
+            changes = {};
             each = constraints[i];
 
             // WARNING: It's going to look very strange ahead, there
@@ -502,6 +502,7 @@ var FamousView = marionette.View.extend({
             }
 
             each._solver.addConstraint(each._constraint);
+            this._resolveConstraintDependencies(changes);
 
             if(!each._item._firstRender)
                 views[each._item.cid] = each._item;
@@ -517,8 +518,6 @@ var FamousView = marionette.View.extend({
             _.each(CONSTRAINT_PROPS, action);
             obj._firstRender = true;
         }
-
-        this._resolveConstraintDependencies(changes);
 
         if(this.root){
             this.invalidateAll();
