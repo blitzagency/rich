@@ -1007,7 +1007,7 @@ var FamousView = marionette.View.extend({
                 id = obj;
             }else if(_.isArray(obj)){
                 id = obj[0];
-            } else if(_.isObject(obj)){
+            } else if(_.isObject(obj) || _.isUndefined(obj)){
                 // these aren't the droids your looking for
                 continue;
             }else{
