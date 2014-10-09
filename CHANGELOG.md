@@ -1,4 +1,6 @@
-### v.0.0.5 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...HEAD)
+### v.NEXT _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.5...HEAD)
+
+### v.0.0.5 _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...v0.0.5)
 
 * Features
   * Updated to Famo.us v0.3.0 
