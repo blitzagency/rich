@@ -11,7 +11,7 @@ define(function(require, exports, module) {
     var EventHandler = require('./EventHandler');
     var OptionsManager = require('./OptionsManager');
     var RenderNode = require('./RenderNode');
-    var Utility = require('famous/utilities/Utility');
+    var Utility = require('../utilities/Utility');
 
     /**
      * Useful for quickly creating elements within applications
@@ -48,8 +48,8 @@ define(function(require, exports, module) {
      * @param {string} key key
      * @return {Object} associated object
      */
-    View.prototype.getOptions = function getOptions() {
-        return this._optionsManager.value();
+    View.prototype.getOptions = function getOptions(key) {
+        return this._optionsManager.getOptions(key);
     };
 
     /*

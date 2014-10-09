@@ -8,10 +8,10 @@
  */
 
 define(function(require, exports, module) {
-    var PE = require('famous/physics/PhysicsEngine');
-    var Particle = require('famous/physics/bodies/Particle');
-    var Spring = require('famous/physics/constraints/Snap');
-    var Vector = require('famous/math/Vector');
+    var PE = require('../physics/PhysicsEngine');
+    var Particle = require('../physics/bodies/Particle');
+    var Spring = require('../physics/constraints/Snap');
+    var Vector = require('../math/Vector');
 
     /**
      * SnapTransition is a method of transitioning between two values (numbers,
@@ -84,7 +84,7 @@ define(function(require, exports, module) {
     };
 
     function _getEnergy() {
-        return this.particle.getEnergy() + this.spring.getEnergy(this.particle);
+        return this.particle.getEnergy() + this.spring.getEnergy([this.particle]);
     }
 
     function _setAbsoluteRestTolerance() {

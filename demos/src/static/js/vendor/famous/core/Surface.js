@@ -31,14 +31,17 @@ define(function(require, exports, module) {
         this.options = {};
 
         this.properties = {};
+        this.attributes = {};
         this.content = '';
         this.classList = [];
         this.size = null;
 
         this._classesDirty = true;
         this._stylesDirty = true;
+        this._attributesDirty = true;
         this._sizeDirty = true;
         this._contentDirty = true;
+        this._trueSizeCheck = true;
 
         this._dirtyClasses = [];
 
@@ -52,10 +55,37 @@ define(function(require, exports, module) {
     Surface.prototype.elementClass = 'famous-surface';
 
     /**
+     * Set HTML attributes on this Surface. Note that this will cause
+     *    dirtying and thus re-rendering, even if values do not change.
+     *
+     * @method setAttributes
+    * @param {Object} attributes property dictionary of "key" => "value"
+     */
+    Surface.prototype.setAttributes = function setAttributes(attributes) {
+        for (var n in attributes) {
+            if (n === 'style') throw new Error('Cannot set styles via "setAttributes" as it will break Famo.us.  Use "setProperties" instead.');
+            this.attributes[n] = attributes[n];
+        }
+        this._attributesDirty = true;
+    };
+
+    /**
+     * Get HTML attributes on this Surface.
+     *
+     * @method getAttributes
+     *
+     * @return {Object} Dictionary of this Surface's attributes.
+     */
+    Surface.prototype.getAttributes = function getAttributes() {
+        return this.attributes;
+    };
+
+    /**
      * Set CSS-style properties on this Surface. Note that this will cause
      *    dirtying and thus re-rendering, even if values do not change.
      *
      * @method setProperties
+     * @chainable
      * @param {Object} properties property dictionary of "key" => "value"
      */
     Surface.prototype.setProperties = function setProperties(properties) {
@@ -63,6 +93,7 @@ define(function(require, exports, module) {
             this.properties[n] = properties[n];
         }
         this._stylesDirty = true;
+        return this;
     };
 
     /**
@@ -82,6 +113,7 @@ define(function(require, exports, module) {
      *   corresponding rendered <div>.
      *
      * @method addClass
+     * @chainable
      * @param {string} className name of class to add
      */
     Surface.prototype.addClass = function addClass(className) {
@@ -89,6 +121,7 @@ define(function(require, exports, module) {
             this.classList.push(className);
             this._classesDirty = true;
         }
+        return this;
     };
 
     /**
@@ -97,6 +130,7 @@ define(function(require, exports, module) {
      *   corresponding rendered <div>.
      *
      * @method removeClass
+     * @chainable
      * @param {string} className name of class to remove
      */
     Surface.prototype.removeClass = function removeClass(className) {
@@ -105,6 +139,7 @@ define(function(require, exports, module) {
             this._dirtyClasses.push(this.classList.splice(i, 1)[0]);
             this._classesDirty = true;
         }
+        return this;
     };
 
     /**
@@ -122,11 +157,13 @@ define(function(require, exports, module) {
         } else {
             this.addClass(className);
         }
+        return this;
     };
 
     /**
      * Reset class list to provided dictionary.
      * @method setClasses
+     * @chainable
      * @param {Array.string} classList
      */
     Surface.prototype.setClasses = function setClasses(classList) {
@@ -138,6 +175,7 @@ define(function(require, exports, module) {
         for (i = 0; i < removal.length; i++) this.removeClass(removal[i]);
         // duplicates are already checked by addClass()
         for (i = 0; i < classList.length; i++) this.addClass(classList[i]);
+        return this;
     };
 
     /**
@@ -155,6 +193,7 @@ define(function(require, exports, module) {
      *    causes a re-rendering if the content has changed.
      *
      * @method setContent
+     * @chainable
      * @param {string|Document Fragment} content HTML content
      */
     Surface.prototype.setContent = function setContent(content) {
@@ -162,6 +201,7 @@ define(function(require, exports, module) {
             this.content = content;
             this._contentDirty = true;
         }
+        return this;
     };
 
     /**
@@ -179,13 +219,16 @@ define(function(require, exports, module) {
      * Set options for this surface
      *
      * @method setOptions
+     * @chainable
      * @param {Object} [options] overrides for default options.  See constructor.
      */
     Surface.prototype.setOptions = function setOptions(options) {
         if (options.size) this.setSize(options.size);
         if (options.classes) this.setClasses(options.classes);
         if (options.properties) this.setProperties(options.properties);
+        if (options.attributes) this.setAttributes(options.attributes);
         if (options.content) this.setContent(options.content);
+        return this;
     };
 
     //  Apply to document all changes from removeClass() since last setup().
@@ -207,6 +250,22 @@ define(function(require, exports, module) {
     function _cleanupStyles(target) {
         for (var n in this.properties) {
             target.style[n] = '';
+        }
+    }
+
+    // Apply values of all Famous-managed attributes to the document element.
+    //  These will be deployed to the document on call to #setup().
+    function _applyAttributes(target) {
+        for (var n in this.attributes) {
+            target.setAttribute(n, this.attributes[n]);
+        }
+    }
+
+    // Clear all Famous-managed attributes from the document element.
+    // These will be deployed to the document on call to #setup().
+    function _cleanupAttributes(target) {
+        for (var n in this.attributes) {
+            target.removeAttribute(n);
         }
     }
 
@@ -236,11 +295,14 @@ define(function(require, exports, module) {
         }
         target.style.display = '';
         this.attach(target);
+        this._opacity = null;
         this._currentTarget = target;
         this._stylesDirty = true;
         this._classesDirty = true;
+        this._attributesDirty = true;
         this._sizeDirty = true;
         this._contentDirty = true;
+        this._originDirty = true;
         this._transformDirty = true;
     };
 
@@ -263,26 +325,56 @@ define(function(require, exports, module) {
             var classList = this.getClassList();
             for (var i = 0; i < classList.length; i++) target.classList.add(classList[i]);
             this._classesDirty = false;
+            this._trueSizeCheck = true;
         }
 
         if (this._stylesDirty) {
             _applyStyles.call(this, target);
             this._stylesDirty = false;
+            this._trueSizeCheck = true;
+        }
+
+        if (this._attributesDirty) {
+            _applyAttributes.call(this, target);
+            this._attributesDirty = false;
+            this._trueSizeCheck = true;
         }
 
         if (this.size) {
             var origSize = context.size;
             size = [this.size[0], this.size[1]];
             if (size[0] === undefined) size[0] = origSize[0];
-            else if (size[0] === true) size[0] = target.clientWidth;
             if (size[1] === undefined) size[1] = origSize[1];
-            else if (size[1] === true) size[1] = target.clientHeight;
+            if (size[0] === true || size[1] === true) {
+                if (size[0] === true && (this._trueSizeCheck || this._size[0] === 0)) {
+                    var width = target.offsetWidth;
+                    if (this._size && this._size[0] !== width) {
+                        this._size[0] = width;
+                        this._sizeDirty = true;
+                    }
+                    size[0] = width;
+                } else {
+                    if (this._size) size[0] = this._size[0];
+                }
+                if (size[1] === true && (this._trueSizeCheck || this._size[1] === 0)) {
+                    var height = target.offsetHeight;
+                    if (this._size && this._size[1] !== height) {
+                        this._size[1] = height;
+                        this._sizeDirty = true;
+                    }
+                    size[1] = height;
+                } else {
+                    if (this._size) size[1] = this._size[1];
+                }
+                this._trueSizeCheck = false;
+            }
         }
 
         if (_xyNotEquals(this._size, size)) {
             if (!this._size) this._size = [0, 0];
             this._size[0] = size[0];
             this._size[1] = size[1];
+
             this._sizeDirty = true;
         }
 
@@ -291,13 +383,15 @@ define(function(require, exports, module) {
                 target.style.width = (this.size && this.size[0] === true) ? '' : this._size[0] + 'px';
                 target.style.height = (this.size && this.size[1] === true) ?  '' : this._size[1] + 'px';
             }
-            this._sizeDirty = false;
+
+            this._eventOutput.emit('resize');
         }
 
         if (this._contentDirty) {
             this.deploy(target);
             this._eventOutput.emit('deploy');
             this._contentDirty = false;
+            this._trueSizeCheck = true;
         }
 
         ElementOutput.prototype.commit.call(this, context);
@@ -318,10 +412,11 @@ define(function(require, exports, module) {
         this._eventOutput.emit('recall');
         this.recall(target);
         target.style.display = 'none';
+        target.style.opacity = '';
         target.style.width = '';
         target.style.height = '';
-        this._size = null;
         _cleanupStyles.call(this, target);
+        _cleanupAttributes.call(this, target);
         var classList = this.getClassList();
         _cleanupClasses.call(this, target);
         for (i = 0; i < classList.length; i++) target.classList.remove(classList[i]);
@@ -376,18 +471,20 @@ define(function(require, exports, module) {
      * @return {Array.Number} [x,y] size of surface
      */
     Surface.prototype.getSize = function getSize() {
-        return this._size;
+        return this._size ? this._size : this.size;
     };
 
     /**
      * Set x and y dimensions of the surface.
      *
      * @method setSize
+     * @chainable
      * @param {Array.Number} size as [width, height]
      */
     Surface.prototype.setSize = function setSize(size) {
         this.size = size ? [size[0], size[1]] : null;
         this._sizeDirty = true;
+        return this;
     };
 
     module.exports = Surface;

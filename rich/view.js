@@ -1076,6 +1076,9 @@ var FamousView = marionette.View.extend({
     },
 
     getSize: function(){
+        if(!this._autolayout){
+            return [0, 0];
+        }
         return [this._autolayout.width.value, this._autolayout.height.value];
     },
 

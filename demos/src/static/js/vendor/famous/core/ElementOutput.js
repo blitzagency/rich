@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     var EventHandler = require('./EventHandler');
     var Transform = require('./Transform');
 
-    var usePrefix = document.body.style.webkitTransform !== undefined;
+    var usePrefix = !('transform' in document.documentElement.style);
     var devicePixelRatio = window.devicePixelRatio || 1;
 
     /**
@@ -264,12 +264,7 @@ define(function(require, exports, module) {
         }
 
         if (this._transformDirty || this._originDirty || this._sizeDirty) {
-            if (this._sizeDirty) {
-                if (!this._size) this._size = [0, 0];
-                this._size[0] = size[0];
-                this._size[1] = size[1];
-                this._sizeDirty = false;
-            }
+            if (this._sizeDirty) this._sizeDirty = false;
 
             if (this._originDirty) {
                 if (origin) {

@@ -7,11 +7,14 @@ var Drag = require('famous/physics/forces/Drag');
 var Engine = require('famous/core/Engine');
 var utils = require('../utils');
 
+var MEMORY_LEN = 10;
+
 var SimpleDriver = marionette.Controller.extend({
     scrollDamp: 0.4,
     mobileScrollDamp: 1,
     strength: 0.005,
     mobileStrength:0.003,
+    _cachedVelocity: [],
     constructor: function(options) {
         marionette.Controller.prototype.constructor.apply(this, arguments);
         this.scrollView = options.scrollView;
@@ -33,6 +36,12 @@ var SimpleDriver = marionette.Controller.extend({
         this._particle = options.particle;
     },
 
+    halt: function(){
+        if(this._throwMod){
+            this._throwMod.callback();
+        }
+    },
+
     shouldLimitPastBounds: function(){
         return true;
     },
@@ -50,21 +59,26 @@ var SimpleDriver = marionette.Controller.extend({
     },
 
     // no op...we already told it to stop if you hit limits
-    updateParticle: function(isPastLimits, springAnchor){
-        if(this._throwMod){
-            this._throwMod.callback();
-        }
+    updateParticle: function(isPastLimits, springAnchor, velocity){
+        velocity = utils.normalizeVector(velocity, this._direction);
+
+        this.halt();
     },
 
     wantsThrow: function(velocity, type, direction){
-        if(type == 'wheel' || type == 'mouseup')return;
+        if(type == 'wheel')return;
         if(this._throwMod){
             this._throwMod.callback();
         }
         this._physicsEngine.detachAll();
         this._particle.setVelocity(0);
 
-        var strength = type == 'touchend' ? this.mobileStrength : this.strength;
+        var strength;
+        if(type == 'touchend' || type == 'mouseup'){
+            strength = this.mobileStrength;
+        }else{
+            strength = this.strength;
+        }
 
         this._friction.setOptions({
             strength: strength

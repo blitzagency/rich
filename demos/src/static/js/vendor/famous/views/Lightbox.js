@@ -1,11 +1,11 @@
 define(function(require, exports, module) {
-    var Transform = require('famous/core/Transform');
-    var Modifier = require('famous/core/Modifier');
-    var RenderNode = require('famous/core/RenderNode');
-    var Utility = require('famous/utilities/Utility');
-    var OptionsManager = require('famous/core/OptionsManager');
-    var Transitionable = require('famous/transitions/Transitionable');
-    var TransitionableTransform = require('famous/transitions/TransitionableTransform');
+    var Transform = require('../core/Transform');
+    var Modifier = require('../core/Modifier');
+    var RenderNode = require('../core/RenderNode');
+    var Utility = require('../utilities/Utility');
+    var OptionsManager = require('../core/OptionsManager');
+    var Transitionable = require('../transitions/Transitionable');
+    var TransitionableTransform = require('../transitions/TransitionableTransform');
 
     /**
      * Lightbox, using transitions, shows and hides different renderables. Lightbox can essentially be
@@ -26,9 +26,15 @@ define(function(require, exports, module) {
      * @param {Array<Number>} [options.inOrigin] A two value array of numbers between one and zero that defines the state of a shown renderables
      * origin upon intially being transitioned in.
      * @param {Array<Number>} [options.outOrigin] A two value array of numbers between one and zero that defines the state of a shown renderable
-     * once fully hidden.
+     * origin once fully hidden.
      * @param {Array<Number>} [options.showOrigin] A two value array of numbers between one and zero that defines the state of a shown renderables
      * origin upon succesfully being shown.
+     * @param {Array<Number>} [options.inAlign] A two value array of numbers between one and zero that defines the state of a shown renderables
+     * align upon intially being transitioned in.
+     * @param {Array<Number>} [options.outAlign] A two value array of numbers between one and zero that defines the state of a shown renderable
+     * align once fully hidden.
+     * @param {Array<Number>} [options.showAlign] A two value array of numbers between one and zero that defines the state of a shown renderables
+     * align upon succesfully being shown.
      * @param {Transition} [options.inTransition=true] The transition in charge of showing a renderable.
      * @param {Transition} [options.outTransition=true]  The transition in charge of removing your previous renderable when
      * you show a new one, or hiding your current renderable.
@@ -52,12 +58,15 @@ define(function(require, exports, module) {
         inTransform: Transform.scale(0.001, 0.001, 0.001),
         inOpacity: 0,
         inOrigin: [0.5, 0.5],
+        inAlign: [0.5, 0.5],
         outTransform: Transform.scale(0.001, 0.001, 0.001),
         outOpacity: 0,
         outOrigin: [0.5, 0.5],
+        outAlign: [0.5, 0.5],
         showTransform: Transform.identity,
         showOpacity: 1,
         showOrigin: [0.5, 0.5],
+        showAlign: [0.5, 0.5],
         inTransition: true,
         outTransition: true,
         overlap: false
@@ -103,13 +112,15 @@ define(function(require, exports, module) {
         var stateItem = {
             transform: new TransitionableTransform(this.options.inTransform),
             origin: new Transitionable(this.options.inOrigin),
+            align: new Transitionable(this.options.inAlign),
             opacity: new Transitionable(this.options.inOpacity)
         };
 
         var transform = new Modifier({
             transform: stateItem.transform,
             opacity: stateItem.opacity,
-            origin: stateItem.origin
+            origin: stateItem.origin,
+            align: stateItem.align
         });
         var node = new RenderNode();
         node.add(transform).add(renderable);
@@ -123,6 +134,7 @@ define(function(require, exports, module) {
         stateItem.transform.set(this.options.showTransform, transition, _cb);
         stateItem.opacity.set(this.options.showOpacity, transition, _cb);
         stateItem.origin.set(this.options.showOrigin, transition, _cb);
+        stateItem.align.set(this.options.showAlign, transition, _cb);
     };
 
     /**
@@ -155,6 +167,7 @@ define(function(require, exports, module) {
         stateItem.transform.set(this.options.outTransform, transition, _cb);
         stateItem.opacity.set(this.options.outOpacity, transition, _cb);
         stateItem.origin.set(this.options.outOrigin, transition, _cb);
+        stateItem.align.set(this.options.outAlign, transition, _cb);
     };
 
     /**

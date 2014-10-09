@@ -8,10 +8,10 @@
  */
 
 define(function(require, exports, module) {
-    var OptionsManager = require('famous/core/OptionsManager');
-    var Transform = require('famous/core/Transform');
-    var ViewSequence = require('famous/core/ViewSequence');
-    var Utility = require('famous/utilities/Utility');
+    var OptionsManager = require('../core/OptionsManager');
+    var Transform = require('../core/Transform');
+    var ViewSequence = require('../core/ViewSequence');
+    var Utility = require('../utilities/Utility');
 
     /**
      * SequentialLayout will lay out a collection of renderables sequentially in the specified direction.
@@ -22,31 +22,21 @@ define(function(require, exports, module) {
      * module, this option will lay out the SequentialLayout instance's renderables either horizontally
      * (x) or vertically (y). Utility's direction is essentially either zero (X) or one (Y), so feel free
      * to just use integers as well.
-     * @param {Array.Number} [options.defaultItemSize=[50, 50]] In the case where a renderable layed out
-     * under SequentialLayout's control doesen't have a getSize method, SequentialLayout will assign it
-     * this default size. (Commonly a case with Views).
      */
     function SequentialLayout(options) {
         this._items = null;
         this._size = null;
         this._outputFunction = SequentialLayout.DEFAULT_OUTPUT_FUNCTION;
 
-        this.options = Object.create(this.constructor.DEFAULT_OPTIONS);
+        this.options = Utility.clone(this.constructor.DEFAULT_OPTIONS || SequentialLayout.DEFAULT_OPTIONS);
         this.optionsManager = new OptionsManager(this.options);
-
-        this._itemsCache = [];
-        this._outputCache = {
-            size: null,
-            target: this._itemsCache
-        };
 
         if (options) this.setOptions(options);
     }
 
     SequentialLayout.DEFAULT_OPTIONS = {
         direction: Utility.Direction.Y,
-        itemSpacing: 0,
-        defaultItemSize: [50, 50]
+        itemSpacing: 0
     };
 
     SequentialLayout.DEFAULT_OUTPUT_FUNCTION = function DEFAULT_OUTPUT_FUNCTION(input, offset, index) {
@@ -115,41 +105,39 @@ define(function(require, exports, module) {
      * @return {number} Render spec for this component
      */
     SequentialLayout.prototype.render = function render() {
-        var length = 0;
-        var girth = 0;
+        var length             = 0;
+        var secondaryDirection = this.options.direction ^ 1;
+        var currentNode        = this._items;
+        var item               = null;
+        var itemSize           = [];
+        var output             = {};
+        var result             = [];
+        var i                  = 0;
 
-        var lengthDim = (this.options.direction === Utility.Direction.X) ? 0 : 1;
-        var girthDim = (this.options.direction === Utility.Direction.X) ? 1 : 0;
+        this._size = [0, 0];
 
-        var currentNode = this._items;
-        var result = this._itemsCache;
-        var i = 0;
         while (currentNode) {
-            var item = currentNode.get();
+            item = currentNode.get();
             if (!item) break;
 
-            var itemSize;
-            if (item && item.getSize) itemSize = item.getSize();
-            if (!itemSize) itemSize = this.options.defaultItemSize;
-            if (itemSize[girthDim] !== true) girth = Math.max(girth, itemSize[girthDim]);
+            if (item.getSize) itemSize = item.getSize();
 
-            var output = this._outputFunction.call(this, item, length, i);
-            result[i] = output;
+            output = this._outputFunction.call(this, item, length, i++);
+            result.push(output);
 
-            if (itemSize[lengthDim] && (itemSize[lengthDim] !== true)) length += itemSize[lengthDim] + this.options.itemSpacing;
+            if (itemSize) {
+                if (itemSize[this.options.direction]) length += itemSize[this.options.direction];
+                if (itemSize[secondaryDirection] > this._size[secondaryDirection]) this._size[secondaryDirection] = itemSize[secondaryDirection];
+            }
+
             currentNode = currentNode.getNext();
-            i++;
+
+            if (this.options.itemSpacing && currentNode) length += this.options.itemSpacing;
         }
-        this._itemsCache.splice(i);
 
-        if (!girth) girth = undefined;
+        this._size[this.options.direction] = length;
 
-        if (!this._size) this._size = [0, 0];
-        this._size[lengthDim] = length - this.options.itemSpacing; // account for last itemSpacing
-        this._size[girthDim] = girth;
-
-        this._outputCache.size = this.getSize();
-        return this._outputCache;
+        return result;
     };
 
     module.exports = SequentialLayout;

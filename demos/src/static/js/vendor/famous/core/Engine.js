@@ -27,8 +27,6 @@ define(function(require, exports, module) {
     var Context = require('./Context');
     var EventHandler = require('./EventHandler');
     var OptionsManager = require('./OptionsManager');
-    var Time = require('../utilities/Time');
-
 
     var Engine = {};
 
@@ -69,7 +67,6 @@ define(function(require, exports, module) {
      */
     Engine.step = function step() {
         var currentTime = Date.now();
-        Time.now = currentTime;
 
         // skip frame if we're over our framerate cap
         if (frameTimeLimit && currentTime - lastTime < frameTimeLimit) return;
@@ -252,8 +249,8 @@ define(function(require, exports, module) {
      * @param {string} key
      * @return {Object} engine options
      */
-    Engine.getOptions = function getOptions() {
-        return optionsManager.getOptions.apply(optionsManager, arguments);
+    Engine.getOptions = function getOptions(key) {
+        return optionsManager.getOptions(key);
     };
 
     /**
@@ -284,7 +281,7 @@ define(function(require, exports, module) {
      * @return {Context} new Context within el
      */
     Engine.createContext = function createContext(el) {
-        if (!initialized && options.appMode) initialize();
+        if (!initialized && options.appMode) Engine.nextTick(initialize);
 
         var needMountContainer = false;
         if (!el) {

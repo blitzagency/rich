@@ -132,8 +132,9 @@ describe('View Animation:', function() {
         region.show(view);
 
         render().then(function(){
-            expect(box0.$el.css('opacity')).toBe('1');
-            wait(200).then(function(){
+            var num = parseFloat(box0.$el.css('opacity'));
+            expect(num).toBeGreaterThan(0.9999);
+            wait(100).then(function(){
                 expect(box0.$el.css('opacity')).not.toBe('1');
                 expect(box0.$el.css('opacity')).not.toBe('0');
             });
@@ -172,7 +173,9 @@ describe('View Animation:', function() {
         region.show(view);
 
         render().then(function(){
-            expect(box0.$el.css('opacity')).toBe('1');
+            // expect(box0.$el.css('opacity')).toBe('1');
+            var num = parseFloat(box0.$el.css('opacity'));
+            expect(num).toBeGreaterThan(0.9999);
             box0.setOpacity(
                 0
             ).then(function(){
