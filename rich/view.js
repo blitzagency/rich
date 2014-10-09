@@ -650,7 +650,7 @@ var FamousView = marionette.View.extend({
         return {deferred: deferred.promise(), callback: callback};
     },
 
-    _animateModifier: function(type, args, transition, index){
+    _animateModifier: function(type, args, transition, index, halt){
         index || (index = 0);
 
         var target;
@@ -664,6 +664,10 @@ var FamousView = marionette.View.extend({
             target = this._modifier;
         }
 
+        if(halt){
+            target.halt();
+        }
+
         if(!duration){
             target[type](args);
             this.invalidateView();
@@ -674,20 +678,20 @@ var FamousView = marionette.View.extend({
         return obj.deferred;
     },
 
-    setTransform: function(transform, transition, index){
-        return this._animateModifier('setTransform', transform, transition, index);
+    setTransform: function(transform, transition, index, halt){
+        return this._animateModifier('setTransform', transform, transition, index, halt);
     },
 
-    setOpacity: function(opacity, transition, index){
-        return this._animateModifier('setOpacity', opacity, transition, index);
+    setOpacity: function(opacity, transition, index, halt){
+        return this._animateModifier('setOpacity', opacity, transition, index, halt);
     },
 
-    setOrigin: function(origin, transition, index){
-        return this._animateModifier('setOrigin', origin, transition, index);
+    setOrigin: function(origin, transition, index, halt){
+        return this._animateModifier('setOrigin', origin, transition, index, halt);
     },
 
-    setAlign: function(align, transition, index){
-        return this._animateModifier('setAlign', align, transition, index);
+    setAlign: function(align, transition, index, halt){
+        return this._animateModifier('setAlign', align, transition, index, halt);
     },
 
     getFamousId: function(){
@@ -998,9 +1002,18 @@ var FamousView = marionette.View.extend({
             var obj = arr[i];
             var id;
             var depth = viewModifierLen;
+            var notThis = false;
             while(depth){
+                if(!obj.target){
+                    notThis = true;
+                    break;
+                }
                 obj = obj.target;
                 depth --;
+            }
+            if(notThis){
+                notThis = false;
+                continue;
             }
             // console.log(obj)
             if(_.isNumber(obj)){
