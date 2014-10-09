@@ -1,6 +1,8 @@
 ### v.NEXT _PENDING RELEASE_ [view commit logs](https://github.com/blitzagency/rich/compare/v0.0.4...HEAD)
 
 * Features
+  * Updated to Famo.us v0.3.0 
+  
   * View now has a utility function for telling it's children to fill up the size
     of their parent:  `view.fillWithSubview(otherView, zIndex)`
 
