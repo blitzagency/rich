@@ -21,6 +21,12 @@ function getTransformMatrix($el){
     });
 }
 
+function getOpacity($el){
+    var computed = getComputedStyle($el);
+    var opacity = computed.getPropertyValue("opacity");
+    return parseFloat(opacity, 10);
+}
+
 function getOrigin($el){
     var computed = getComputedStyle($el);
     var origin = computed.getPropertyValue("-webkit-transform-origin") ||
@@ -70,5 +76,6 @@ exports.getZIndex = getZIndex;
 exports.getSize = getSize;
 exports.rgb2hex = rgb2hex;
 exports.getOrigin = getOrigin;
+exports.getOpacity = getOpacity;
 
 });
