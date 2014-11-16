@@ -58,8 +58,9 @@ describe('View Animation:', function() {
         function setOpacity(value, callback){
 
             if(callback){
-                return box0.setOpacity(value).then(callback);
+                return box0.setOpacity(value, {duration: 100}).then(callback);
             }
+
             return box0.setOpacity(value);
         }
 
