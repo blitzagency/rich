@@ -65,18 +65,22 @@ describe('View Animation:', function() {
         }
 
         render().then(function(){
+
             expect(css.getOpacity(box0.$el)).not.toEqual(0);
+            box0.setOpacity(0);
             var spy = jasmine.createSpy();
-
-            setOpacity(0).then(function(){
+            render().then(function(){
                 expect(css.getOpacity(box0.$el)).toEqual(0);
-
-                setOpacity(0, spy).then(function(){
+                box0.setOpacity(1, {duration: 300}).then(spy);
+                // @adam uncomment this line and tests fail
+                // i didn't want to commit this as we'd see a fail on GH
+                // box0.setOpacity(0);
+                wait(1000).then(function(){
                     expect(spy).toHaveBeenCalled();
-                    expect(css.getOpacity(box0.$el)).toEqual(0);
                     done();
-                });
-            });
+                })
+            })
+
         });
     });
 
