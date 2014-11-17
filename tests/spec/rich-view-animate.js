@@ -32,7 +32,7 @@ describe('View Animation:', function() {
 
     });
 
-    it('triggers promise when opacity does not change', function(done){
+    it('triggers reject when set* is called before complete', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -51,32 +51,27 @@ describe('View Animation:', function() {
                 'V:|[box0(100)]|',
             ]
         });
+
         view.box0 = box0;
         view.addSubview(box0);
         region.show(view);
-
-        function setOpacity(value, callback){
-
-            if(callback){
-                return box0.setOpacity(value, {duration: 100}).then(callback);
-            }
-
-            return box0.setOpacity(value);
-        }
 
         render().then(function(){
 
             expect(css.getOpacity(box0.$el)).not.toEqual(0);
             box0.setOpacity(0);
-            var spy = jasmine.createSpy();
+
+            var spyResolve = jasmine.createSpy();
+            var spyReject = jasmine.createSpy();
+
             render().then(function(){
                 expect(css.getOpacity(box0.$el)).toEqual(0);
-                box0.setOpacity(1, {duration: 300}).then(spy);
-                // @adam uncomment this line and tests fail
-                // i didn't want to commit this as we'd see a fail on GH
-                // box0.setOpacity(0);
-                wait(1000).then(function(){
-                    expect(spy).toHaveBeenCalled();
+                box0.setOpacity(1, {duration: 300}).then(spyResolve, spyReject);
+
+                box0.setOpacity(0);
+                wait(500).then(function(){
+                    expect(spyReject).toHaveBeenCalled();
+                    expect(spyResolve).not.toHaveBeenCalled();
                     done();
                 })
             })
@@ -84,7 +79,57 @@ describe('View Animation:', function() {
         });
     });
 
-    xit('runs setTransform with animation', function(done){
+    it('runs setTransform and setOpacity', function(done){
+        var context = new Setup(done);
+        var region = context.region;
+        var root = context.root;
+
+        var color0 = new Rectangle({
+            color: colors[0]
+        });
+
+        var box0 = new RectangleView({
+            model: color0,
+        });
+
+        var view = new rich.View({
+            constraints: [
+                '|[box0(100)]|',
+                'V:|[box0(100)]|',
+            ]
+        });
+
+        view.box0 = box0;
+        view.addSubview(box0);
+        region.show(view);
+
+        render().then(function(){
+
+            expect(css.getOpacity(box0.$el)).not.toEqual(0);
+            expect(matrix.getTranslation(box0.$el)).toEqual({x: 0, y: 0, z: 0});
+
+            var spyResolve = jasmine.createSpy('resolve');
+            var spyReject = jasmine.createSpy('reject');
+
+            box0.setOpacity(0, {duration: 200})
+            .then(spyResolve, spyReject);
+
+            box0.setTransform(
+                Transform.translate(100, 100, 0),
+                {duration: 200})
+            .then(spyResolve, spyReject);
+
+            wait(500).then(function(){
+                expect(spyReject).not.toHaveBeenCalled();
+                expect(spyResolve).toHaveBeenCalled();
+                expect(spyResolve.calls.count()).toEqual(2);
+                done();
+            });
+
+        });
+    });
+
+    it('runs setTransform with animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -124,7 +169,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setTransform without animation', function(done){
+    it('runs setTransform without animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -159,7 +204,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOpacity with animation', function(done){
+    it('runs setOpacity with animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -200,7 +245,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOpacity without animation', function(done){
+    it('runs setOpacity without animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -237,7 +282,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOrigin with animation', function(done){
+    it('runs setOrigin with animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -285,7 +330,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setOrigin without animation', function(done){
+    it('runs setOrigin without animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -324,7 +369,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setAlign with animation', function(done){
+    it('runs setAlign with animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
@@ -364,7 +409,7 @@ describe('View Animation:', function() {
 
     });
 
-    xit('runs setAlign with animation', function(done){
+    it('runs setAlign with animation', function(done){
         var context = new Setup(done);
         var region = context.region;
         var root = context.root;
