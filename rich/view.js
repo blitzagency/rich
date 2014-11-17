@@ -647,16 +647,18 @@ var FamousView = marionette.View.extend({
             Engine.on('postrender', tick);
         }
 
-        return {deferred: deferred.promise(), callback: callback};
+        return {deferred: deferred, callback: callback};
     },
 
     _animateModifier: function(type, args, transition, index, halt){
         index || (index = 0);
 
         var target;
+        var key;
         var duration = transition && transition.duration ? transition.duration : 0;
 
-        var obj = this._prepareModification(duration);
+        var obj;
+        var currentDeferred;
 
         if(_.isArray(this._modifier)){
             target = this._modifier[index];
@@ -664,9 +666,22 @@ var FamousView = marionette.View.extend({
             target = this._modifier;
         }
 
-        if(halt){
-            target.halt();
+        obj = this._prepareModification(duration);
+
+
+        key = '_richAnimate' + type.substr(3) + 'Deferred';
+        currentDeferred = target[key];
+
+        var cleanup = function(){
+            delete target[key];
         }
+
+        if (currentDeferred && currentDeferred.state() == 'pending'){
+            target.halt();
+            currentDeferred.reject()
+        }
+
+        target[key] = obj.deferred;
 
         if(!duration){
             target[type](args);
@@ -675,7 +690,8 @@ var FamousView = marionette.View.extend({
             target[type](args, transition, obj.callback);
         }
 
-        return obj.deferred;
+        obj.deferred.then(cleanup, cleanup);
+        return obj.deferred.promise();
     },
 
     setTransform: function(transform, transition, index, halt){
