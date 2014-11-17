@@ -657,18 +657,15 @@ var FamousView = marionette.View.extend({
         var key;
         var duration = transition && transition.duration ? transition.duration : 0;
 
-        var obj;
+        var obj = this._prepareModification(duration);
         var currentDeferred;
-
+        
         if(_.isArray(this._modifier)){
             target = this._modifier[index];
         } else {
             target = this._modifier;
         }
-
-        obj = this._prepareModification(duration);
-
-
+        
         key = '_richAnimate' + type.substr(3) + 'Deferred';
         currentDeferred = target[key];
 
